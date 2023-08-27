@@ -23,6 +23,13 @@
 3. Научиться взаимодействию в команде (Agile, Scrum, спринты, дейли, демо, ретро).
 4. Освоить ведение проекта в GitHub в команде.
 
+## Авторы
+
+- [Роман Зражевский](https://github.com/ZRoman87)
+- [Владимир Кудрявцев](https://github.com/ztmwtm)
+- [Вячеслав Марчков](https://github.com/SlavaMarchkov)
+- [Георгий Родионов](https://github.com/GEORGE2066)
+- [Анастасия Шорикова](https://github.com/DuBlack1)
 
 ## Использование
 
