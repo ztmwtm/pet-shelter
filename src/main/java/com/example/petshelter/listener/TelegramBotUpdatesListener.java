@@ -3,12 +3,15 @@ package com.example.petshelter.listener;
 import com.example.petshelter.service.TelegramBotService;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
+import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SetMyCommands;
+import com.pengrad.telegrambot.response.BaseResponse;
 import jakarta.annotation.PostConstruct;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +24,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private final TelegramBotService telegramBotService;
     private final TelegramBot telegramBot;
-
     private static final String GREETING = """
              , привет!
             Я - бот-помощник приюта домашних животных.
@@ -29,9 +31,16 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     @Autowired
     public TelegramBotUpdatesListener(final TelegramBotService telegramBotService,
-                                      final TelegramBot telegramBot) {
+                                      @NotNull final TelegramBot telegramBot) {
         this.telegramBotService = telegramBotService;
         this.telegramBot = telegramBot;
+
+        BaseResponse response = telegramBot.execute(new SetMyCommands(
+                new BotCommand("/start", "Начало работы"),
+                new BotCommand("/help", "Позвать волонтера")
+        ));
+        // TODO: logger response
+        System.out.println(response);
     }
 
     @PostConstruct
