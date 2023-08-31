@@ -1,7 +1,7 @@
-spring.datasource.url=jdbc:postgresql://localhost:5432/pet_shelter_db
-spring.datasource.username=telegram
-spring.datasource.password=telegram
-telegram.bot.token=6417547561:AAHw2WpFDDiBfHINDN85j8oUpeIkRMQM1WA
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
+telegram.bot.token=
 
 spring.jpa.show-sql=true
 spring.jpa.hibernate.ddl-auto=validate
