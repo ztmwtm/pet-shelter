@@ -8,12 +8,14 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import com.pengrad.telegrambot.response.BaseResponse;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
 
@@ -34,13 +36,24 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     @PostConstruct
     public void init() {
-        telegramBot.setUpdatesListener(this);
+        try {
+            telegramBot.setUpdatesListener(this);
+            log.info("Annotation @PostConstructor init UpdatesListener");
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error annotation @PostConstructor init UpdatesListener");
+        }
     }
 
     @Override
     public int process(@NotNull List<Update> updates) {
-        updates.forEach(updateHandler::handle);
-        return UpdatesListener.CONFIRMED_UPDATES_ALL;
+        try {
+            updates.forEach(updateHandler::handle);
+            log.info("Procces UpdatesListener");
+            return UpdatesListener.CONFIRMED_UPDATES_ALL;
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error Process UpdatesListener");
+        }
+        return 0;
     }
 
 }
