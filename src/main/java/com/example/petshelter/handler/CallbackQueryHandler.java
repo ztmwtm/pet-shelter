@@ -13,6 +13,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+/**
+ * Класс отвечающий за обработку команд поступающих из чата
+ */
 @Component
 public class CallbackQueryHandler {
 
@@ -22,6 +25,9 @@ public class CallbackQueryHandler {
     private final Map<String, String> catsMenu = new LinkedHashMap<>();
     private final Map<String, String> dogsMenu = new LinkedHashMap<>();
 
+    /**
+     * Нестатический блок инициализации кнопок и методов
+     */
     {
         queryExecutors.put(CallbackData.CATS, this::handleCats);
         queryExecutors.put(CallbackData.DOGS, this::handleDogs);
@@ -58,11 +64,21 @@ public class CallbackQueryHandler {
         }
     }
 
+    /**
+     * Метод отвечающий за переход в меню связанных с собаками
+     * @param user
+     * @param chat
+     */
     private void handleDogs(User user, Chat chat) {
         String text = CallbackData.DOGS.getDescription();
         telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(dogsMenu), null);
     }
 
+    /**
+     * Метод отвечающий за переход в меню связанных с кошками
+     * @param user
+     * @param chat
+     */
     private void handleCats(User user, Chat chat) {
         String text = CallbackData.CATS.getDescription();
         telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(catsMenu), null);

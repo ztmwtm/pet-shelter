@@ -8,6 +8,9 @@ import com.pengrad.telegrambot.response.SendResponse;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+/**
+ * Класс отвечающий за отправку сообщений ботом
+ */
 @Service
 public class TelegramBotService {
 
@@ -17,6 +20,13 @@ public class TelegramBotService {
         this.telegramBot = telegramBot;
     }
 
+    /**
+     * Метод отвечающий за отправку сообщений ботом
+     * @param chatId
+     * @param text
+     * @param keyboard
+     * @param parseMode
+     */
     public void sendMessage(final Long chatId,
                             final String text,
                             @Nullable InlineKeyboardMarkup keyboard,

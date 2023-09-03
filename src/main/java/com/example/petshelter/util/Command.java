@@ -1,5 +1,8 @@
 package com.example.petshelter.util;
 
+/**
+ * Константа кнопки старт
+ */
 public enum Command {
 
     START("start", "Начать работу");

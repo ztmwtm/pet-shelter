@@ -14,9 +14,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+/**
+ * Класс отвечающий за приветствие пользователя и предлагающий выбор приюта
+ */
 @Component
 public class CommandHandler {
 
+    /**
+     * Текст выводящийся в приветствии
+     */
     private static final String GREETING = """
             , привет!
             Я - бот-помощник приюта домашних животных.
@@ -26,6 +32,9 @@ public class CommandHandler {
     private final MarkupHelper markupHelper;
     private final Map<String, String> mainMenu = new HashMap<>();
 
+    /**
+     * Нестатический блок инициализации метода и кнопок
+     */
     {
         commandExecutors.put(Command.START, this::handleStart);
         mainMenu.put(CallbackData.CATS.getTitle(), "Приют для кошек");
@@ -48,6 +57,11 @@ public class CommandHandler {
         }
     }
 
+    /**
+     * Метод отвечающий за приветствие пользователя в начале работы
+     * @param user
+     * @param chat
+     */
     private void handleStart(User user, Chat chat) {
         Long chatId = chat.id();
         String userName = user.firstName();

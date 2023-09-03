@@ -7,9 +7,17 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+/**
+ * Помощник по разметке меню под сообщениями
+ */
 @Component
 public class MarkupHelper {
 
+    /**
+     * Метод отвечающий за создание кнопок меню под сообщением
+     * @param menu
+     * @return
+     */
     public InlineKeyboardMarkup buildMenu(@NotNull Map<String, String> menu) {
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         for (Map.Entry<String, String> entry : menu.entrySet()) {
