@@ -5,6 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.FileInputStream;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
 @Slf4j
 @Component
 public class UpdateHandler {
@@ -17,6 +22,7 @@ public class UpdateHandler {
                          final CallbackQueryHandler callbackQueryHandler) {
         this.commandHandler = commandHandler;
         this.callbackQueryHandler = callbackQueryHandler;
+        log.info("Constructor UpdateHandler");
     }
 
     public void handle(Update update) {
@@ -36,7 +42,7 @@ public class UpdateHandler {
             }
             log.info("Handle UpdateHandler");
         }catch (Exception e) {
-            log.error(e.getMessage() + "Error Handle UpdateHandler");
+            log.error("Error Handle UpdateHandler");
         }
     }
 

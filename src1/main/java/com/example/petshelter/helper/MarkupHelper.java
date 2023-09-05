@@ -8,19 +8,28 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+/**
+ * Помощник по разметке меню под сообщениями
+ */
 @Slf4j
 @Component
 public class MarkupHelper {
 
+    /**
+     * Метод отвечающий за создание кнопок меню под сообщением
+     * @param menu
+     * @return
+     */
     public InlineKeyboardMarkup buildMenu(@NotNull Map<String, String> menu) {
         try {
             InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
             for (Map.Entry<String, String> entry : menu.entrySet()) {
                 keyboardMarkup.addRow(new InlineKeyboardButton(entry.getValue()).callbackData(entry.getKey()));
             }
+            log.info("BuildMenu MarkupHelper");
             return keyboardMarkup;
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error BuildMrnu MarkupHendler");
+            log.error(e.getMessage() + "Error BuildMenu MarkupHelper");
         }
         return null;
     }

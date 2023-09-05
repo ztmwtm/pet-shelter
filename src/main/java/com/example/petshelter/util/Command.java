@@ -1,5 +1,8 @@
 package com.example.petshelter.util;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public enum Command {
 
     START("start", "Начать работу");
@@ -14,10 +17,22 @@ public enum Command {
     }
 
     public String getTitle() {
-        return title;
+        try {
+            log.info("GetTitle " + title + " Command");
+            return title;
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error GetTitle Command");
+        }
+        return null;
     }
 
     public String getDescription() {
-        return description;
+        try {
+            log.info("GetDescription " + getTitle() + " Command");
+            return description;
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error GetDescription " + getTitle() + "Command");
+        }
+        return null;
     }
 }

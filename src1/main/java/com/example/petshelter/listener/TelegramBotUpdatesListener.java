@@ -13,7 +13,11 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.FileInputStream;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 @Slf4j
 @Service
@@ -21,6 +25,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private final TelegramBot telegramBot;
     private final UpdateHandler updateHandler;
+
 
     @Autowired
     public TelegramBotUpdatesListener(@NotNull final TelegramBot telegramBot,
@@ -40,7 +45,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             telegramBot.setUpdatesListener(this);
             log.info("Annotation @PostConstructor init UpdatesListener");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error annotation @PostConstructor init UpdatesListener");
+            log.error(e.getMessage(), "Error annotation @PostConstructor init UpdatesListener", e);
         }
     }
 
@@ -51,7 +56,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             log.info("Procces UpdatesListener");
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error Process UpdatesListener");
+            log.info(e.getMessage(), "Error Process UpdatesListener", e);
         }
         return 0;
     }
