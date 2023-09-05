@@ -5,12 +5,15 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 /**
  * Класс отвечающий за отправку сообщений ботом
  */
+
+@Slf4j
 @Service
 public class TelegramBotService {
 
@@ -18,6 +21,7 @@ public class TelegramBotService {
 
     public TelegramBotService(final TelegramBot telegramBot) {
         this.telegramBot = telegramBot;
+        log.info("Constructor TelegramBotService");
     }
 
     /**
@@ -32,27 +36,32 @@ public class TelegramBotService {
                             @Nullable InlineKeyboardMarkup keyboard,
                             @Nullable ParseMode parseMode
     ) {
-        SendMessage message = new SendMessage(chatId, text);
-        if (keyboard != null) {
-            message.replyMarkup(keyboard);
+        try {
+            SendMessage message = new SendMessage(chatId, text);
+            if (keyboard != null) {
+                message.replyMarkup(keyboard);
+            }
+            if (parseMode != null) {
+                message.parseMode(parseMode);
+            }
+            SendResponse response = telegramBot.execute(message);
+            System.out.println("Response OK: " + response.isOk());
+            if (!response.isOk()) {
+                System.out.println(response.description());
+            }
+            log.info("SendMessage1 TelegramBotService");
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error SendMessage1 TelegramBotService");
         }
-        if (parseMode != null) {
-            message.parseMode(parseMode);
-        }
-        SendResponse response = telegramBot.execute(message);
-        System.out.println("Response OK: " + response.isOk());
-        if (!response.isOk()) {
-            System.out.println(response.description());
-        }
-        // TODO: logger
-        /*logger.info("Response: {}", response.isOk());
-        if (!response.isOk()) {
-            logger.error("SendResponse failed with error: {}", response.description());
-        }*/
     }
 
     public void sendMessage(final Long chatId, final String text) {
-        sendMessage(chatId, text, null, null);
+        try {
+            sendMessage(chatId, text, null, null);
+            log.info("SendMessage2 TelegramBOtService");
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error SendMessage2 TelegramBotService");
+        }
     }
 
 }

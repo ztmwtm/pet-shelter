@@ -1,8 +1,11 @@
 package com.example.petshelter.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Набор констант с названием кнопок и их описание для получения инфомации о приютах
  */
+@Slf4j
 public enum CallbackData {
 
     CATS("cats", "Выберите, что вы хотите узнать о приюте для кошек:"),
@@ -22,14 +25,27 @@ public enum CallbackData {
     CallbackData(final String title, final String description) {
         this.title = title;
         this.description = description;
+
     }
 
     public String getTitle() {
-        return title;
+        try {
+            log.info("GetTitle CallbackData");
+            return title;
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error GetTitle CallbackData");
+        }
+        return null;
     }
 
     public String getDescription() {
-        return description;
+        try {
+            log.info("GetDescription CallbackData");
+            return description;
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error GetDescriprion CallbackData");
+        }
+        return null;
     }
 
 }
