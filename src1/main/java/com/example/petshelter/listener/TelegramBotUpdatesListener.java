@@ -13,14 +13,26 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.FileInputStream;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
-@Slf4j
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private final TelegramBot telegramBot;
     private final UpdateHandler updateHandler;
+    static Logger LOGGER;
+    static {
+        try(FileInputStream ins = new FileInputStream("test/log.config")){
+            LogManager.getLogManager().readConfiguration(ins);
+            LOGGER = Logger.getLogger(TelegramBotUpdatesListener.class.getName());
+        }catch (Exception ignore){
+            ignore.printStackTrace();
+        }
+    }
 
     @Autowired
     public TelegramBotUpdatesListener(@NotNull final TelegramBot telegramBot,
@@ -38,9 +50,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     public void init() {
         try {
             telegramBot.setUpdatesListener(this);
-            log.info("Annotation @PostConstructor init UpdatesListener");
+            LOGGER.log(Level.INFO, "Annotation @PostConstructor init UpdatesListener");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error annotation @PostConstructor init UpdatesListener");
+            LOGGER.log(Level.WARNING, "Error annotation @PostConstructor init UpdatesListener", e);
         }
     }
 
@@ -48,10 +60,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     public int process(@NotNull List<Update> updates) {
         try {
             updates.forEach(updateHandler::handle);
-            log.info("Procces UpdatesListener");
+            LOGGER.log(Level.INFO, "Procces UpdatesListener");
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error Process UpdatesListener");
+            LOGGER.log(Level.WARNING, "Error Process UpdatesListener", e);
         }
         return 0;
     }

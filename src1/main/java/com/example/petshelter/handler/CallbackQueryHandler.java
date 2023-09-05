@@ -9,12 +9,15 @@ import com.pengrad.telegrambot.model.request.ParseMode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
-@Slf4j
 @Component
 public class CallbackQueryHandler {
 
@@ -23,6 +26,15 @@ public class CallbackQueryHandler {
     private final MarkupHelper markupHelper;
     private final Map<String, String> catsMenu = new LinkedHashMap<>();
     private final Map<String, String> dogsMenu = new LinkedHashMap<>();
+    static Logger LOGGER;
+    static {
+        try(FileInputStream ins = new FileInputStream("test/log.config")){
+            LogManager.getLogManager().readConfiguration(ins);
+            LOGGER = Logger.getLogger(CallbackQueryHandler.class.getName());
+        }catch (Exception ignore){
+            ignore.printStackTrace();
+        }
+    }
 
     {
         queryExecutors.put(CallbackData.CATS, this::handleCats);
@@ -48,7 +60,7 @@ public class CallbackQueryHandler {
     public CallbackQueryHandler(final TelegramBotService telegramBotService, final MarkupHelper markupHelper) {
         this.telegramBotService = telegramBotService;
         this.markupHelper = markupHelper;
-        log.info("Construct CallbackQueryHandler ");
+        LOGGER.log(Level.INFO, "CallbackQueryHandler CallbackQueryHandler");
     }
 
     public void handle(User user, Chat chat, String data) {
@@ -60,9 +72,9 @@ public class CallbackQueryHandler {
                     break;
                 }
             }
-            log.info("Hendel CallbackOueryHandler");
+            LOGGER.log(Level.INFO, "Hendel CallbackOueryHandler");
         } catch (Exception e) {
-            log.error(e.getMessage() + " Error Hendel CallbackQueryHandler");
+            LOGGER.log(Level.WARNING, " Error Hendel CallbackQueryHandler", e);
         }
     }
 
@@ -70,9 +82,9 @@ public class CallbackQueryHandler {
         try {
             String text = CallbackData.DOGS.getDescription();
             telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(dogsMenu), null);
-            log.info("HendelDogs CallbackOueryHandler");
+            LOGGER.log(Level.INFO, "HendelDogs CallbackOueryHandler");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error HandleDogs CallbackQueryHandler");
+            LOGGER.log(Level.WARNING, "Error HandleDogs CallbackQueryHandler", e);
         }
     }
 
@@ -80,9 +92,9 @@ public class CallbackQueryHandler {
         try {
             String text = CallbackData.CATS.getDescription();
             telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(catsMenu), null);
-            log.info("HendelCats CallbackOueryHandler");
+            LOGGER.log(Level.INFO, "HendelCats CallbackOueryHandler");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error HandleCats CallbackQueryHandler");
+            LOGGER.log(Level.INFO, "Error HandleCats CallbackQueryHandler", e);
         }
     }
 
@@ -102,9 +114,9 @@ public class CallbackQueryHandler {
                 - Бот может принять и записать контактные данные для связи.
                 - Если бот не может ответить на вопросы клиента, то можно позвать волонтера.""";
             telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
-            log.info("HendelCatsInfo CallbackOueryHandler");
+            LOGGER.log(Level.INFO, "HendelCatsInfo CallbackOueryHandler");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error HandleCatsInfo CallbackQueryHandler");
+            LOGGER.log(Level.WARNING, "Error HandleCatsInfo CallbackQueryHandler", e);
         }
     }
 
@@ -124,9 +136,9 @@ public class CallbackQueryHandler {
                 - Бот может принять и записать контактные данные для связи.
                 - Если бот не может ответить на вопросы клиента, то можно позвать волонтера.""";
             telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
-            log.info("HendelDogsInfo CallbackOueryHandler");
+            LOGGER.log(Level.INFO, "HendelDogsInfo CallbackOueryHandler");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error HandleDogsInfo CallbackQueryHandler");
+            LOGGER.log(Level.WARNING, "Error HandleDogsInfo CallbackQueryHandler", e);
         }
     }
 
@@ -153,9 +165,9 @@ public class CallbackQueryHandler {
                 - Бот может принять и записать контактные данные для связи.
                 - Если бот не может ответить на вопросы клиента, то можно позвать волонтера.""";
             telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
-            log.info("HendelCatsTake CallbackOueryHandler");
+            LOGGER.log(Level.INFO,"HendelCatsTake CallbackOueryHandler");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error HandleCatsTake CallbackQueryHandler");
+            LOGGER.log(Level.INFO, "Error HandleCatsTake CallbackQueryHandler", e);
         }
     }
 
@@ -182,9 +194,9 @@ public class CallbackQueryHandler {
                 - Бот может принять и записать контактные данные для связи.
                 - Если бот не может ответить на вопросы клиента, то можно позвать волонтера.""";
             telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
-            log.info("HendelDogsTace CallbackOueryHandler");
+            LOGGER.log(Level.INFO, "HendelDogsTace CallbackOueryHandler");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error HandleDogsTake CallbackQueryHandler");
+            LOGGER.log(Level.WARNING, "Error HandleDogsTake CallbackQueryHandler", e);
         }
     }
 
@@ -210,9 +222,9 @@ public class CallbackQueryHandler {
 
                 - Бот может прислать форму ежедневного отчета.""";
             telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
-            log.info("HendelReport CallbackOueryHandler");
+            LOGGER.log(Level.INFO, "HendelReport CallbackOueryHandler");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error HandleReport CallbackQueryHandler");
+            LOGGER.log(Level.WARNING, "Error HandleReport CallbackQueryHandler", e);
         }
     }
 
@@ -243,9 +255,9 @@ public class CallbackQueryHandler {
                 6. А каким образом волонтер будет заполнять базы данных? Для этого должно быть стороннее приложение, на пример сайт? В тз сказано, что в базу усыновители попадают при помощи волонтера.\s
                 6) Волонтер работает также через бот, можно сказать, что для него бот имеет "особый" функционал. Волонтер через бота может вносить данные пользователей, таким образом сохраняя их в базе.""";
             telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
-            log.info("HendelVolunteerHelp CallbackOueryHandler");
+            LOGGER.log(Level.INFO, "HendelVolunteerHelp CallbackOueryHandler");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error HendleVolunteerHelp CallbackQueryHendler");
+            LOGGER.log(Level.WARNING, "Error HendleVolunteerHelp CallbackQueryHendler", e);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.petshelter.service;
 
+import com.example.petshelter.listener.TelegramBotUpdatesListener;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
@@ -9,11 +10,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-@Slf4j
+import java.io.FileInputStream;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
 @Service
 public class TelegramBotService {
 
     private final TelegramBot telegramBot;
+    static Logger LOGGER;
+    static {
+        try(FileInputStream ins = new FileInputStream("test/log.config")){
+            LogManager.getLogManager().readConfiguration(ins);
+            LOGGER = Logger.getLogger(TelegramBotUpdatesListener.class.getName());
+        }catch (Exception ignore){
+            ignore.printStackTrace();
+        }
+    }
 
     public TelegramBotService(final TelegramBot telegramBot) {
         this.telegramBot = telegramBot;
@@ -42,18 +56,18 @@ public class TelegramBotService {
         if (!response.isOk()) {
             logger.error("SendResponse failed with error: {}", response.description());
         }*/
-            log.info("SendMessage №1 TelegramBotService");
+            LOGGER. log(Level.INFO, "SendMessage №1 TelegramBotService");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error SendMessage №1 TelegramBotService");
+            LOGGER.log(Level.WARNING, "Error SendMessage №1 TelegramBotService", e);
         }
     }
 
     public void sendMessage(final Long chatId, final String text) {
         try {
             sendMessage(chatId, text, null, null);
-            log.info("SendMessage №2 TelegramBotService");
+            LOGGER.log(Level.INFO, "SendMessage №2 TelegramBotService");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error SendMessage №2 TelegramBotService");
+            LOGGER.log(Level.WARNING, "Error SendMessage №2 TelegramBotService", e);
         }
     }
 

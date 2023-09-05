@@ -6,16 +6,18 @@ import com.example.petshelter.util.CallbackData;
 import com.example.petshelter.util.Command;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;
-import com.pengrad.telegrambot.model.request.ParseMode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
-@Slf4j
 @Component
 public class CommandHandler {
 
@@ -27,6 +29,15 @@ public class CommandHandler {
     private final TelegramBotService telegramBotService;
     private final MarkupHelper markupHelper;
     private final Map<String, String> mainMenu = new HashMap<>();
+    static Logger LOGGER;
+    static {
+        try(FileInputStream ins = new FileInputStream("test/log.config")){
+            LogManager.getLogManager().readConfiguration(ins);
+            LOGGER = Logger.getLogger(CommandHandler.class.getName());
+        }catch (Exception ignore){
+            ignore.printStackTrace();
+        }
+    }
 
     {
         commandExecutors.put(Command.START, this::handleStart);
@@ -38,6 +49,7 @@ public class CommandHandler {
     public CommandHandler(final TelegramBotService telegramBotService, final MarkupHelper markupHelper) {
         this.telegramBotService = telegramBotService;
         this.markupHelper = markupHelper;
+        LOGGER.log(Level.INFO, "Constructor CommandHendler");
     }
 
     public void handle(User user, Chat chat, String commandText) {
@@ -49,9 +61,9 @@ public class CommandHandler {
                     break;
                 }
             }
-            log.info("Handle CommandHandler");
+            LOGGER.log(Level.INFO, "Handle CommandHandler");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error Handel CommandHandler");
+            LOGGER.log(Level.WARNING, "Error Handel CommandHandler", e);
         }
     }
 
@@ -70,9 +82,9 @@ public class CommandHandler {
         }*/
 
             telegramBotService.sendMessage(chatId, userName + GREETING, markupHelper.buildMenu(mainMenu), null);
-            log.info("HandleStart CommandHandler");
+            LOGGER.log(Level.INFO, "HandleStart CommandHandler");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error HendleStart CommandHandler");
+            LOGGER.log(Level.WARNING, "Error HendleStart CommandHandler", e);
         }
     }
 
