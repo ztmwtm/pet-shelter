@@ -6,7 +6,6 @@ import com.example.petshelter.util.CallbackData;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.ParseMode;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -14,7 +13,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-@Slf4j
 @Component
 public class CallbackQueryHandler {
 
@@ -48,48 +46,31 @@ public class CallbackQueryHandler {
     public CallbackQueryHandler(final TelegramBotService telegramBotService, final MarkupHelper markupHelper) {
         this.telegramBotService = telegramBotService;
         this.markupHelper = markupHelper;
-        log.info("Construct CallbackQueryHandler ");
     }
 
     public void handle(User user, Chat chat, String data) {
-        try {
-            CallbackData[] queries = CallbackData.values();
-            for (CallbackData query : queries) {
-                if ((query.getTitle()).equals(data)) {
-                    queryExecutors.get(query).accept(user, chat);
-                    break;
-                }
+        CallbackData[] queries = CallbackData.values();
+        for (CallbackData query : queries) {
+            if ((query.getTitle()).equals(data)) {
+                queryExecutors.get(query).accept(user, chat);
+                break;
             }
-            log.info("Hendel CallbackOueryHandler");
-        } catch (Exception e) {
-            log.error(e.getMessage() + " Error Hendel CallbackQueryHandler");
         }
     }
 
     private void handleDogs(User user, Chat chat) {
-        try {
-            String text = CallbackData.DOGS.getDescription();
-            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(dogsMenu), null);
-            log.info("HendelDogs CallbackOueryHandler");
-        } catch (Exception e) {
-            log.error(e.getMessage() + "Error HandleDogs CallbackQueryHandler");
-        }
+        String text = CallbackData.DOGS.getDescription();
+        telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(dogsMenu), null);
     }
 
     private void handleCats(User user, Chat chat) {
-        try {
-            String text = CallbackData.CATS.getDescription();
-            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(catsMenu), null);
-            log.info("HendelCats CallbackOueryHandler");
-        } catch (Exception e) {
-            log.error(e.getMessage() + "Error HandleCats CallbackQueryHandler");
-        }
+        String text = CallbackData.CATS.getDescription();
+        telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(catsMenu), null);
     }
 
     private void handleCatsInfo(User user, Chat chat) {
-        try {
-            String name = user.firstName();
-            String text = name + """
+        String name = user.firstName();
+        String text = name + """
                 **Этап 1. Консультация с новым пользователем - КОШКИ**\s
 
                 *На данном этапе бот должен давать вводную информацию о приюте: где он находится, как и когда работает, какие правила пропуска на территорию приюта, правила нахождения внутри и общения с животным. Функционал приюта для кошек и для собак идентичный, но информация внутри будет разной, так как приюты находятся в разном месте и у них разные ограничения и правила нахождения с животными.*\s
@@ -101,17 +82,12 @@ public class CallbackQueryHandler {
                 - Бот может выдать общие рекомендации о технике безопасности на территории приюта.
                 - Бот может принять и записать контактные данные для связи.
                 - Если бот не может ответить на вопросы клиента, то можно позвать волонтера.""";
-            telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
-            log.info("HendelCatsInfo CallbackOueryHandler");
-        } catch (Exception e) {
-            log.error(e.getMessage() + "Error HandleCatsInfo CallbackQueryHandler");
-        }
+        telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
     }
 
     private void handleDogsInfo(User user, Chat chat) {
-        try {
-            String name = user.firstName();
-            String text = name + """
+        String name = user.firstName();
+        String text = name + """
                 **Этап 1. Консультация с новым пользователем - СОБАКИ**\s
 
                 *На данном этапе бот должен давать вводную информацию о приюте: где он находится, как и когда работает, какие правила пропуска на территорию приюта, правила нахождения внутри и общения с животным. Функционал приюта для кошек и для собак идентичный, но информация внутри будет разной, так как приюты находятся в разном месте и у них разные ограничения и правила нахождения с животными.*\s
@@ -123,17 +99,12 @@ public class CallbackQueryHandler {
                 - Бот может выдать общие рекомендации о технике безопасности на территории приюта.
                 - Бот может принять и записать контактные данные для связи.
                 - Если бот не может ответить на вопросы клиента, то можно позвать волонтера.""";
-            telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
-            log.info("HendelDogsInfo CallbackOueryHandler");
-        } catch (Exception e) {
-            log.error(e.getMessage() + "Error HandleDogsInfo CallbackQueryHandler");
-        }
+        telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
     }
 
     private void handleCatsTake(User user, Chat chat) {
-        try {
-            String name = user.firstName();
-            String text = name + """
+        String name = user.firstName();
+        String text = name + """
                 **Этап 2. Консультация с потенциальным хозяином КОШКИ из приюта**\s
                                                                                             
                 *На данном этапе бот помогает потенциальным усыновителям животного из приюта разобраться с бюрократическими (оформление договора) и бытовыми (как подготовиться к жизни с животным) вопросами.*\s
@@ -152,17 +123,12 @@ public class CallbackQueryHandler {
                 - Бот может выдать список причин, почему могут отказать и не дать забрать собаку из приюта.
                 - Бот может принять и записать контактные данные для связи.
                 - Если бот не может ответить на вопросы клиента, то можно позвать волонтера.""";
-            telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
-            log.info("HendelCatsTake CallbackOueryHandler");
-        } catch (Exception e) {
-            log.error(e.getMessage() + "Error HandleCatsTake CallbackQueryHandler");
-        }
+        telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
     }
 
     private void handleDogsTake(User user, Chat chat) {
-        try {
-            String name = user.firstName();
-            String text = name + """
+        String name = user.firstName();
+        String text = name + """
                 **Этап 2. Консультация с потенциальным хозяином СОБАКИ из приюта**\s
                                                                                             
                 *На данном этапе бот помогает потенциальным усыновителям животного из приюта разобраться с бюрократическими (оформление договора) и бытовыми (как подготовиться к жизни с животным) вопросами.*\s
@@ -181,16 +147,11 @@ public class CallbackQueryHandler {
                 - Бот может выдать список причин, почему могут отказать и не дать забрать собаку из приюта.
                 - Бот может принять и записать контактные данные для связи.
                 - Если бот не может ответить на вопросы клиента, то можно позвать волонтера.""";
-            telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
-            log.info("HendelDogsTace CallbackOueryHandler");
-        } catch (Exception e) {
-            log.error(e.getMessage() + "Error HandleDogsTake CallbackQueryHandler");
-        }
+        telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
     }
 
     private void handleReport(User user, Chat chat) {
-        try {
-            String text = """
+        String text = """
                 **Этап 3. Ведение питомца**\s
 
                 *После того как новый усыновитель забрал животное из приюта, он обязан в течение месяца присылать информацию о том, как животное чувствует себя на новом месте. В ежедневный отчет входит следующая информация:*\s
@@ -209,16 +170,11 @@ public class CallbackQueryHandler {
                 *Как только период в 30 дней заканчивается, волонтеры принимают решение о том, остается животное у хозяина или нет. Испытательный срок может быть пройден, может быть продлен на срок еще 14 или 30 дней, а может быть не пройден.*\s
 
                 - Бот может прислать форму ежедневного отчета.""";
-            telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
-            log.info("HendelReport CallbackOueryHandler");
-        } catch (Exception e) {
-            log.error(e.getMessage() + "Error HandleReport CallbackQueryHandler");
-        }
+        telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
     }
 
     private void handleVolunteerHelp(User user, Chat chat) {
-        try {
-            String text = """
+        String text = """
                 Павел Маеров
                 28.08.23 03:06
                 При обсуждении задания в группе возникли определенные вопросы. Скажите, пожалуйста:
@@ -242,10 +198,6 @@ public class CallbackQueryHandler {
 
                 6. А каким образом волонтер будет заполнять базы данных? Для этого должно быть стороннее приложение, на пример сайт? В тз сказано, что в базу усыновители попадают при помощи волонтера.\s
                 6) Волонтер работает также через бот, можно сказать, что для него бот имеет "особый" функционал. Волонтер через бота может вносить данные пользователей, таким образом сохраняя их в базе.""";
-            telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
-            log.info("HendelVolunteerHelp CallbackOueryHandler");
-        } catch (Exception e) {
-            log.error(e.getMessage() + "Error HendleVolunteerHelp CallbackQueryHendler");
-        }
+        telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
     }
 }

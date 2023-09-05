@@ -7,7 +7,6 @@ import com.example.petshelter.util.Command;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.ParseMode;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-@Slf4j
 @Component
 public class CommandHandler {
 
@@ -41,26 +39,20 @@ public class CommandHandler {
     }
 
     public void handle(User user, Chat chat, String commandText) {
-        try {
-            Command[] commands = Command.values();
-            for (Command command : commands) {
-                if (("/" + command.getTitle()).equals(commandText)) {
-                    commandExecutors.get(command).accept(user, chat);
-                    break;
-                }
+        Command[] commands = Command.values();
+        for (Command command : commands) {
+            if (("/" + command.getTitle()).equals(commandText)) {
+                commandExecutors.get(command).accept(user, chat);
+                break;
             }
-            log.info("Handle CommandHandler");
-        } catch (Exception e) {
-            log.error(e.getMessage() + "Error Handel CommandHandler");
         }
     }
 
     private void handleStart(User user, Chat chat) {
-        try {
-            Long chatId = chat.id();
-            String userName = user.firstName();
+        Long chatId = chat.id();
+        String userName = user.firstName();
 
-            // TODO
+        // TODO
         /*if (userRepository.findUserByChatId(chatId) == null) {
             registerUser(chatId, user);
             String greeting = userName + GREETING;
@@ -69,11 +61,7 @@ public class CommandHandler {
             telegramBotService.sendMessage(chatId, "", markupHelper.buildMenu(mainMenu), null);
         }*/
 
-            telegramBotService.sendMessage(chatId, userName + GREETING, markupHelper.buildMenu(mainMenu), null);
-            log.info("HandleStart CommandHandler");
-        } catch (Exception e) {
-            log.error(e.getMessage() + "Error HendleStart CommandHandler");
-        }
+        telegramBotService.sendMessage(chatId, userName + GREETING, markupHelper.buildMenu(mainMenu), null);
     }
 
 }

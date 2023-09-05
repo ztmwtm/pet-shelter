@@ -1,8 +1,5 @@
 package com.example.petshelter.util;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public enum CallbackData {
 
     CATS("cats", "Выберите, что вы хотите узнать о приюте для кошек:"),
@@ -25,23 +22,11 @@ public enum CallbackData {
     }
 
     public String getTitle() {
-        try {
-            log.info("GetTitle " + title + " CallbackData");
-            return title;
-        } catch (Exception e) {
-            log.error(e.getMessage() + "Error GetTitle CallbackData");
-        }
-        return null;
+        return title;
     }
 
     public String getDescription() {
-        try {
-            log.info("GetDescription " + getTitle() + " CallbackData");
-            return description;
-        } catch (Exception e) {
-            log.error(e.getMessage() + "Error GetDescription " + getTitle() + "CallbackData");
-        }
-        return null;
+        return description;
     }
 
 }
