@@ -1,8 +1,11 @@
 package com.example.petshelter.service;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.File;
+import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.springframework.lang.Nullable;
@@ -30,19 +33,34 @@ public class TelegramBotService {
             message.parseMode(parseMode);
         }
         SendResponse response = telegramBot.execute(message);
-        System.out.println("Response OK: " + response.isOk());
-        if (!response.isOk()) {
-            System.out.println(response.description());
-        }
-        // TODO: logger
-        /*logger.info("Response: {}", response.isOk());
-        if (!response.isOk()) {
-            logger.error("SendResponse failed with error: {}", response.description());
-        }*/
+        // TODO: logger(response)
     }
 
     public void sendMessage(final Long chatId, final String text) {
         sendMessage(chatId, text, null, null);
+    }
+
+    public void sendPDFDocument(final Long chatId,
+                            final String fileName,
+                            final String caption,
+                            @Nullable InlineKeyboardMarkup keyboard,
+                            @Nullable ParseMode parseMode
+    ) {
+        SendDocument document = new SendDocument(chatId, fileName);
+        if (caption != null) {
+            document.caption(caption);
+        }
+        if (keyboard != null) {
+            document.replyMarkup(keyboard);
+        }
+        if (parseMode != null) {
+            document.parseMode(parseMode);
+        }
+        SendResponse response = telegramBot.execute(document);
+        boolean ok = response.isOk();
+        System.out.println(ok);
+        Message message = response.message();
+        System.out.println(message.document().fileId());
     }
 
 }

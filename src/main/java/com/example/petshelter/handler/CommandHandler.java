@@ -28,8 +28,8 @@ public class CommandHandler {
 
     {
         commandExecutors.put(Command.START, this::handleStart);
-        mainMenu.put(CallbackData.CATS.getTitle(), "Приют для кошек");
-        mainMenu.put(CallbackData.DOGS.getTitle(), "Приют для собак");
+        mainMenu.put(CallbackData.CATS.getTitle(), "\uD83D\uDC08 Приют для кошек");
+        mainMenu.put(CallbackData.DOGS.getTitle(), "\uD83D\uDC15 Приют для собак");
     }
 
     @Autowired
