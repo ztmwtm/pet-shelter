@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.response.SendResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
@@ -28,10 +29,11 @@ public class TelegramBotService {
 
     /**
      * Метод отвечающий за отправку сообщений ботом
-     * @param chatId
-     * @param text
-     * @param keyboard
-     * @param parseMode
+     *
+     * @param chatId    Long
+     * @param text      String
+     * @param keyboard  InlineKeyboardMarkup
+     * @param parseMode ParseMode
      */
     public void sendMessage(final Long chatId,
                             final String text,
@@ -50,18 +52,9 @@ public class TelegramBotService {
             if (!response.isOk()) {
                 log.error(response.description());
             }
-            log.info("SendMessage1 TelegramBotService");
+            log.info("SendMessage TelegramBotService");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error SendMessage1 TelegramBotService");
-        }
-    }
-
-    public void sendMessage(final Long chatId, final String text) {
-        try {
-            sendMessage(chatId, text, null, null);
-            log.info("SendMessage2 TelegramBOtService");
-        } catch (Exception e) {
-            log.error(e.getMessage() + "Error SendMessage2 TelegramBotService");
+            log.error(e.getMessage() + "Error SendMessage TelegramBotService");
         }
     }
 
@@ -87,6 +80,37 @@ public class TelegramBotService {
         }
         Message message = response.message();
         log.info(message.document().fileId());
+    }
+
+    public void sendPicture(final Long chatId,
+                            final String fileName,
+                            final String caption,
+                            @Nullable InlineKeyboardMarkup keyboard,
+                            @Nullable ParseMode parseMode
+    ) {
+        SendPhoto picture = new SendPhoto(chatId, fileName);
+        if (caption != null) {
+            picture.caption(caption);
+        }
+        if (keyboard != null) {
+            picture.replyMarkup(keyboard);
+        }
+        if (parseMode != null) {
+            picture.parseMode(parseMode);
+        }
+        SendResponse response = telegramBot.execute(picture);
+        if (!response.isOk()) {
+            log.error(response.description());
+        }
+        Message message = response.message();
+        log.info(message.document().fileId());
+    }
+
+    public void sendPicture(final Long chatId,
+                            final String fileName,
+                            final String caption
+    ) {
+        sendPicture(chatId, fileName, caption, null, null);
     }
 
 }

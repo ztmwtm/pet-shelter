@@ -49,7 +49,7 @@ public class CommandHandler {
         this.telegramBotService = telegramBotService;
         this.userService = userService;
         this.markupHelper = markupHelper;
-        log.info("Constructor CommandHendler");
+        log.info("Constructor CommandHandler");
     }
 
     public void handle(User user, Chat chat, String commandText) {

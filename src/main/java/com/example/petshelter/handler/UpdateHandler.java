@@ -17,7 +17,7 @@ public class UpdateHandler {
                          final CallbackQueryHandler callbackQueryHandler) {
         this.commandHandler = commandHandler;
         this.callbackQueryHandler = callbackQueryHandler;
-        log.info("Constructor UpdateHendler");
+        log.info("Constructor UpdateHandler");
     }
 
     public void handle(Update update) {
@@ -35,9 +35,9 @@ public class UpdateHandler {
                 String data = query.data();
                 callbackQueryHandler.handle(user, chat, data);
             }
-            log.info("Hendel UpdateHendel");
+            log.info("Handle UpdateHandler");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error Hendel UpdateHendler");
+            log.error(e.getMessage() + "Error Handle UpdateHandler");
         }
     }
 

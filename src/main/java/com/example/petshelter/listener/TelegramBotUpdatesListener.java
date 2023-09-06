@@ -31,6 +31,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         BaseResponse response = telegramBot.execute(new SetMyCommands(
                 new BotCommand("/start", "Начало работы")
         ));
+        log.info("Response adding start commands {}", response);
         log.info("Constructor TelegramBotUpdatesListener");
     }
 
@@ -48,7 +49,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     public int process(@NotNull List<Update> updates) {
         try {
             updates.forEach(updateHandler::handle);
-            log.info("Procces TelegramBotUpdatesListener");
+            log.info("Process TelegramBotUpdatesListener");
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         } catch (Exception e) {
             log.error(e.getMessage() + "Error Process TelegramBotUpdatesListener");

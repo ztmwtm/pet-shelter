@@ -11,17 +11,17 @@ public enum CallbackData {
     CATS("cats", "Выберите, что вы хотите узнать о приюте для кошек:"),
     DOGS("dogs", "Выберите, что вы хотите узнать о приюте для собак:"),
 
-    CATS_INFO("cats.info", "Узнать информацию о приюте"),
-    CATS_TAKE("cats.take", "Как взять кошку из приюта"),
-    DOGS_INFO("dogs.info", "Узнать информацию о приюте для собак"),
-    DOGS_TAKE("dogs.take", "Как взять собаку из приюта"),
+    CATS_INFO("cats.info", "ℹ Узнать информацию о приюте"),
+    CATS_TAKE("cats.take", "\uD83D\uDC08 Как взять кошку из приюта"),
+    DOGS_INFO("dogs.info", "ℹ Узнать информацию о приюте"),
+    DOGS_TAKE("dogs.take", "\uD83D\uDC15 Как взять собаку из приюта"),
 
-    CATS_SHELTER_INFO("cats.shelter.info", "Краткое описание приюта для кошек"),
-    CATS_SHELTER_WORK_HOURS("cats.shelter.work_hours", "Расписание работы приюта"),
-    CATS_SHELTER_ADDRESS("cats.shelter.address", "Адрес приюта"),
-    CATS_SHELTER_HOW_TO_GET("cats.shelter.how_to_get", "Схема проезда"),
-    CATS_SHELTER_ENTRY_PASS("cats.shelter.entry_pass", "Оформить пропуск на машину"),
-    CATS_SHELTER_SAFETY_RULES("cats.shelter.safety_rules", "Правила техники безопасности на территории приюта"),
+    CATS_SHELTER_INFO("cats.shelter.info", "\uD83D\uDC08 Краткое описание приюта для кошек"),
+    CATS_SHELTER_WORK_HOURS("cats.shelter.work_hours", "⌛ Расписание работы приюта"),
+    CATS_SHELTER_ADDRESS("cats.shelter.address", "\uD83D\uDCCD Адрес приюта"),
+    CATS_SHELTER_HOW_TO_GET("cats.shelter.how_to_get", "\uD83D\uDE97 Схема проезда"),
+    CATS_SHELTER_ENTRY_PASS("cats.shelter.entry_pass", "\uD83D\uDEC2 Оформить пропуск на машину"),
+    CATS_SHELTER_SAFETY_RULES("cats.shelter.safety_rules", "\uD83D\uDC77 Правила техники безопасности на территории приюта"),
 
     CATS_ADOPTION_SAY_HI_RULES("cats.shelter.say_hi_rules", "Правила знакомства с кошкой"),
     CATS_ADOPTION_DOCUMENTS("cats.shelter.say_hi_rules", "Документы для получения кошки из приюта"),
@@ -41,16 +41,16 @@ public enum CallbackData {
     DOGS_ADOPTION_DOG_HANDLERS_LIST("dogs.shelter.dog_handlers_list", "Список проверенных кинологов для обращения к ним"),
     DOGS_ADOPTION_REASONS_FOR_REFUSAL("dogs.shelter.reasons_for_refusal", "Причины отказа в получении собаки из приюта"),
 
-    DOGS_SHELTER_INFO("dogs.shelter.info", "Краткое описание приюта для собак"),
-    DOGS_SHELTER_WORK_HOURS("dogs.shelter.work_hours", "Расписание работы приюта"),
-    DOGS_SHELTER_ADDRESS("dogs.shelter.address", "Адрес приюта"),
-    DOGS_SHELTER_HOW_TO_GET("dogs.shelter.how_to_get", "Схема проезда"),
-    DOGS_SHELTER_ENTRY_PASS("dogs.shelter.entry_pass", "Оформить пропуск на машину"),
-    DOGS_SHELTER_SAFETY_RULES("dogs.shelter.safety_rules", "Правила техники безопасности на территории приюта"),
+    DOGS_SHELTER_INFO("dogs.shelter.info", "\uD83D\uDC15 Краткое описание приюта для собак"),
+    DOGS_SHELTER_WORK_HOURS("dogs.shelter.work_hours", "⌛ Расписание работы приюта"),
+    DOGS_SHELTER_ADDRESS("dogs.shelter.address", "\uD83D\uDCCD Адрес приюта"),
+    DOGS_SHELTER_HOW_TO_GET("dogs.shelter.how_to_get", "\uD83D\uDE97 Схема проезда"),
+    DOGS_SHELTER_ENTRY_PASS("dogs.shelter.entry_pass", "\uD83D\uDEC2 Оформить пропуск на машину"),
+    DOGS_SHELTER_SAFETY_RULES("dogs.shelter.safety_rules", "\uD83D\uDC77 Правила техники безопасности на территории приюта"),
 
-    CONTACTS("contacts", "Оставить свои контактные данные"),
-    REPORT("report", "Прислать отчет о питомце"),
-    HELP("help", "Позвать волонтера");
+    CONTACTS("contacts", "☎ Оставить свои контактные данные"),
+    REPORT("report", "✉ Прислать отчет о питомце"),
+    HELP("help", "❓ Позвать волонтера");
 
     private final String title;
     private final String description;
@@ -75,7 +75,7 @@ public enum CallbackData {
             log.info("GetDescription CallbackData");
             return description;
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error GetDescriprion CallbackData");
+            log.error(e.getMessage() + "Error GetDescription CallbackData");
         }
         return null;
     }
