@@ -10,49 +10,54 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 @Service
 public class UserService {
-    private final UserRepository UserRepository;
+    private final UserRepository userRepository;
     Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    public UserService(UserRepository UserRepository) {
-        this.UserRepository = UserRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public User addUser(User User){
+    public User addUser(User user){
         logger.info("Was called method to add user");
-        return UserRepository.save(User);
+        return userRepository.save(user);
     }
 
-    public User updateUser(Long id, User User){
+    public User updateUser(Long id, User user){
         logger.info("Was called method to update user with id {}", id);
-        UserRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         User oldUser = new User();
         oldUser.setId(id);
-        oldUser.setChatId(User.getChatId());
-        oldUser.setFirstName(User.getFirstName());
-        oldUser.setLastName(User.getLastName());
-        oldUser.setTgUsername(User.getTgUsername());
-        oldUser.setPhoneNumber(User.getPhoneNumber());
-        oldUser.setIsVolunteer(User.getIsVolunteer());
-        oldUser.setIsAdopter(User.getIsAdopter());
-        return UserRepository.save(oldUser);
+        oldUser.setChatId(user.getChatId());
+        oldUser.setFirstName(user.getFirstName());
+        oldUser.setLastName(user.getLastName());
+        oldUser.setTgUsername(user.getTgUsername());
+        oldUser.setPhoneNumber(user.getPhoneNumber());
+        oldUser.setIsVolunteer(user.getIsVolunteer());
+        oldUser.setIsAdopter(user.getIsAdopter());
+        return userRepository.save(oldUser);
     }
 
     public User getUserById(Long id) {
         logger.info("Was called method to get user with id {}", id);
-        return UserRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+    }
+
+    public User getUserByChatId(Long chatId) {
+        logger.info("Was called method to get user by chatId {}", chatId);
+        return userRepository.findUserByChatId(chatId);
     }
 
     public Collection<User> getAllUsers() {
         logger.info("Was called method to get all users");
-        return UserRepository.findAll();
+        return userRepository.findAll();
     }
 
     public User deleteUserById(Long id) {
         logger.info("Was called method to delete user with id {}", id);
-        User student = UserRepository.findById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
-        UserRepository.deleteById(id);
-        return student;
+        userRepository.deleteById(id);
+        return user;
     }
 
 }

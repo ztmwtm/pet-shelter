@@ -10,4 +10,6 @@ public interface ShelterRepository extends JpaRepository<Shelter, Long> {
     @NotNull
     List<Shelter> findAll();
 
+    Shelter findShelterByName(String name);
+
 }

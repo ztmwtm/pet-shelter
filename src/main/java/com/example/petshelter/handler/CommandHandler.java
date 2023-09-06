@@ -2,11 +2,11 @@ package com.example.petshelter.handler;
 
 import com.example.petshelter.helper.MarkupHelper;
 import com.example.petshelter.service.TelegramBotService;
+import com.example.petshelter.service.UserService;
 import com.example.petshelter.util.CallbackData;
 import com.example.petshelter.util.Command;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;
-import com.pengrad.telegrambot.model.request.ParseMode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,21 +31,23 @@ public class CommandHandler {
             Начните с выбора приюта:""";
     private final Map<Command, BiConsumer<User, Chat>> commandExecutors = new HashMap<>();
     private final TelegramBotService telegramBotService;
+    private final UserService userService;
     private final MarkupHelper markupHelper;
     private final Map<String, String> mainMenu = new HashMap<>();
 
-    /**
+    /*
      * Нестатический блок инициализации метода и кнопок
      */
     {
         commandExecutors.put(Command.START, this::handleStart);
-        mainMenu.put(CallbackData.CATS.getTitle(), "Приют для кошек");
-        mainMenu.put(CallbackData.DOGS.getTitle(), "Приют для собак");
+        mainMenu.put(CallbackData.CATS.getTitle(), "\uD83D\uDC08 Приют для кошек");
+        mainMenu.put(CallbackData.DOGS.getTitle(), "\uD83D\uDC15 Приют для собак");
     }
 
     @Autowired
-    public CommandHandler(final TelegramBotService telegramBotService, final MarkupHelper markupHelper) {
+    public CommandHandler(final TelegramBotService telegramBotService, final UserService userService, final MarkupHelper markupHelper) {
         this.telegramBotService = telegramBotService;
+        this.userService = userService;
         this.markupHelper = markupHelper;
         log.info("Constructor CommandHendler");
     }
@@ -59,25 +61,50 @@ public class CommandHandler {
                     break;
                 }
             }
-            log.info("Hendle CommandHendler");
+            log.info("Handle CommandHandler");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error Hendle CommandHendler");
+            log.error(e.getMessage() + "Error Handle CommandHandler");
         }
     }
 
     /**
      * Метод отвечающий за приветствие пользователя в начале работы
-     * @param user
-     * @param chat
+     * @param user User
+     * @param chat Chat
      */
     private void handleStart(User user, Chat chat) {
         try {
             Long chatId = chat.id();
-            String userName = user.firstName();
-            telegramBotService.sendMessage(chatId, userName + GREETING, markupHelper.buildMenu(mainMenu), null);
-            log.info("HendelStart CommandHendel");
+
+            if (userService.getUserByChatId(chatId) == null) {
+                String userName = user.firstName();
+                registerNewUser(user, chatId);
+                telegramBotService.sendMessage(chatId, userName + GREETING, markupHelper.buildMenu(mainMenu), null);
+            } else {
+                telegramBotService.sendMessage(chatId, "Выберите приют:", markupHelper.buildMenu(mainMenu), null);
+            }
+
+            log.info("HandleStart CommandHandler");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error HendleStart CommandHendler");
+            log.error(e.getMessage() + "Error HandleStart CommandHandler");
         }
     }
+
+    private void registerNewUser(final User user, final Long chatId) {
+        try {
+            com.example.petshelter.entity.User newUser = new com.example.petshelter.entity.User();
+            newUser.setChatId(chatId);
+            newUser.setFirstName(user.firstName());
+            newUser.setLastName(user.lastName());
+            newUser.setTgUsername(user.username());
+            newUser.setIsVolunteer(false);
+            newUser.setIsAdopter(false);
+            newUser.setPhoneNumber(null);
+            userService.addUser(newUser);
+            log.info("User Registered: {}", newUser);
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error registering a new User");
+        }
+    }
+
 }

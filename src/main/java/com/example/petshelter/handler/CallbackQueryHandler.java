@@ -1,12 +1,15 @@
 package com.example.petshelter.handler;
 
+import com.example.petshelter.entity.Shelter;
 import com.example.petshelter.helper.MarkupHelper;
+import com.example.petshelter.service.ShelterService;
 import com.example.petshelter.service.TelegramBotService;
 import com.example.petshelter.util.CallbackData;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -22,6 +25,7 @@ public class CallbackQueryHandler {
 
     private final Map<CallbackData, BiConsumer<User, Chat>> queryExecutors = new HashMap<>();
     private final TelegramBotService telegramBotService;
+    private final ShelterService shelterService;
     private final MarkupHelper markupHelper;
     private final Map<String, String> catsMenu = new LinkedHashMap<>();
     private final Map<String, String> dogsMenu = new LinkedHashMap<>();
@@ -31,9 +35,10 @@ public class CallbackQueryHandler {
     private final Map<String, String> dogsTakeMenu = new LinkedHashMap<>();
     private final EnumMap<CallbackData, String> fileMapper = new EnumMap<>(CallbackData.class);
 
-    /**
+    /*
      * Нестатический блок инициализации кнопок и методов
-     */ {
+     */
+    {
         queryExecutors.put(CallbackData.CATS, this::handleCats);
         queryExecutors.put(CallbackData.DOGS, this::handleDogs);
         queryExecutors.put(CallbackData.CATS_INFO, this::handleCatsInfo);
@@ -41,6 +46,7 @@ public class CallbackQueryHandler {
         queryExecutors.put(CallbackData.CATS_TAKE, this::handleCatsTake);
         queryExecutors.put(CallbackData.DOGS_TAKE, this::handleDogsTake);
         queryExecutors.put(CallbackData.CATS_SHELTER_INFO, this::handleCatsShelterInfo);
+        queryExecutors.put(CallbackData.CATS_SHELTER_WORK_HOURS, this::handleCatsShelterWorkHours);
         queryExecutors.put(CallbackData.REPORT, this::handleReport);
         queryExecutors.put(CallbackData.HELP, this::handleVolunteerHelp);
 
@@ -97,8 +103,10 @@ public class CallbackQueryHandler {
         fileMapper.put(CallbackData.CATS_SHELTER_INFO, "https://lukaselektro.ru/wp-content/uploads/2023/09/cats/Cats_Shelter_Info.pdf");
     }
 
-    public CallbackQueryHandler(final TelegramBotService telegramBotService, final MarkupHelper markupHelper) {
+    @Autowired
+    public CallbackQueryHandler(final TelegramBotService telegramBotService, final ShelterService shelterService, final MarkupHelper markupHelper) {
         this.telegramBotService = telegramBotService;
+        this.shelterService = shelterService;
         this.markupHelper = markupHelper;
         log.info("Constructor CallbackQueryHandler");
     }
@@ -121,8 +129,8 @@ public class CallbackQueryHandler {
     /**
      * Метод отвечающий за переход в меню связанных с собаками
      *
-     * @param user
-     * @param chat
+     * @param user User
+     * @param chat Chat
      */
     private void handleDogs(User user, Chat chat) {
         try {
@@ -137,8 +145,8 @@ public class CallbackQueryHandler {
     /**
      * Метод отвечающий за переход в меню связанных с кошками
      *
-     * @param user
-     * @param chat
+     * @param user User
+     * @param chat Chat
      */
     private void handleCats(User user, Chat chat) {
         try {
@@ -198,6 +206,12 @@ public class CallbackQueryHandler {
         String caption = CallbackData.CATS_SHELTER_INFO.getDescription();
         String file = fileMapper.get(CallbackData.CATS_SHELTER_INFO);
         telegramBotService.sendPDFDocument(chat.id(), file, caption, null, null);
+    }
+
+    private void handleCatsShelterWorkHours(User user, Chat chat) {
+        Shelter catShelter = shelterService.getShelterByName(CallbackData.CATS.getTitle());
+        String workSchedule = "Часы работы приюта для кошек: *" + catShelter.getWorkSchedule() + "*";
+        telegramBotService.sendMessage(chat.id(), workSchedule, null, ParseMode.Markdown);
     }
 
     private void handleReport(User user, Chat chat) {
