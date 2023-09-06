@@ -1,8 +1,10 @@
 package com.example.petshelter.service;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -45,9 +47,8 @@ public class TelegramBotService {
                 message.parseMode(parseMode);
             }
             SendResponse response = telegramBot.execute(message);
-            System.out.println("Response OK: " + response.isOk());
             if (!response.isOk()) {
-                System.out.println(response.description());
+                log.error(response.description());
             }
             log.info("SendMessage1 TelegramBotService");
         } catch (Exception e) {
@@ -62,6 +63,30 @@ public class TelegramBotService {
         } catch (Exception e) {
             log.error(e.getMessage() + "Error SendMessage2 TelegramBotService");
         }
+    }
+
+    public void sendPDFDocument(final Long chatId,
+                                final String fileName,
+                                final String caption,
+                                @Nullable InlineKeyboardMarkup keyboard,
+                                @Nullable ParseMode parseMode
+    ) {
+        SendDocument document = new SendDocument(chatId, fileName);
+        if (caption != null) {
+            document.caption(caption);
+        }
+        if (keyboard != null) {
+            document.replyMarkup(keyboard);
+        }
+        if (parseMode != null) {
+            document.parseMode(parseMode);
+        }
+        SendResponse response = telegramBot.execute(document);
+        if (!response.isOk()) {
+            log.error(response.description());
+        }
+        Message message = response.message();
+        log.info(message.document().fileId());
     }
 
 }
