@@ -5,12 +5,14 @@ import com.example.petshelter.service.TelegramBotService;
 import com.example.petshelter.service.UserService;
 import com.example.petshelter.util.CallbackData;
 import com.example.petshelter.util.Command;
+import com.example.petshelter.util.UserRole;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -29,7 +31,7 @@ public class CommandHandler {
             , привет!
             Я - бот-помощник приюта домашних животных.
             Начните с выбора приюта:""";
-    private final Map<Command, BiConsumer<User, Chat>> commandExecutors = new HashMap<>();
+    private final Map<Command, BiConsumer<User, Chat>> commandExecutors = new EnumMap<>(Command.class);
     private final TelegramBotService telegramBotService;
     private final UserService userService;
     private final MarkupHelper markupHelper;
@@ -97,8 +99,7 @@ public class CommandHandler {
             newUser.setFirstName(user.firstName());
             newUser.setLastName(user.lastName());
             newUser.setTgUsername(user.username());
-            newUser.setIsVolunteer(false);
-            newUser.setIsAdopter(false);
+            newUser.setRole(UserRole.USER);
             newUser.setPhoneNumber(null);
             userService.addUser(newUser);
             log.info("User Registered: {}", newUser);
