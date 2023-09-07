@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - include:
+      file: liquibase/scripts/pets.sql
+  - include:
+      file: liquibase/scripts/users.sql
+  - include:
+      file: liquibase/scripts/shelters.sql
+  - include:
+      file: liquibase/scripts/user_reports.sql
+  - include:
+      file: liquibase/scripts/user_report_photos.sql
+  - include:
+      file: liquibase/scripts/shelter_documents.sql
+  - include:
+      file: liquibase/scripts/update_07_09_23.sql
+
+
+
+
+
+
+
+
+

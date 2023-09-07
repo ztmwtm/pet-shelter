@@ -1,0 +1,11 @@
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
+telegram.bot.token=
+
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=validate
+spring.jpa.open-in-view=false
+server.port=8080
+spring.liquibase.enabled=false
+spring.liquibase.change-log=classpath:liquibase/changelog-master.xml
