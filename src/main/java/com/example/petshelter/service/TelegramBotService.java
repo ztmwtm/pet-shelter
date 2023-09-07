@@ -1,9 +1,12 @@
 package com.example.petshelter.service;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,10 +32,10 @@ public class TelegramBotService {
     /**
      * Метод отвечающий за отправку сообщений ботом
      *
-     * @param chatId
-     * @param text
-     * @param keyboard
-     * @param parseMode
+     * @param chatId    Long
+     * @param text      String
+     * @param keyboard  InlineKeyboardMarkup
+     * @param parseMode ParseMode
      */
     public void sendMessage(final Long chatId,
                             final String text,
@@ -48,23 +51,69 @@ public class TelegramBotService {
                 message.parseMode(parseMode);
             }
             SendResponse response = telegramBot.execute(message);
-            logger.info("Response OK: {}", response.isOk());
+
             if (!response.isOk()) {
-                logger.error("Response fail: {}",  response.description());
+                loger.error(response.description());
             }
-            logger.info("SendMessage1 TelegramBotService");
+            loger.info("SendMessage TelegramBotService");
         } catch (Exception e) {
-            logger.error("Error SendMessage1 TelegramBotService {} ", e.getMessage());
+            loger.error(e.getMessage() + "Error SendMessage TelegramBotService");
         }
     }
 
-    public void sendMessage(final Long chatId, final String text) {
-        try {
-            sendMessage(chatId, text, null, null);
-            logger.info("SendMessage2 TelegramBOtService");
-        } catch (Exception e) {
-            logger.error("Error SendMessage2 TelegramBotService {}", e.getMessage());
+    public void sendPDFDocument(final Long chatId,
+                                final String fileName,
+                                final String caption,
+                                @Nullable InlineKeyboardMarkup keyboard,
+                                @Nullable ParseMode parseMode
+    ) {
+        SendDocument document = new SendDocument(chatId, fileName);
+        if (caption != null) {
+            document.caption(caption);
         }
+        if (keyboard != null) {
+            document.replyMarkup(keyboard);
+        }
+        if (parseMode != null) {
+            document.parseMode(parseMode);
+        }
+        SendResponse response = telegramBot.execute(document);
+        if (!response.isOk()) {
+            log.error(response.description());
+        }
+        Message message = response.message();
+        loger.info(message.document().fileId());
+    }
+
+    public void sendPicture(final Long chatId,
+                            final String fileName,
+                            final String caption,
+                            @Nullable InlineKeyboardMarkup keyboard,
+                            @Nullable ParseMode parseMode
+    ) {
+        SendPhoto picture = new SendPhoto(chatId, fileName);
+        if (caption != null) {
+            picture.caption(caption);
+        }
+        if (keyboard != null) {
+            picture.replyMarkup(keyboard);
+        }
+        if (parseMode != null) {
+            picture.parseMode(parseMode);
+        }
+        SendResponse response = telegramBot.execute(picture);
+        if (!response.isOk()) {
+            log.error(response.description());
+        }
+        Message message = response.message();
+        log.info(message.document().fileId());
+    }
+
+    public void sendPicture(final Long chatId,
+                            final String fileName,
+                            final String caption
+    ) {
+        sendPicture(chatId, fileName, caption, null, null);
     }
 
 }

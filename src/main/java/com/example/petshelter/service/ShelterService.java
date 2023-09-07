@@ -38,6 +38,11 @@ public class ShelterService {
         return shelterRepository.findById(id).orElseThrow(() -> new ShelterNotFoundException(id));
     }
 
+    public Shelter getShelterByName(String name) {
+        logger.info("Was called method to get shelter by name {}", name);
+        return shelterRepository.findShelterByName(name);
+    }
+
     public Collection<Shelter> getAllShelters() {
         logger.info("Was called method to get all shelters");
         return shelterRepository.findAll();
