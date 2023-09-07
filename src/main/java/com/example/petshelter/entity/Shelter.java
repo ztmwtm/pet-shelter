@@ -10,19 +10,19 @@ import java.util.Objects;
 public class Shelter {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String adress;
+    private String address;
     private String phoneNumber;
     private String workSchedule;
     @OneToMany(mappedBy = "shelter")
     private List<ShelterDocument> shelterDocuments;
 
-    public Shelter(Long id, String name, String adress, String phoneNumber, String workSchedule) {
+    public Shelter(Long id, String name, String address, String phoneNumber, String workSchedule) {
         this.id = id;
         this.name = name;
-        this.adress = adress;
+        this.address = address;
         this.phoneNumber = phoneNumber;
         this.workSchedule = workSchedule;
     }
@@ -46,12 +46,12 @@ public class Shelter {
         this.name = name;
     }
 
-    public String getAdress() {
-        return adress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getPhoneNumber() {
@@ -75,12 +75,12 @@ public class Shelter {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Shelter shelter = (Shelter) o;
-        return Objects.equals(id, shelter.id) && Objects.equals(name, shelter.name) && Objects.equals(adress, shelter.adress) && Objects.equals(phoneNumber, shelter.phoneNumber) && Objects.equals(workSchedule, shelter.workSchedule);
+        return Objects.equals(id, shelter.id) && Objects.equals(name, shelter.name) && Objects.equals(address, shelter.address) && Objects.equals(phoneNumber, shelter.phoneNumber) && Objects.equals(workSchedule, shelter.workSchedule);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, adress, phoneNumber, workSchedule);
+        return Objects.hash(id, name, address, phoneNumber, workSchedule);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class Shelter {
         return "Shelter{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", adress='" + adress + '\'' +
+                ", address='" + address + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", workSchedule='" + workSchedule + '\'' +
                 '}';

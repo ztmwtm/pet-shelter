@@ -9,17 +9,22 @@ import java.util.Objects;
 public class Pet {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String species;
     private String nickname;
-    private boolean isAdopted;
+    private boolean adopted;
 
-    public Pet(Long id, String species, String nickname, boolean isAdopted) {
+    @ManyToOne
+    @JoinColumn(name = "shelter_id")
+    private Shelter shelter;
+
+    public Pet(Long id, String species, String nickname, boolean adopted, Shelter shelter) {
         this.id = id;
         this.species = species;
         this.nickname = nickname;
-        this.isAdopted = isAdopted;
+        this.adopted = adopted;
+        this.shelter = shelter;
     }
 
     public Pet() {
@@ -49,12 +54,12 @@ public class Pet {
         this.nickname = nickname;
     }
 
-    public boolean getIsAdopted() {
-        return isAdopted;
+    public boolean getAdopted() {
+        return adopted;
     }
 
-    public void setIsAdopted(boolean adopted) {
-        isAdopted = adopted;
+    public void setAdopted(boolean adopted) {
+        this.adopted = adopted;
     }
 
     @Override
@@ -62,12 +67,12 @@ public class Pet {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Pet pet = (Pet) o;
-        return isAdopted == pet.isAdopted && Objects.equals(id, pet.id) && Objects.equals(species, pet.species) && Objects.equals(nickname, pet.nickname);
+        return adopted == pet.adopted && Objects.equals(id, pet.id) && Objects.equals(species, pet.species) && Objects.equals(nickname, pet.nickname);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, species, nickname, isAdopted);
+        return Objects.hash(id, species, nickname, adopted);
     }
 
     @Override
@@ -76,7 +81,7 @@ public class Pet {
                 "id=" + id +
                 ", species='" + species + '\'' +
                 ", nickname='" + nickname + '\'' +
-                ", isAdopted=" + isAdopted +
+                ", isAdopted=" + adopted +
                 '}';
     }
 

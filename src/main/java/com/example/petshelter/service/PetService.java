@@ -13,7 +13,7 @@ import java.util.Collection;
 public class PetService {
 
     private final PetRepository petRepository;
-    Logger logger = LoggerFactory.getLogger(PetService.class);
+    private final Logger logger = LoggerFactory.getLogger(PetService.class);
 
     public PetService(PetRepository petRepository) {
         this.petRepository = petRepository;
@@ -26,12 +26,10 @@ public class PetService {
 
     public Pet updatePet(Long id, Pet pet){
         logger.info("Was called method to update pet with id {}", id);
-        petRepository.findById(id).orElseThrow(() -> new PetNotFoundException(id));
-        Pet oldPet = new Pet();
-        oldPet.setId(id);
+        Pet oldPet = petRepository.findById(id).orElseThrow(() -> new PetNotFoundException(id));
         oldPet.setSpecies(pet.getSpecies());
         oldPet.setNickname(pet.getNickname());
-        oldPet.setIsAdopted(pet.getIsAdopted());
+        oldPet.setAdopted(pet.getAdopted());
         return petRepository.save(oldPet);
     }
 
@@ -47,10 +45,10 @@ public class PetService {
 
     public Pet deletePetById(Long id) {
         logger.info("Was called method to delete pet with id {}", id);
-        Pet student = petRepository.findById(id)
+        Pet pet = petRepository.findById(id)
                 .orElseThrow(() -> new PetNotFoundException(id));
         petRepository.deleteById(id);
-        return student;
+        return pet;
     }
 
 

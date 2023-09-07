@@ -8,43 +8,47 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    Logger logger = LoggerFactory.getLogger(UserService.class);
+    private final Logger logger = LoggerFactory.getLogger(UserService.class);
+
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    public User addUser(User user){
+
+    public User addUser(User user) {
         logger.info("Was called method to add user");
         return userRepository.save(user);
     }
 
-    public User updateUser(Long id, User user){
+
+    public User updateUser(Long id, User user) {
         logger.info("Was called method to update user with id {}", id);
-        userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        User oldUser = new User();
-        oldUser.setId(id);
+        User oldUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+
         oldUser.setChatId(user.getChatId());
         oldUser.setFirstName(user.getFirstName());
         oldUser.setLastName(user.getLastName());
         oldUser.setTgUsername(user.getTgUsername());
         oldUser.setPhoneNumber(user.getPhoneNumber());
-        oldUser.setIsVolunteer(user.getIsVolunteer());
-        oldUser.setIsAdopter(user.getIsAdopter());
+        oldUser.setRole(user.getRole());
         return userRepository.save(oldUser);
     }
 
     public User getUserById(Long id) {
         logger.info("Was called method to get user with id {}", id);
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+
     }
 
     public User getUserByChatId(Long chatId) {
         logger.info("Was called method to get user by chatId {}", chatId);
         return userRepository.findUserByChatId(chatId);
+
     }
 
     public Collection<User> getAllUsers() {

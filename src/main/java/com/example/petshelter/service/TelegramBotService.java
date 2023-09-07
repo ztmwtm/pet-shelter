@@ -8,7 +8,8 @@ import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.response.SendResponse;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +17,16 @@ import org.springframework.stereotype.Service;
  * Класс отвечающий за отправку сообщений ботом
  */
 
-@Slf4j
+
 @Service
 public class TelegramBotService {
 
     private final TelegramBot telegramBot;
+    private final Logger logger = LoggerFactory.getLogger(TelegramBotService.class);
 
     public TelegramBotService(final TelegramBot telegramBot) {
         this.telegramBot = telegramBot;
-        log.info("Constructor TelegramBotService");
+        logger.info("Constructor TelegramBotService");
     }
 
     /**
@@ -49,12 +51,13 @@ public class TelegramBotService {
                 message.parseMode(parseMode);
             }
             SendResponse response = telegramBot.execute(message);
+
             if (!response.isOk()) {
-                log.error(response.description());
+                loger.error(response.description());
             }
-            log.info("SendMessage TelegramBotService");
+            loger.info("SendMessage TelegramBotService");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error SendMessage TelegramBotService");
+            loger.error(e.getMessage() + "Error SendMessage TelegramBotService");
         }
     }
 
@@ -79,7 +82,7 @@ public class TelegramBotService {
             log.error(response.description());
         }
         Message message = response.message();
-        log.info(message.document().fileId());
+        loger.info(message.document().fileId());
     }
 
     public void sendPicture(final Long chatId,

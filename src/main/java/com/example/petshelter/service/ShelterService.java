@@ -8,26 +8,26 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+
 @Service
 public class ShelterService {
     private final ShelterRepository shelterRepository;
-    Logger logger = LoggerFactory.getLogger(ShelterService.class);
+    private final Logger logger = LoggerFactory.getLogger(ShelterService.class);
+
     public ShelterService(ShelterRepository shelterRepository) {
         this.shelterRepository = shelterRepository;
     }
 
-    public Shelter addShelter(Shelter shelter){
+    public Shelter addShelter(Shelter shelter) {
         logger.info("Was called method to add shelter");
         return shelterRepository.save(shelter);
     }
 
-    public Shelter updateShelter(Long id, Shelter shelter){
+    public Shelter updateShelter(Long id, Shelter shelter) {
         logger.info("Was called method to update shelter with id {}", id);
-        shelterRepository.findById(id).orElseThrow(() -> new ShelterNotFoundException(id));
-        Shelter oldShelter = new Shelter();
-        oldShelter.setId(id);
+        Shelter oldShelter = shelterRepository.findById(id).orElseThrow(() -> new ShelterNotFoundException(id));
         oldShelter.setName(shelter.getName());
-        oldShelter.setAdress(shelter.getAdress());
+        oldShelter.setAddress(shelter.getAddress());
         oldShelter.setPhoneNumber(shelter.getPhoneNumber());
         oldShelter.setWorkSchedule(shelter.getWorkSchedule());
         return shelterRepository.save(oldShelter);
@@ -50,10 +50,10 @@ public class ShelterService {
 
     public Shelter deleteShelterById(Long id) {
         logger.info("Was called method to delete shelter with id {}", id);
-        Shelter student = shelterRepository.findById(id)
+        Shelter shelter = shelterRepository.findById(id)
                 .orElseThrow(() -> new ShelterNotFoundException(id));
         shelterRepository.deleteById(id);
-        return student;
+        return shelter;
     }
 
 }
