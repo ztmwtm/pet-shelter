@@ -1,9 +1,7 @@
 package com.example.petshelter.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.example.petshelter.util.UserRole;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
@@ -12,28 +10,34 @@ import java.util.Objects;
 public class User {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long chatId;
     private String firstName;
     private String lastName;
     private String tgUsername;
     private String phoneNumber;
-    private boolean isVolunteer;
-    private boolean isAdopter;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
-    public User(Long id, Long chatId, String firstName, String lastName, String tgUsername, String phoneNumber, boolean isVolunteer, boolean isAdopter) {
-        this.id = id;
+    public User(Long chatId, String firstName, String lastName, String tgUsername, String phoneNumber, UserRole role) {
         this.chatId = chatId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.tgUsername = tgUsername;
         this.phoneNumber = phoneNumber;
-        this.isVolunteer = isVolunteer;
-        this.isAdopter = isAdopter;
+        this.role = role;
     }
 
     public User() {
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 
     public Long getId() {
@@ -84,33 +88,18 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public boolean getIsVolunteer() {
-        return isVolunteer;
-    }
-
-    public void setIsVolunteer(boolean volunteer) {
-        isVolunteer = volunteer;
-    }
-
-    public boolean getIsAdopter() {
-        return isAdopter;
-    }
-
-    public void setIsAdopter(boolean adopter) {
-        isAdopter = adopter;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return isVolunteer == user.isVolunteer && isAdopter == user.isAdopter && Objects.equals(id, user.id) && Objects.equals(chatId, user.chatId) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(tgUsername, user.tgUsername) && Objects.equals(phoneNumber, user.phoneNumber);
+        return Objects.equals(chatId, user.chatId) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(tgUsername, user.tgUsername) && Objects.equals(phoneNumber, user.phoneNumber) && role == user.role;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, chatId, firstName, lastName, tgUsername, phoneNumber, isVolunteer, isAdopter);
+        return Objects.hash(chatId, firstName, lastName, tgUsername, phoneNumber, role);
     }
 
     @Override
@@ -122,8 +111,7 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", tgUsername='" + tgUsername + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", isVolunteer=" + isVolunteer +
-                ", isAdopter=" + isAdopter +
+                ", role='" + role.getTitle() + '\'' +
                 '}';
     }
 }

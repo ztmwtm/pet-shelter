@@ -5,7 +5,8 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -13,19 +14,21 @@ import org.springframework.stereotype.Service;
  * Класс отвечающий за отправку сообщений ботом
  */
 
-@Slf4j
+
 @Service
 public class TelegramBotService {
 
     private final TelegramBot telegramBot;
+    private final Logger logger = LoggerFactory.getLogger(TelegramBotService.class);
 
     public TelegramBotService(final TelegramBot telegramBot) {
         this.telegramBot = telegramBot;
-        log.info("Constructor TelegramBotService");
+        logger.info("Constructor TelegramBotService");
     }
 
     /**
      * Метод отвечающий за отправку сообщений ботом
+     *
      * @param chatId
      * @param text
      * @param keyboard
@@ -45,22 +48,22 @@ public class TelegramBotService {
                 message.parseMode(parseMode);
             }
             SendResponse response = telegramBot.execute(message);
-            System.out.println("Response OK: " + response.isOk());
+            logger.info("Response OK: {}", response.isOk());
             if (!response.isOk()) {
-                System.out.println(response.description());
+                logger.error("Response fail: {}",  response.description());
             }
-            log.info("SendMessage1 TelegramBotService");
+            logger.info("SendMessage1 TelegramBotService");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error SendMessage1 TelegramBotService");
+            logger.error("Error SendMessage1 TelegramBotService {} ", e.getMessage());
         }
     }
 
     public void sendMessage(final Long chatId, final String text) {
         try {
             sendMessage(chatId, text, null, null);
-            log.info("SendMessage2 TelegramBOtService");
+            logger.info("SendMessage2 TelegramBOtService");
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error SendMessage2 TelegramBotService");
+            logger.error("Error SendMessage2 TelegramBotService {}", e.getMessage());
         }
     }
 

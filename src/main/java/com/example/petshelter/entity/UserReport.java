@@ -8,7 +8,7 @@ import java.util.Objects;
 @Table(name = "user_reports")
 public class UserReport {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String petDiet;
     private String health;
@@ -22,18 +22,13 @@ public class UserReport {
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
-    @ManyToOne
-    @JoinColumn(name = "shelter_id")
-    private Shelter shelter;
-
-    public UserReport(Long id, String petDiet, String health, String behavior, User user, Pet pet, Shelter shelter) {
+    public UserReport(Long id, String petDiet, String health, String behavior, User user, Pet pet) {
         this.id = id;
         this.petDiet = petDiet;
         this.health = health;
         this.behavior = behavior;
         this.user = user;
         this.pet = pet;
-        this.shelter = shelter;
     }
 
     public UserReport() {
@@ -86,9 +81,7 @@ public class UserReport {
     public void setPet(Pet pet) {
         this.pet = pet;
     }
-    public void setShelter(Shelter shelter) {
-        this.shelter = shelter;
-    }
+
 
     @Override
     public boolean equals(Object o) {

@@ -12,7 +12,6 @@ public class UpdateHandler {
     private final CommandHandler commandHandler;
     private final CallbackQueryHandler callbackQueryHandler;
 
-    @Autowired
     public UpdateHandler(final CommandHandler commandHandler,
                          final CallbackQueryHandler callbackQueryHandler) {
         this.commandHandler = commandHandler;

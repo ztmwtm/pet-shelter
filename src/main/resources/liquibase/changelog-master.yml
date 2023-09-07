@@ -11,7 +11,8 @@ databaseChangeLog:
       file: liquibase/scripts/user_report_photos.sql
   - include:
       file: liquibase/scripts/shelter_documents.sql
-
+  - include:
+      file: liquibase/scripts/update_07_09_23.sql
 
 
 

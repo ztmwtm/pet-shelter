@@ -2,7 +2,6 @@ package com.example.petshelter.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
@@ -10,23 +9,21 @@ import java.util.Objects;
 public class UserReportPhoto {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String filePath;
     private Long fileSize;
     private String mediaType;
-    private byte[] data;
     private String title;
     @ManyToOne
     @JoinColumn(name = "user_report_id")
     private UserReport userReport;
 
-    public UserReportPhoto(Long id, String filePath, Long fileSize, String mediaType, byte[] data, String title, UserReport userReport) {
+    public UserReportPhoto(Long id, String filePath, Long fileSize, String mediaType, String title, UserReport userReport) {
         this.id = id;
         this.filePath = filePath;
         this.fileSize = fileSize;
         this.mediaType = mediaType;
-        this.data = data;
         this.title = title;
         this.userReport = userReport;
     }
@@ -66,14 +63,6 @@ public class UserReportPhoto {
         this.mediaType = mediaType;
     }
 
-    public byte[] getData() {
-        return data;
-    }
-
-    public void setData(byte[] data) {
-        this.data = data;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -95,14 +84,12 @@ public class UserReportPhoto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserReportPhoto that = (UserReportPhoto) o;
-        return Objects.equals(id, that.id) && Objects.equals(filePath, that.filePath) && Objects.equals(fileSize, that.fileSize) && Objects.equals(mediaType, that.mediaType) && Arrays.equals(data, that.data) && Objects.equals(title, that.title) && Objects.equals(userReport, that.userReport);
+        return Objects.equals(filePath, that.filePath) && Objects.equals(fileSize, that.fileSize) && Objects.equals(mediaType, that.mediaType) && Objects.equals(title, that.title);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, filePath, fileSize, mediaType, title, userReport);
-        result = 31 * result + Arrays.hashCode(data);
-        return result;
+        return Objects.hash(filePath, fileSize, mediaType, title);
     }
 
     @Override
@@ -112,7 +99,6 @@ public class UserReportPhoto {
                 ", filePath='" + filePath + '\'' +
                 ", fileSize=" + fileSize +
                 ", mediaType='" + mediaType + '\'' +
-                ", data=" + Arrays.toString(data) +
                 ", title='" + title + '\'' +
                 ", userReport=" + userReport +
                 '}';

@@ -35,7 +35,7 @@ public enum Command {
             log.info("GetDescription CallbackData");
             return description;
         } catch (Exception e) {
-            log.error(e.getMessage() + "Error GetDescriprion Command");
+            log.error(e.getMessage() + "Error GetDescription Command");
         }
         return null;
     }
