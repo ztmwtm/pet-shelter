@@ -1,17 +1,18 @@
 package com.example.petshelter.handler;
 
 import com.example.petshelter.helper.MarkupHelper;
+import com.example.petshelter.repository.HendlerRepository;
 import com.example.petshelter.service.TelegramBotService;
 import com.example.petshelter.util.CallbackData;
+import com.example.petshelter.util.Hendler;
 import com.pengrad.telegrambot.model.Chat;
+import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 /**
@@ -21,7 +22,7 @@ import java.util.function.BiConsumer;
 @Slf4j
 @Component
 public class CallbackQueryHandler {
-
+    private HendlerRepository hendlerRepository;
     private final Map<CallbackData, BiConsumer<User, Chat>> queryExecutors = new HashMap<>();
     private final TelegramBotService telegramBotService;
     private final MarkupHelper markupHelper;
@@ -227,6 +228,37 @@ public class CallbackQueryHandler {
             log.error(e. getMessage() + "Error HendelReport CallbackQueryHandler");
         }
     }
+
+    public void hendelContact(User user, Chat chat, Message message) {
+        try {
+            String text1 = """
+                    ЭТАП 4;\n
+                    \n
+                    Напишите свои данные в формате\n
+                    \n
+                    Фамилия Имя Отчество +71234567890 email\n
+                    \n
+                    (без запятых, ,номер телефона без пробелов и дефисов)""";
+            telegramBotService.sendMessage(chat.id(), text1, null, ParseMode.Markdown);
+            try {
+                String[] text2 = message.text().split("\\s");
+                Hendler hendler = new Hendler();
+                hendler.setSurname(text2[0]);
+                hendler.setName(text2[1]);
+                hendler.setFathername(text2[2]);
+                hendler.setTelephone(text2[3]);
+                hendler.setEmail(text2[4]);
+                hendlerRepository.save(hendler);
+                log.info("HendelContact Message CallbackQueryHendler");
+            } catch (Exception e) {
+                log.error(e.getMessage() + "Error HendeelContact Message CallbackQueryHendler");
+            }
+            log.info("HendelContact CallbackQueryHendler");
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error HendelContact CAllbackQueryHendler");
+        }
+    }
+
 
     private void handleVolunteerHelp(User user, Chat chat) {
         try {
