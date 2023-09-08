@@ -47,7 +47,7 @@ public class UserService {
 
     public User getUserByChatId(Long chatId) {
         logger.info("Was called method to get user by chatId {}", chatId);
-        return userRepository.findUserByChatId(chatId);
+        return userRepository.findUserByChatId(chatId).orElseThrow(() -> new UserNotFoundException(chatId));
 
     }
 

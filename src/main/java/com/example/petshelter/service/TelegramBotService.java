@@ -53,11 +53,11 @@ public class TelegramBotService {
             SendResponse response = telegramBot.execute(message);
 
             if (!response.isOk()) {
-                loger.error(response.description());
+                logger.error(response.description());
             }
-            loger.info("SendMessage TelegramBotService");
+            logger.info("SendMessage TelegramBotService");
         } catch (Exception e) {
-            loger.error(e.getMessage() + "Error SendMessage TelegramBotService");
+            logger.error(e.getMessage(), "Error SendMessage TelegramBotService {}");
         }
     }
 
@@ -79,10 +79,10 @@ public class TelegramBotService {
         }
         SendResponse response = telegramBot.execute(document);
         if (!response.isOk()) {
-            log.error(response.description());
+            logger.error(response.description());
         }
         Message message = response.message();
-        loger.info(message.document().fileId());
+        logger.info(message.document().fileId());
     }
 
     public void sendPicture(final Long chatId,
@@ -103,10 +103,10 @@ public class TelegramBotService {
         }
         SendResponse response = telegramBot.execute(picture);
         if (!response.isOk()) {
-            log.error(response.description());
+            logger.error(response.description());
         }
         Message message = response.message();
-        log.info(message.document().fileId());
+        logger.info(message.document().fileId());
     }
 
     public void sendPicture(final Long chatId,

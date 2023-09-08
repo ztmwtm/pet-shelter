@@ -23,7 +23,7 @@ import java.util.function.BiConsumer;
 @Component
 public class CallbackQueryHandler {
 
-    private final Map<CallbackData, BiConsumer<User, Chat>> queryExecutors = new HashMap<>();
+    private final Map<CallbackData, BiConsumer<User, Chat>> queryExecutors = new EnumMap<>(CallbackData.class);
     private final TelegramBotService telegramBotService;
     private final ShelterService shelterService;
     private final MarkupHelper markupHelper;
@@ -236,7 +236,7 @@ public class CallbackQueryHandler {
 
     private void handleCatsShelterAddress(User user, Chat chat) {
         Shelter catShelter = shelterService.getShelterByName(CallbackData.CATS.getTitle());
-        String address = "\uD83D\uDCCD Адрес приюта для кошек: *" + catShelter.getAdress() + "*";
+        String address = "\uD83D\uDCCD Адрес приюта для кошек: *" + catShelter.getAddress() + "*";
         telegramBotService.sendMessage(chat.id(), address, null, ParseMode.Markdown);
     }
 
@@ -272,7 +272,7 @@ public class CallbackQueryHandler {
 
     private void handleDogsShelterAddress(User user, Chat chat) {
         Shelter dogShelter = shelterService.getShelterByName(CallbackData.DOGS.getTitle());
-        String address = "\uD83D\uDCCD Адрес приюта для собак: *" + dogShelter.getAdress() + "*";
+        String address = "\uD83D\uDCCD Адрес приюта для собак: *" + dogShelter.getAddress() + "*";
         telegramBotService.sendMessage(chat.id(), address, null, ParseMode.Markdown);
     }
 

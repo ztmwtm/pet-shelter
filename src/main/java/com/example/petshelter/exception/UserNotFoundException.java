@@ -1,13 +1,13 @@
 package com.example.petshelter.exception;
 
 public class UserNotFoundException extends RuntimeException{
-    private final long id;
-    public UserNotFoundException(long id) {
-        this.id = id;
+    private final long chatId;
+    public UserNotFoundException(long chatId) {
+        this.chatId = chatId;
     }
     @Override
     public String getMessage() {
-        return "Приют с id = " + id + " не найдено!";
+        return "Пользователь с chat id = " + chatId + " не найден!";
     }
 
 
