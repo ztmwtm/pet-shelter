@@ -23,9 +23,8 @@ databaseChangeLog:
       file: liquibase/scripts/user_report_photos_update_9_9_23.sql
   - include:
       file: liquibase/scripts/user_reports_update_9_9_23.sql
-
-
-
+  - include:
+      file: liquibase/scripts/shelters_update_9_9_23v2.sql
 
 
 
