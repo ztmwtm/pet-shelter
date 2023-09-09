@@ -13,7 +13,16 @@ databaseChangeLog:
       file: liquibase/scripts/shelter_documents.sql
   - include:
       file: liquibase/scripts/users_update_9_9_23.sql
-
+  - include:
+      file: liquibase/scripts/pets_update_9_9_23.sql
+  - include:
+      file: liquibase/scripts/shelter_documents_update_9_9_23.sql
+  - include:
+      file: liquibase/scripts/shelters_update_9_9_23.sql
+  - include:
+      file: liquibase/scripts/user_report_photos_update_9_9_23.sql
+  - include:
+      file: liquibase/scripts/user_reports_update_9_9_23.sql
 
 
 
