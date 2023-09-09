@@ -1,19 +1,22 @@
 package com.example.petshelter.handler;
 
+import com.example.petshelter.service.UserService;
 import com.pengrad.telegrambot.model.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 public class UpdateHandler {
 
+    private final UserService userService;
     private final CommandHandler commandHandler;
     private final CallbackQueryHandler callbackQueryHandler;
 
-    public UpdateHandler(final CommandHandler commandHandler,
+    public UpdateHandler(final UserService userService,
+                         final CommandHandler commandHandler,
                          final CallbackQueryHandler callbackQueryHandler) {
+        this.userService = userService;
         this.commandHandler = commandHandler;
         this.callbackQueryHandler = callbackQueryHandler;
         log.info("Constructor UpdateHandler");
@@ -40,4 +43,16 @@ public class UpdateHandler {
         }
     }
 
+    public void hendlerContact(com.example.petshelter.entity.User user) {
+        try {
+            com.example.petshelter.entity.User userToUpdate = userService.getUserByChatId(user.getChatId());
+            userToUpdate.setFirstName(user.getFirstName());
+            userToUpdate.setLastName(user.getLastName());
+            userToUpdate.setPhoneNumber(user.getPhoneNumber());
+            userService.addUser(userToUpdate);
+            log.info("HendlerContact UpdateHendler");
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error HendlerContact UpdateHendler");
+        }
+    }
 }
