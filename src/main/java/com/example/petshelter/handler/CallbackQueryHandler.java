@@ -25,6 +25,7 @@ public class CallbackQueryHandler {
 
     private final Map<CallbackData, BiConsumer<User, Chat>> queryExecutors = new EnumMap<>(CallbackData.class);
     private final TelegramBotService telegramBotService;
+    private final VolonteerHandler volonteerHandler;
     private final ShelterService shelterService;
     private final MarkupHelper markupHelper;
     private final Map<String, String> catsMenu = new LinkedHashMap<>();
@@ -124,8 +125,9 @@ public class CallbackQueryHandler {
     }
 
     @Autowired
-    public CallbackQueryHandler(final TelegramBotService telegramBotService, final ShelterService shelterService, final MarkupHelper markupHelper) {
+    public CallbackQueryHandler(final TelegramBotService telegramBotService, VolonteerHandler volonteerHandler, final ShelterService shelterService, final MarkupHelper markupHelper) {
         this.telegramBotService = telegramBotService;
+        this.volonteerHandler = volonteerHandler;
         this.shelterService = shelterService;
         this.markupHelper = markupHelper;
         log.info("Constructor CallbackQueryHandler");
@@ -326,8 +328,9 @@ public class CallbackQueryHandler {
 
     private void handleVolunteerHelp(User user, Chat chat) {
         try {
-            String text = "Напишите с чем нужна помощь – отправим ваше сообщение волонтёру";
+            String text = "Ожидайте ответа волонтера. Он напишет вам в личном сообщении.";
             telegramBotService.sendMessage(chat.id(), text, null, null);
+            volonteerHandler.VolunteerHelp(user, chat);
             log.info("handleVolunteerHelp CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error handleVolunteerHelp CallbackQueryHandler");
