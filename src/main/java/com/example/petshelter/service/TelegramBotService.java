@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendDocument;
+import com.pengrad.telegrambot.request.SendLocation;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.response.SendResponse;
@@ -116,4 +117,7 @@ public class TelegramBotService {
         sendPicture(chatId, fileName, caption, null, null);
     }
 
+    public void sendLocation(final Long chatId, float latitude, float longitude) {
+        telegramBot.execute(new SendLocation(chatId, latitude, longitude));
+    }
 }

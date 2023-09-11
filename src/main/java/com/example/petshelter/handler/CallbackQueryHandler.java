@@ -238,6 +238,7 @@ public class CallbackQueryHandler {
         Shelter catShelter = shelterService.getShelterByName(CallbackData.CATS.getTitle());
         String address = "\uD83D\uDCCD Адрес приюта для кошек: *" + catShelter.getAddress() + "*";
         telegramBotService.sendMessage(chat.id(), address, null, ParseMode.Markdown);
+        telegramBotService.sendLocation(chat.id(), catShelter.getLatitude(), catShelter.getLongitude());
     }
 
     private void handleCatsShelterSafetyRules(User user, Chat chat) {
@@ -274,6 +275,7 @@ public class CallbackQueryHandler {
         Shelter dogShelter = shelterService.getShelterByName(CallbackData.DOGS.getTitle());
         String address = "\uD83D\uDCCD Адрес приюта для собак: *" + dogShelter.getAddress() + "*";
         telegramBotService.sendMessage(chat.id(), address, null, ParseMode.Markdown);
+        telegramBotService.sendLocation(chat.id(), dogShelter.getLatitude(), dogShelter.getLongitude());
     }
 
     private void handleDogsShelterSafetyRules(User user, Chat chat) {
