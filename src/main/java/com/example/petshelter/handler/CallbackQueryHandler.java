@@ -60,6 +60,24 @@ public class CallbackQueryHandler {
         queryExecutors.put(CallbackData.DOGS_SHELTER_ENTRY_PASS, this::handleDogsShelterEntryPass);
         queryExecutors.put(CallbackData.DOGS_SHELTER_SAFETY_RULES, this::handleDogsShelterSafetyRules);
 
+        queryExecutors.put(CallbackData.CATS_ADOPTION_SAY_HI_RULES, this::handleCatsAdoptionSayHiRules);
+        queryExecutors.put(CallbackData.CATS_ADOPTION_DOCUMENTS, this::handleCatsAdoptionDocuments);
+        queryExecutors.put(CallbackData.CATS_ADOPTION_TRANSPORTATION_RULES, this::handleCatsAdoptionTransportationRules);
+        queryExecutors.put(CallbackData.CATS_ADOPTION_CHILD_HOUSE_RULES, this::handleCatsAdoptionChildHouseRules);
+        queryExecutors.put(CallbackData.CATS_ADOPTION_ADULT_HOUSE_RULES, this::handleCatsAdoptionAdultHouseRules);
+        queryExecutors.put(CallbackData.CATS_ADOPTION_DISABLED_HOUSE_RULES, this::handleCatsAdoptionDisabledHouseRules);
+        queryExecutors.put(CallbackData.CATS_ADOPTION_REASONS_FOR_REFUSAL, this::handleCatsAdoptionReasonsForRefusal);
+
+        queryExecutors.put(CallbackData.DOGS_ADOPTION_SAY_HI_RULES, this::handleDogsAdoptionSayHiRules);
+        queryExecutors.put(CallbackData.DOGS_ADOPTION_DOCUMENTS, this::handleDogsAdoptionDocuments);
+        queryExecutors.put(CallbackData.DOGS_ADOPTION_TRANSPORTATION_RULES, this::handleDogsAdoptionTransportationRules);
+        queryExecutors.put(CallbackData.DOGS_ADOPTION_CHILD_HOUSE_RULES, this::handleDogsAdoptionChildHouseRules);
+        queryExecutors.put(CallbackData.DOGS_ADOPTION_ADULT_HOUSE_RULES, this::handleDogsAdoptionAdultHouseRules);
+        queryExecutors.put(CallbackData.DOGS_ADOPTION_DISABLED_HOUSE_RULES, this::handleDogsAdoptionDisabledHouseRules);
+        queryExecutors.put(CallbackData.DOGS_ADOPTION_DOG_HANDLER_RULES, this::handleDogsAdoptionDogHandlerRules);
+        queryExecutors.put(CallbackData.DOGS_ADOPTION_DOG_HANDLERS_LIST, this::handleDogsAdoptionDogHandlersList);
+        queryExecutors.put(CallbackData.DOGS_ADOPTION_REASONS_FOR_REFUSAL, this::handleDogsAdoptionReasonsForRefusal);
+
         queryExecutors.put(CallbackData.REPORT, this::handleReport);
         queryExecutors.put(CallbackData.HELP, this::handleVolunteerHelp);
 
@@ -121,6 +139,24 @@ public class CallbackQueryHandler {
         fileMapper.put(CallbackData.DOGS_SHELTER_ENTRY_PASS, "https://lukaselektro.ru/wp-content/uploads/2023/09/dogs/Dogs_Shelter_Entry_Pass.pdf");
         fileMapper.put(CallbackData.DOGS_SHELTER_SAFETY_RULES, "https://lukaselektro.ru/wp-content/uploads/2023/09/dogs/Dogs_Shelter_Safety_Rules.pdf");
         fileMapper.put(CallbackData.DOGS_SHELTER_HOW_TO_GET, "http://ladystyle.su/articles/upload/image/map_large.jpg");
+
+        fileMapper.put(CallbackData.CATS_ADOPTION_SAY_HI_RULES, "https://lukaselektro.ru/wp-content/uploads/2023/09/cats/Cats_Shelter_Say_Hi_Rules.pdf");
+        fileMapper.put(CallbackData.CATS_ADOPTION_DOCUMENTS, "https://lukaselektro.ru/wp-content/uploads/2023/09/cats/Cats_Shelter_Documents.pdf");
+        fileMapper.put(CallbackData.CATS_ADOPTION_TRANSPORTATION_RULES, "https://lukaselektro.ru/wp-content/uploads/2023/09/cats/Cats_Shelter_Transportation_Rules.pdf");
+        fileMapper.put(CallbackData.CATS_ADOPTION_CHILD_HOUSE_RULES, "https://lukaselektro.ru/wp-content/uploads/2023/09/cats/Cats_Shelter_Child_House_Rules.pdf");
+        fileMapper.put(CallbackData.CATS_ADOPTION_ADULT_HOUSE_RULES, "https://lukaselektro.ru/wp-content/uploads/2023/09/cats/Cats_Shelter_Adult_House_Rules.pdf");
+        fileMapper.put(CallbackData.CATS_ADOPTION_DISABLED_HOUSE_RULES, "https://lukaselektro.ru/wp-content/uploads/2023/09/cats/Cats_Shelter_Disabled_House_Rules.pdf");
+        fileMapper.put(CallbackData.CATS_ADOPTION_REASONS_FOR_REFUSAL, "https://lukaselektro.ru/wp-content/uploads/2023/09/cats/Cats_Shelter_Reasons_for_Refusal.pdf");
+
+        fileMapper.put(CallbackData.DOGS_ADOPTION_SAY_HI_RULES, "https://lukaselektro.ru/wp-content/uploads/2023/09/dogs/Dogs_Shelter_Say_Hi_Rules.pdf");
+        fileMapper.put(CallbackData.DOGS_ADOPTION_DOCUMENTS, "https://lukaselektro.ru/wp-content/uploads/2023/09/dogs/Dogs_Shelter_Documents.pdf");
+        fileMapper.put(CallbackData.DOGS_ADOPTION_TRANSPORTATION_RULES, "https://lukaselektro.ru/wp-content/uploads/2023/09/dogs/Dogs_Shelter_Transportation_Rules.pdf");
+        fileMapper.put(CallbackData.DOGS_ADOPTION_CHILD_HOUSE_RULES, "https://lukaselektro.ru/wp-content/uploads/2023/09/dogs/Dogs_Shelter_Child_House_Rules.pdf");
+        fileMapper.put(CallbackData.DOGS_ADOPTION_ADULT_HOUSE_RULES, "https://lukaselektro.ru/wp-content/uploads/2023/09/dogs/Dogs_Shelter_Adult_House_Rules.pdf");
+        fileMapper.put(CallbackData.DOGS_ADOPTION_DISABLED_HOUSE_RULES, "https://lukaselektro.ru/wp-content/uploads/2023/09/dogs/Dogs_Shelter_Disabled_House_Rules.pdf");
+        fileMapper.put(CallbackData.DOGS_ADOPTION_DOG_HANDLER_RULES, "https://lukaselektro.ru/wp-content/uploads/2023/09/dogs/Dogs_Shelter_Dog_Handler_Rules.pdf");
+        fileMapper.put(CallbackData.DOGS_ADOPTION_DOG_HANDLERS_LIST, "https://lukaselektro.ru/wp-content/uploads/2023/09/dogs/Dogs_Shelter_Dog_Handlers_List.pdf");
+        fileMapper.put(CallbackData.DOGS_ADOPTION_REASONS_FOR_REFUSAL, "https://lukaselektro.ru/wp-content/uploads/2023/09/dogs/Dogs_Shelter_Reasons_for_Refusal.pdf");
     }
 
     @Autowired
@@ -225,7 +261,7 @@ public class CallbackQueryHandler {
     private void handleCatsShelterInfo(User user, Chat chat) {
         String caption = CallbackData.CATS_SHELTER_INFO.getDescription();
         String file = fileMapper.get(CallbackData.CATS_SHELTER_INFO);
-        telegramBotService.sendPDFDocument(chat.id(), file, caption, null, null);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
     }
 
     private void handleCatsShelterWorkHours(User user, Chat chat) {
@@ -244,13 +280,13 @@ public class CallbackQueryHandler {
     private void handleCatsShelterSafetyRules(User user, Chat chat) {
         String caption = CallbackData.CATS_SHELTER_SAFETY_RULES.getDescription();
         String file = fileMapper.get(CallbackData.CATS_SHELTER_SAFETY_RULES);
-        telegramBotService.sendPDFDocument(chat.id(), file, caption, null, null);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
     }
 
     private void handleCatsShelterEntryPass(User user, Chat chat) {
         String caption = CallbackData.CATS_SHELTER_ENTRY_PASS.getDescription();
         String file = fileMapper.get(CallbackData.CATS_SHELTER_ENTRY_PASS);
-        telegramBotService.sendPDFDocument(chat.id(), file, caption, null, null);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
     }
 
     private void handleCatsShelterHowToGet(User user, Chat chat) {
@@ -262,7 +298,7 @@ public class CallbackQueryHandler {
     private void handleDogsShelterInfo(User user, Chat chat) {
         String caption = CallbackData.DOGS_SHELTER_INFO.getDescription();
         String file = fileMapper.get(CallbackData.DOGS_SHELTER_INFO);
-        telegramBotService.sendPDFDocument(chat.id(), file, caption, null, null);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
     }
 
     private void handleDogsShelterWorkHours(User user, Chat chat) {
@@ -281,19 +317,115 @@ public class CallbackQueryHandler {
     private void handleDogsShelterSafetyRules(User user, Chat chat) {
         String caption = CallbackData.DOGS_SHELTER_SAFETY_RULES.getDescription();
         String file = fileMapper.get(CallbackData.DOGS_SHELTER_SAFETY_RULES);
-        telegramBotService.sendPDFDocument(chat.id(), file, caption, null, null);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
     }
 
     private void handleDogsShelterEntryPass(User user, Chat chat) {
         String caption = CallbackData.DOGS_SHELTER_ENTRY_PASS.getDescription();
         String file = fileMapper.get(CallbackData.DOGS_SHELTER_ENTRY_PASS);
-        telegramBotService.sendPDFDocument(chat.id(), file, caption, null, null);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
     }
 
     private void handleDogsShelterHowToGet(User user, Chat chat) {
         String caption = CallbackData.DOGS_SHELTER_HOW_TO_GET.getDescription();
         String file = fileMapper.get(CallbackData.DOGS_SHELTER_HOW_TO_GET);
         telegramBotService.sendPicture(chat.id(), file, caption);
+    }
+
+    private void handleCatsAdoptionSayHiRules(User user, Chat chat) {
+        String caption = CallbackData.CATS_ADOPTION_SAY_HI_RULES.getDescription();
+        String file = fileMapper.get(CallbackData.CATS_ADOPTION_SAY_HI_RULES);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
+    }
+
+    private void handleCatsAdoptionDocuments(User user, Chat chat) {
+        String caption = CallbackData.CATS_ADOPTION_DOCUMENTS.getDescription();
+        String file = fileMapper.get(CallbackData.CATS_ADOPTION_DOCUMENTS);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
+    }
+
+    private void handleCatsAdoptionTransportationRules(User user, Chat chat) {
+        String caption = CallbackData.CATS_ADOPTION_TRANSPORTATION_RULES.getDescription();
+        String file = fileMapper.get(CallbackData.CATS_ADOPTION_TRANSPORTATION_RULES);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
+    }
+
+    private void handleCatsAdoptionChildHouseRules(User user, Chat chat) {
+        String caption = CallbackData.CATS_ADOPTION_CHILD_HOUSE_RULES.getDescription();
+        String file = fileMapper.get(CallbackData.CATS_ADOPTION_CHILD_HOUSE_RULES);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
+    }
+
+    private void handleCatsAdoptionAdultHouseRules(User user, Chat chat) {
+        String caption = CallbackData.CATS_ADOPTION_ADULT_HOUSE_RULES.getDescription();
+        String file = fileMapper.get(CallbackData.CATS_ADOPTION_ADULT_HOUSE_RULES);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
+    }
+
+    private void handleCatsAdoptionDisabledHouseRules(User user, Chat chat) {
+        String caption = CallbackData.CATS_ADOPTION_DISABLED_HOUSE_RULES.getDescription();
+        String file = fileMapper.get(CallbackData.CATS_ADOPTION_DISABLED_HOUSE_RULES);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
+    }
+
+    private void handleCatsAdoptionReasonsForRefusal(User user, Chat chat) {
+        String caption = CallbackData.CATS_ADOPTION_REASONS_FOR_REFUSAL.getDescription();
+        String file = fileMapper.get(CallbackData.CATS_ADOPTION_REASONS_FOR_REFUSAL);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
+    }
+
+    private void handleDogsAdoptionSayHiRules(User user, Chat chat) {
+        String caption = CallbackData.DOGS_ADOPTION_SAY_HI_RULES.getDescription();
+        String file = fileMapper.get(CallbackData.DOGS_ADOPTION_SAY_HI_RULES);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
+    }
+
+    private void handleDogsAdoptionDocuments(User user, Chat chat) {
+        String caption = CallbackData.DOGS_ADOPTION_DOCUMENTS.getDescription();
+        String file = fileMapper.get(CallbackData.DOGS_ADOPTION_DOCUMENTS);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
+    }
+
+    private void handleDogsAdoptionTransportationRules(User user, Chat chat) {
+        String caption = CallbackData.DOGS_ADOPTION_TRANSPORTATION_RULES.getDescription();
+        String file = fileMapper.get(CallbackData.DOGS_ADOPTION_TRANSPORTATION_RULES);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
+    }
+
+    private void handleDogsAdoptionChildHouseRules(User user, Chat chat) {
+        String caption = CallbackData.DOGS_ADOPTION_CHILD_HOUSE_RULES.getDescription();
+        String file = fileMapper.get(CallbackData.DOGS_ADOPTION_CHILD_HOUSE_RULES);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
+    }
+
+    private void handleDogsAdoptionAdultHouseRules(User user, Chat chat) {
+        String caption = CallbackData.DOGS_ADOPTION_ADULT_HOUSE_RULES.getDescription();
+        String file = fileMapper.get(CallbackData.DOGS_ADOPTION_ADULT_HOUSE_RULES);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
+    }
+
+    private void handleDogsAdoptionDisabledHouseRules(User user, Chat chat) {
+        String caption = CallbackData.DOGS_ADOPTION_DISABLED_HOUSE_RULES.getDescription();
+        String file = fileMapper.get(CallbackData.DOGS_ADOPTION_DISABLED_HOUSE_RULES);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
+    }
+
+    private void handleDogsAdoptionDogHandlerRules(User user, Chat chat) {
+        String caption = CallbackData.DOGS_ADOPTION_DOG_HANDLER_RULES.getDescription();
+        String file = fileMapper.get(CallbackData.DOGS_ADOPTION_DOG_HANDLER_RULES);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
+    }
+
+    private void handleDogsAdoptionDogHandlersList(User user, Chat chat) {
+        String caption = CallbackData.DOGS_ADOPTION_DOG_HANDLERS_LIST.getDescription();
+        String file = fileMapper.get(CallbackData.DOGS_ADOPTION_DOG_HANDLERS_LIST);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
+    }
+
+    private void handleDogsAdoptionReasonsForRefusal(User user, Chat chat) {
+        String caption = CallbackData.DOGS_ADOPTION_REASONS_FOR_REFUSAL.getDescription();
+        String file = fileMapper.get(CallbackData.DOGS_ADOPTION_REASONS_FOR_REFUSAL);
+        telegramBotService.sendPDFDocument(chat.id(), file, caption);
     }
 
     private void handleReport(User user, Chat chat) {
