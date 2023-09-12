@@ -2,7 +2,6 @@ package com.example.petshelter.handler;
 
 import com.pengrad.telegrambot.model.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -10,11 +9,14 @@ import org.springframework.stereotype.Component;
 public class UpdateHandler {
 
     private final CommandHandler commandHandler;
+    private final ContactHandler contactHandler;
     private final CallbackQueryHandler callbackQueryHandler;
 
     public UpdateHandler(final CommandHandler commandHandler,
+                         final ContactHandler contactHandler,
                          final CallbackQueryHandler callbackQueryHandler) {
         this.commandHandler = commandHandler;
+        this.contactHandler = contactHandler;
         this.callbackQueryHandler = callbackQueryHandler;
         log.info("Constructor UpdateHandler");
     }
@@ -25,8 +27,13 @@ public class UpdateHandler {
                 Message message = update.message();
                 User user = message.from();
                 Chat chat = message.chat();
-                String text = message.text();
-                commandHandler.handle(user, chat, text);
+                if (message.contact() != null) {
+                    Contact contact = message.contact();
+                    contactHandler.handle(user, chat, contact);
+                } else {
+                    String text = message.text();
+                    commandHandler.handle(user, chat, text);
+                }
             } else if (update.callbackQuery() != null) {
                 CallbackQuery query = update.callbackQuery();
                 User user = query.from();

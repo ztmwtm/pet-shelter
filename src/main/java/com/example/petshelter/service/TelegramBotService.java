@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendLocation;
 import com.pengrad.telegrambot.request.SendMessage;
@@ -57,6 +58,27 @@ public class TelegramBotService {
                 logger.error(response.description());
             }
             logger.info("SendMessage TelegramBotService");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), "Error SendMessage TelegramBotService {}");
+        }
+    }
+
+    public void sendContact(final Long chatId,
+                            final String text,
+                            @Nullable ReplyKeyboardMarkup keyboard,
+                            @Nullable ParseMode parseMode
+    ) {
+        try {
+            SendMessage message = new SendMessage(chatId, text);
+            if (keyboard != null) {
+                message.replyMarkup(keyboard);
+                keyboard.resizeKeyboard(true);
+                keyboard.oneTimeKeyboard(true);
+            }
+            if (parseMode != null) {
+                message.parseMode(parseMode);
+            }
+            telegramBot.execute(message);
         } catch (Exception e) {
             logger.error(e.getMessage(), "Error SendMessage TelegramBotService {}");
         }
@@ -120,4 +142,5 @@ public class TelegramBotService {
     public void sendLocation(final Long chatId, float latitude, float longitude) {
         telegramBot.execute(new SendLocation(chatId, latitude, longitude));
     }
+
 }
