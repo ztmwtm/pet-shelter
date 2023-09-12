@@ -86,6 +86,13 @@ public class TelegramBotService {
         logger.info(message.document().fileId());
     }
 
+    public void sendPDFDocument(final Long chatId,
+                                final String fileName,
+                                final String caption
+    ) {
+        sendPDFDocument(chatId, fileName, caption, null, null);
+    }
+
     public void sendPicture(final Long chatId,
                             final String fileName,
                             final String caption,
