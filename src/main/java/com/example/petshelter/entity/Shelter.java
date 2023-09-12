@@ -1,5 +1,6 @@
 package com.example.petshelter.entity;
 
+import com.example.petshelter.util.PetType;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -18,13 +19,17 @@ public class Shelter {
     private String workSchedule;
     @OneToMany(mappedBy = "shelter")
     private List<ShelterDocument> shelterDocuments;
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private PetType petType;
 
-    public Shelter(Long id, String name, String address, String phoneNumber, String workSchedule) {
+    public Shelter(Long id, String name, String address, String phoneNumber, String workSchedule, PetType petType) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.workSchedule = workSchedule;
+        this.petType = petType;
     }
 
     public Shelter() {

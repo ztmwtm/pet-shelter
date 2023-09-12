@@ -64,4 +64,15 @@ public class UserService {
         return user;
     }
 
+    public void updateUserSelectedShelterId(Long chatId, String data) {
+        User oldUser =  userRepository.findUserByChatId(chatId).orElseThrow(() -> new UserNotFoundException(chatId));
+        oldUser.setSelectedShelterId(Long.parseLong(data));
+        userRepository.save(oldUser);
+    }
+
+    public void resetSelectedShelterId(Long chatId) {
+        User oldUser = userRepository.findUserByChatId(chatId).orElseThrow(() -> new UserNotFoundException(chatId));
+        oldUser.setSelectedShelterId(0);
+        userRepository.save(oldUser);
+    }
 }

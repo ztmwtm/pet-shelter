@@ -1,5 +1,6 @@
 package com.example.petshelter.entity;
 
+import com.example.petshelter.util.PetType;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -13,21 +14,29 @@ public class Pet {
     private Long id;
     private String species;
     private String nickname;
-    private boolean adopted;
+    @Enumerated(EnumType.STRING)
+    private PetType petType;
 
     @ManyToOne
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
 
-    public Pet(Long id, String species, String nickname, boolean adopted, Shelter shelter) {
+    public Pet(Long id, String species, String nickname,  Shelter shelter, PetType petType) {
         this.id = id;
         this.species = species;
         this.nickname = nickname;
-        this.adopted = adopted;
         this.shelter = shelter;
+        this.petType = petType;
     }
 
     public Pet() {
+    }
+    public PetType getPetType() {
+        return petType;
+    }
+
+    public void setPetType(PetType petType) {
+        this.petType = petType;
     }
 
     public Long getId() {
@@ -54,25 +63,17 @@ public class Pet {
         this.nickname = nickname;
     }
 
-    public boolean getAdopted() {
-        return adopted;
-    }
-
-    public void setAdopted(boolean adopted) {
-        this.adopted = adopted;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Pet pet = (Pet) o;
-        return adopted == pet.adopted && Objects.equals(id, pet.id) && Objects.equals(species, pet.species) && Objects.equals(nickname, pet.nickname);
+        return Objects.equals(id, pet.id) && Objects.equals(species, pet.species) && Objects.equals(nickname, pet.nickname);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, species, nickname, adopted);
+        return Objects.hash(id, species, nickname);
     }
 
     @Override
@@ -81,7 +82,6 @@ public class Pet {
                 "id=" + id +
                 ", species='" + species + '\'' +
                 ", nickname='" + nickname + '\'' +
-                ", isAdopted=" + adopted +
                 '}';
     }
 
