@@ -28,7 +28,12 @@ public class ContactHandler {
             if (userService.getUserByChatId(chatId) != null) {
                 String phoneNumber = contact.phoneNumber();
                 String userName = user.firstName();
-                updateUserPhoneNumber(chatId, phoneNumber);
+                try {
+                    userService.updateUserPhoneNumber(chatId, phoneNumber);
+                    log.info("User successfully updated: {}", chatId);
+                } catch (Exception e) {
+                    log.error(e.getMessage() + "Error updating the User {}", chatId);
+                }
                 telegramBotService.sendMessage(chatId, userName + ", ваш номер телефона был успешно сохранен", null, null);
                 log.info("Phone number {} was added to User {}", phoneNumber, chatId);
             } else {
@@ -37,18 +42,6 @@ public class ContactHandler {
 
         } catch (Exception e) {
             log.error(e.getMessage() + "Error Handle ContactHandler");
-        }
-    }
-
-    private void updateUserPhoneNumber(final Long chatId, final String phoneNumber) {
-        try {
-            com.example.petshelter.entity.User updatedUser = userService.getUserByChatId(chatId);
-            Long userId = updatedUser.getId();
-            updatedUser.setPhoneNumber(phoneNumber);
-            userService.updateUser(userId, updatedUser);
-            log.info("User Updated: {}", updatedUser);
-        } catch (Exception e) {
-            log.error(e.getMessage() + "Error updating the User {}", chatId);
         }
     }
 

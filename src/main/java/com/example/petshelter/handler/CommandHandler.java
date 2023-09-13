@@ -31,6 +31,14 @@ public class CommandHandler {
             , привет!
             Я - бот-помощник приюта домашних животных.
             Начните с выбора приюта:""";
+    private static final String VOLUNTEER_MENU = """
+            Привет, волонтер!
+            Выбери нужную команду:\s
+            1. Добавить усыновителя -> /add_adopter\s
+            2. Проверить отчеты -> /check_reports\s
+            3. Продлить испытательный срок -> /extend_trial\s
+            4. Оставить животное у хозяина -> /keep_animal\s
+            """;
     private final Map<Command, BiConsumer<User, Chat>> commandExecutors = new EnumMap<>(Command.class);
     private final TelegramBotService telegramBotService;
     private final UserService userService;
@@ -39,15 +47,16 @@ public class CommandHandler {
 
     /*
      * Нестатический блок инициализации метода и кнопок
-     */
-    {
+     */ {
         commandExecutors.put(Command.START, this::handleStart);
         mainMenu.put(CallbackData.CATS.getTitle(), "\uD83D\uDC08 Приют для кошек");
         mainMenu.put(CallbackData.DOGS.getTitle(), "\uD83D\uDC15 Приют для собак");
     }
 
     @Autowired
-    public CommandHandler(final TelegramBotService telegramBotService, final UserService userService, final MarkupHelper markupHelper) {
+    public CommandHandler(final TelegramBotService telegramBotService,
+                          final UserService userService,
+                          final MarkupHelper markupHelper) {
         this.telegramBotService = telegramBotService;
         this.userService = userService;
         this.markupHelper = markupHelper;
@@ -71,6 +80,7 @@ public class CommandHandler {
 
     /**
      * Метод отвечающий за приветствие пользователя в начале работы
+     *
      * @param user User
      * @param chat Chat
      */
@@ -80,31 +90,25 @@ public class CommandHandler {
 
             if (userService.getUserByChatId(chatId) == null) {
                 String userName = user.firstName();
-                registerNewUser(user, chatId);
+                try {
+                    userService.registerNewUser(user, chatId);
+                    log.info("User registered successfully");
+                } catch (Exception e) {
+                    log.error(e.getMessage() + "Error registering a new User");
+                }
                 telegramBotService.sendMessage(chatId, userName + GREETING, markupHelper.buildMenu(mainMenu), null);
             } else {
-                telegramBotService.sendMessage(chatId, "Выберите приют:", markupHelper.buildMenu(mainMenu), null);
+                com.example.petshelter.entity.User recurringUser = userService.getUserByChatId(chatId);
+                if (recurringUser.getRole() == UserRole.VOLUNTEER) {
+                    telegramBotService.sendMessage(chatId, VOLUNTEER_MENU, null, null);
+                } else {
+                    telegramBotService.sendMessage(chatId, "Выберите приют:", markupHelper.buildMenu(mainMenu), null);
+                }
             }
 
             log.info("HandleStart CommandHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error HandleStart CommandHandler");
-        }
-    }
-
-    private void registerNewUser(final User user, final Long chatId) {
-        try {
-            com.example.petshelter.entity.User newUser = new com.example.petshelter.entity.User();
-            newUser.setChatId(chatId);
-            newUser.setFirstName(user.firstName());
-            newUser.setLastName(user.lastName());
-            newUser.setTgUsername(user.username());
-            newUser.setRole(UserRole.USER);
-            newUser.setPhoneNumber(null);
-            userService.addUser(newUser);
-            log.info("User Registered: {}", newUser);
-        } catch (Exception e) {
-            log.error(e.getMessage() + "Error registering a new User");
         }
     }
 
