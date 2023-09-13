@@ -55,7 +55,15 @@ public enum CallbackData {
 
     CONTACTS("contacts", "☎ Оставить свои контактные данные"),
     REPORT("report", "✉ Прислать отчет о питомце"),
-    HELP("help", "❓ Позвать волонтера");
+    HELP("help", "❓ Позвать волонтера"),
+
+
+    VOLUNTEER_CHOSE("volunteer.chose","Перейти в меню"),
+    ADD_ADOPTER("add.adopter","Добавить усыновителя"),
+    CHECK_REPORTS("check.reports", "Проверить отчеты"),
+    EXTEND_TRIAL("extend.trial", "Продлить испытательный срок"),
+    KEEP_ANIMAL("keep.animal", "Оставить животное у хозяина");
+
 
     private final String title;
     private final String description;
