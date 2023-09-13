@@ -3,7 +3,7 @@ package com.example.petshelter.util;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Набор констант с названием кнопок и их описание для получения инфомации о приютах
+ * Набор констант с названием кнопок и их описание для получения информации о приютах
  */
 @Slf4j
 public enum CallbackData {
@@ -28,23 +28,23 @@ public enum CallbackData {
     CATS_SHELTER_ENTRY_PASS("cats.shelter.entry_pass", "\uD83D\uDEC2 Оформить пропуск на машину"),
     CATS_SHELTER_SAFETY_RULES("cats.shelter.safety_rules", "\uD83D\uDC77 Правила техники безопасности на территории приюта"),
 
-    CATS_ADOPTION_SAY_HI_RULES("cats.shelter.say_hi_rules", "Правила знакомства с кошкой"),
-    CATS_ADOPTION_DOCUMENTS("cats.shelter.say_hi_rules", "Документы для получения кошки из приюта"),
-    CATS_ADOPTION_TRANSPORTATION_RULES("cats.shelter.transportation_rules", "Рекомендации по транспортировке кошки"),
-    CATS_ADOPTION_CHILD_HOUSE_RULES("cats.shelter.child_house_rules", "Рекомендации по обустройству дома для котенка"),
-    CATS_ADOPTION_ADULT_HOUSE_RULES("cats.shelter.adult_house_rules", "Рекомендации по обустройству дома для взрослой кошки"),
-    CATS_ADOPTION_DISABLED_HOUSE_RULES("cats.shelter.disabled_house_rules", "Рекомендации по обустройству дома для кошки с ограниченными возможностями"),
-    CATS_ADOPTION_REASONS_FOR_REFUSAL("cats.shelter.reasons_for_refusal", "Причины отказа в получении кошки из приюта"),
+    CATS_ADOPTION_SAY_HI_RULES("cats.shelter.say_hi_rules", "\uD83D\uDC4B Правила знакомства с кошкой"),
+    CATS_ADOPTION_DOCUMENTS("cats.shelter.documents", "\uD83D\uDCBC Документы для получения кошки из приюта"),
+    CATS_ADOPTION_TRANSPORTATION_RULES("cats.shelter.transportation_rules", "\uD83D\uDE8C Рекомендации по транспортировке кошки"),
+    CATS_ADOPTION_CHILD_HOUSE_RULES("cats.shelter.child_house_rules", "\uD83C\uDFE0 Рекомендации по обустройству дома для котенка"),
+    CATS_ADOPTION_ADULT_HOUSE_RULES("cats.shelter.adult_house_rules", "\uD83C\uDFE0 Рекомендации по обустройству дома для взрослой кошки"),
+    CATS_ADOPTION_DISABLED_HOUSE_RULES("cats.shelter.disabled_house_rules", "\uD83C\uDFE0 Рекомендации по обустройству дома для кошки с ограниченными возможностями"),
+    CATS_ADOPTION_REASONS_FOR_REFUSAL("cats.shelter.reasons_for_refusal", "\uD83D\uDED1 Причины отказа в получении кошки из приюта"),
 
-    DOGS_ADOPTION_SAY_HI_RULES("dogs.shelter.say_hi_rules", "Правила знакомства с собакой"),
-    DOGS_ADOPTION_DOCUMENTS("dogs.shelter.say_hi_rules", "Документы для получения собаки из приюта"),
-    DOGS_ADOPTION_TRANSPORTATION_RULES("dogs.shelter.transportation_rules", "Рекомендации по транспортировке собаки"),
-    DOGS_ADOPTION_CHILD_HOUSE_RULES("dogs.shelter.child_house_rules", "Рекомендации по обустройству дома для щенка"),
-    DOGS_ADOPTION_ADULT_HOUSE_RULES("dogs.shelter.adult_house_rules", "Рекомендации по обустройству дома для взрослой собаки"),
-    DOGS_ADOPTION_DISABLED_HOUSE_RULES("dogs.shelter.disabled_house_rules", "Рекомендации по обустройству дома для собаки с ограниченными возможностями"),
-    DOGS_ADOPTION_DOG_HANDLER_RULES("dogs.shelter.dog_handler_rules", "Советы кинолога по первичному общению с собакой"),
-    DOGS_ADOPTION_DOG_HANDLERS_LIST("dogs.shelter.dog_handlers_list", "Список проверенных кинологов для обращения к ним"),
-    DOGS_ADOPTION_REASONS_FOR_REFUSAL("dogs.shelter.reasons_for_refusal", "Причины отказа в получении собаки из приюта"),
+    DOGS_ADOPTION_SAY_HI_RULES("dogs.shelter.say_hi_rules", "\uD83D\uDC4B Правила знакомства с собакой"),
+    DOGS_ADOPTION_DOCUMENTS("dogs.shelter.documents", "\uD83D\uDCBC Документы для получения собаки из приюта"),
+    DOGS_ADOPTION_TRANSPORTATION_RULES("dogs.shelter.transportation_rules", "\uD83D\uDE8C Рекомендации по транспортировке собаки"),
+    DOGS_ADOPTION_CHILD_HOUSE_RULES("dogs.shelter.child_house_rules", "\uD83C\uDFE0 Рекомендации по обустройству дома для щенка"),
+    DOGS_ADOPTION_ADULT_HOUSE_RULES("dogs.shelter.adult_house_rules", "\uD83C\uDFE0 Рекомендации по обустройству дома для взрослой собаки"),
+    DOGS_ADOPTION_DISABLED_HOUSE_RULES("dogs.shelter.disabled_house_rules", "\uD83C\uDFE0 Рекомендации по обустройству дома для собаки с ограниченными возможностями"),
+    DOGS_ADOPTION_DOG_HANDLER_RULES("dogs.shelter.dog_handler_rules", "\uD83D\uDC81 Советы кинолога по первичному общению с собакой"),
+    DOGS_ADOPTION_DOG_HANDLERS_LIST("dogs.shelter.dog_handlers_list", "\uD83C\uDD8E Список проверенных кинологов для обращения к ним"),
+    DOGS_ADOPTION_REASONS_FOR_REFUSAL("dogs.shelter.reasons_for_refusal", "\uD83D\uDED1 Причины отказа в получении собаки из приюта"),
 
     DOGS_SHELTER_INFO("dogs.shelter.info", "\uD83D\uDC15 Краткое описание приюта для собак"),
     DOGS_SHELTER_WORK_HOURS("dogs.shelter.work_hours", "⌛ Расписание работы приюта"),

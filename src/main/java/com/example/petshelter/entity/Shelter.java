@@ -22,8 +22,12 @@ public class Shelter {
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private PetType petType;
+    private float latitude;
+    private float longitude;
+  
 
     public Shelter(Long id, String name, String address, String phoneNumber, String workSchedule, PetType petType) {
+
         this.id = id;
         this.name = name;
         this.address = address;
@@ -33,6 +37,22 @@ public class Shelter {
     }
 
     public Shelter() {
+    }
+
+    public float getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(float latitude) {
+        this.latitude = latitude;
+    }
+
+    public float getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(float longitude) {
+        this.longitude = longitude;
     }
 
     public Long getId() {
