@@ -64,6 +64,18 @@ public class UserService {
         return user;
     }
 
+    public void updateUserSelectedShelterId(Long chatId, String data) {
+        User oldUser =  userRepository.findUserByChatId(chatId).orElseThrow(() -> new UserNotFoundException(chatId));
+        oldUser.setSelectedShelterId(Long.parseLong(data));
+        userRepository.save(oldUser);
+    }
+
+    public void resetSelectedShelterId(Long chatId) {
+        User oldUser = userRepository.findUserByChatId(chatId).orElseThrow(() -> new UserNotFoundException(chatId));
+        oldUser.setSelectedShelterId(0);
+        userRepository.save(oldUser);
+    }
+
     public void registerNewUser(final com.pengrad.telegrambot.model.User user, final Long chatId) {
         User newUser = new User();
         newUser.setChatId(chatId);
@@ -83,5 +95,4 @@ public class UserService {
         this.updateUser(userId, user);
         logger.info("Was called method to set phone number for UserId {}", userId);
     }
-
 }

@@ -29,7 +29,6 @@ public class PetService {
         Pet oldPet = petRepository.findById(id).orElseThrow(() -> new PetNotFoundException(id));
         oldPet.setSpecies(pet.getSpecies());
         oldPet.setNickname(pet.getNickname());
-        oldPet.setAdopted(pet.getAdopted());
         return petRepository.save(oldPet);
     }
 

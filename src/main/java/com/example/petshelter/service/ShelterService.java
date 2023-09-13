@@ -3,11 +3,13 @@ package com.example.petshelter.service;
 import com.example.petshelter.entity.Shelter;
 import com.example.petshelter.exception.ShelterNotFoundException;
 import com.example.petshelter.repository.ShelterRepository;
+import com.example.petshelter.util.PetType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class ShelterService {
@@ -56,4 +58,7 @@ public class ShelterService {
         return shelter;
     }
 
+    public List<Shelter> getShelterByType(PetType type) {
+        return shelterRepository.findShelterByPetType(type);
+    }
 }

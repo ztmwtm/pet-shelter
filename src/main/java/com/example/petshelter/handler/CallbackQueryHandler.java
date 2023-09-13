@@ -4,7 +4,9 @@ import com.example.petshelter.entity.Shelter;
 import com.example.petshelter.helper.MarkupHelper;
 import com.example.petshelter.service.ShelterService;
 import com.example.petshelter.service.TelegramBotService;
+import com.example.petshelter.service.UserService;
 import com.example.petshelter.util.CallbackData;
+import com.example.petshelter.util.PetType;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.KeyboardButton;
@@ -31,6 +33,7 @@ public class CallbackQueryHandler {
     private final Map<CallbackData, BiConsumer<User, Chat>> queryExecutors = new EnumMap<>(CallbackData.class);
     private final TelegramBotService telegramBotService;
     private final ShelterService shelterService;
+    private final UserService userService;
     private final MarkupHelper markupHelper;
     private final Map<String, String> catsMenu = new LinkedHashMap<>();
     private final Map<String, String> dogsMenu = new LinkedHashMap<>();
@@ -40,15 +43,28 @@ public class CallbackQueryHandler {
     private final Map<String, String> dogsTakeMenu = new LinkedHashMap<>();
     private final EnumMap<CallbackData, String> fileMapper = new EnumMap<>(CallbackData.class);
 
+    private final Map<String, String> dogsChoseMenu = new LinkedHashMap<>();
+    private final Map<String, String> catsChoseMenu = new LinkedHashMap<>();
+
+    private final Map<String, String> mainMenu = new HashMap<>();
+
     /*
      * Нестатический блок инициализации кнопок и методов
      */ {
+
+        mainMenu.put(CallbackData.CATS.getTitle(), "\uD83D\uDC08 Приют для кошек");
+        mainMenu.put(CallbackData.DOGS.getTitle(), "\uD83D\uDC15 Приют для собак");
+
         queryExecutors.put(CallbackData.CATS, this::handleCats);
         queryExecutors.put(CallbackData.DOGS, this::handleDogs);
         queryExecutors.put(CallbackData.CATS_INFO, this::handleCatsInfo);
         queryExecutors.put(CallbackData.DOGS_INFO, this::handleDogsInfo);
         queryExecutors.put(CallbackData.CATS_TAKE, this::handleCatsTake);
         queryExecutors.put(CallbackData.DOGS_TAKE, this::handleDogsTake);
+
+        queryExecutors.put(CallbackData.CATS_SHELTER_CHOSE, this::handleCatsShelterChose);
+        queryExecutors.put(CallbackData.DOGS_SHELTER_CHOSE, this::handleDogsShelterChose);
+        queryExecutors.put(CallbackData.RESET_SHELTER, this::handleResetShelterChose);
 
         queryExecutors.put(CallbackData.CATS_SHELTER_INFO, this::handleCatsShelterInfo);
         queryExecutors.put(CallbackData.CATS_SHELTER_WORK_HOURS, this::handleCatsShelterWorkHours);
@@ -90,11 +106,13 @@ public class CallbackQueryHandler {
         catsMenu.put(CallbackData.CATS_TAKE.getTitle(), CallbackData.CATS_TAKE.getDescription());
         catsMenu.put(CallbackData.REPORT.getTitle(), CallbackData.REPORT.getDescription());
         catsMenu.put(CallbackData.HELP.getTitle(), CallbackData.HELP.getDescription());
+        catsMenu.put(CallbackData.RESET_SHELTER.getTitle(), CallbackData.RESET_SHELTER.getDescription());
 
         dogsMenu.put(CallbackData.DOGS_INFO.getTitle(), CallbackData.DOGS_INFO.getDescription());
         dogsMenu.put(CallbackData.DOGS_TAKE.getTitle(), CallbackData.DOGS_TAKE.getDescription());
         dogsMenu.put(CallbackData.REPORT.getTitle(), CallbackData.REPORT.getDescription());
         dogsMenu.put(CallbackData.HELP.getTitle(), CallbackData.HELP.getDescription());
+        dogsMenu.put(CallbackData.RESET_SHELTER.getTitle(), CallbackData.RESET_SHELTER.getDescription());
 
         catsInfoMenu.put(CallbackData.CATS_SHELTER_INFO.getTitle(), CallbackData.CATS_SHELTER_INFO.getDescription());
         catsInfoMenu.put(CallbackData.CATS_SHELTER_WORK_HOURS.getTitle(), CallbackData.CATS_SHELTER_WORK_HOURS.getDescription());
@@ -165,10 +183,12 @@ public class CallbackQueryHandler {
     }
 
     @Autowired
-    public CallbackQueryHandler(final TelegramBotService telegramBotService, final ShelterService shelterService, final MarkupHelper markupHelper) {
+    public CallbackQueryHandler(final TelegramBotService telegramBotService, final ShelterService shelterService, UserService userService, final MarkupHelper markupHelper) {
         this.telegramBotService = telegramBotService;
         this.shelterService = shelterService;
+        this.userService = userService;
         this.markupHelper = markupHelper;
+        fillSheltersChooseMenu();
         log.info("Constructor CallbackQueryHandler");
     }
 
@@ -178,12 +198,35 @@ public class CallbackQueryHandler {
             for (CallbackData query : queries) {
                 if (Objects.equals(query.getTitle(), data)) {
                     queryExecutors.get(query).accept(user, chat);
-                    break;
+                    return;
+                }
+            }
+            for (String catsHashCode : catsChoseMenu.keySet()) {
+                if (Objects.equals(catsHashCode, data)) {
+                    userService.updateUserSelectedShelterId(chat.id(), data);
+                    queryExecutors.get(CallbackData.CATS_SHELTER_CHOSE).accept(user, chat);
+                    return;
+                }
+            }
+            for (String dogsHashCode : dogsChoseMenu.keySet()) {
+                if (Objects.equals(dogsHashCode, data)) {
+                    userService.updateUserSelectedShelterId(chat.id(), data);
+                    queryExecutors.get(CallbackData.DOGS_SHELTER_CHOSE).accept(user, chat);
+                    return;
                 }
             }
             log.info("Handle CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error Handle CallbackQueryHandler");
+        }
+    }
+
+    private void fillSheltersChooseMenu() {
+        for (Shelter shelter : shelterService.getShelterByType(PetType.CAT)) {
+            catsChoseMenu.put(String.valueOf(shelter.getId()), shelter.getName());
+        }
+        for (Shelter shelter : shelterService.getShelterByType(PetType.DOG)) {
+            dogsChoseMenu.put(String.valueOf(shelter.getId()), shelter.getName());
         }
     }
 
@@ -195,11 +238,21 @@ public class CallbackQueryHandler {
      */
     private void handleDogs(User user, Chat chat) {
         try {
-            String text = CallbackData.DOGS.getDescription();
-            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(dogsMenu), null);
+            String text = CallbackData.DOGS_SHELTER_CHOSE.getDescription();
+            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(dogsChoseMenu), null);
             log.info("HandleDogs CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error HandleDogs CallbackQueryHandler");
+        }
+    }
+
+    private void handleDogsShelterChose(User user, Chat chat) {
+        try {
+            String text = CallbackData.DOGS.getDescription();
+            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(dogsMenu), ParseMode.Markdown);
+            log.info("HandleDogsShelterChose CallbackQueryHandler");
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error HandleDogsShelterChose CallbackQueryHandler");
         }
     }
 
@@ -211,11 +264,21 @@ public class CallbackQueryHandler {
      */
     private void handleCats(User user, Chat chat) {
         try {
-            String text = CallbackData.CATS.getDescription();
-            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(catsMenu), null);
+            String text = CallbackData.CATS_SHELTER_CHOSE.getDescription();
+            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(catsChoseMenu), null);
             log.info("HandleCats CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error HandleCats CallbackQueryHandler");
+        }
+    }
+
+    private void handleCatsShelterChose(User user, Chat chat) {
+        try {
+            String text = CallbackData.CATS.getDescription();
+            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(catsMenu), ParseMode.Markdown);
+            log.info("HandleCatsShelterChose CallbackQueryHandler");
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error HandleCatsShelterChose CallbackQueryHandler");
         }
     }
 
@@ -262,6 +325,7 @@ public class CallbackQueryHandler {
             log.error(e.getMessage() + "Error HandleDogsTake CallbackQueryHandler");
         }
     }
+
 
     private void handleCatsShelterInfo(User user, Chat chat) {
         String caption = CallbackData.CATS_SHELTER_INFO.getDescription();
@@ -482,4 +546,17 @@ public class CallbackQueryHandler {
             log.error(e.getMessage() + "Error handleVolunteerHelp CallbackQueryHandler");
         }
     }
+
+    private void handleResetShelterChose(User user, Chat chat) {
+        try {
+            String text = "Выберите новый приют:";
+            userService.resetSelectedShelterId(chat.id());
+            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(mainMenu), ParseMode.Markdown);
+            log.info("handleVolunteerHelp CallbackQueryHandler");
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error handleVolunteerHelp CallbackQueryHandler");
+        }
+    }
+
+
 }
