@@ -7,12 +7,17 @@ import com.example.petshelter.service.TelegramBotService;
 import com.example.petshelter.util.CallbackData;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;
+import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 /**
@@ -37,8 +42,7 @@ public class CallbackQueryHandler {
 
     /*
      * Нестатический блок инициализации кнопок и методов
-     */
-    {
+     */ {
         queryExecutors.put(CallbackData.CATS, this::handleCats);
         queryExecutors.put(CallbackData.DOGS, this::handleDogs);
         queryExecutors.put(CallbackData.CATS_INFO, this::handleCatsInfo);
@@ -79,6 +83,7 @@ public class CallbackQueryHandler {
         queryExecutors.put(CallbackData.DOGS_ADOPTION_REASONS_FOR_REFUSAL, this::handleDogsAdoptionReasonsForRefusal);
 
         queryExecutors.put(CallbackData.REPORT, this::handleReport);
+        queryExecutors.put(CallbackData.CONTACTS, this::handleContacts);
         queryExecutors.put(CallbackData.HELP, this::handleVolunteerHelp);
 
         catsMenu.put(CallbackData.CATS_INFO.getTitle(), CallbackData.CATS_INFO.getDescription());
@@ -453,6 +458,18 @@ public class CallbackQueryHandler {
             log.info("HandleReport CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error HandleReport CallbackQueryHandler");
+        }
+    }
+
+    private void handleContacts(User user, Chat chat) {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(
+                new KeyboardButton("☎ Отправить свой номер телефона").requestContact(true)
+        );
+        try {
+            telegramBotService.sendContact(chat.id(), "*Кликните по кнопке ниже* для отправки своих контактов", replyKeyboardMarkup, ParseMode.Markdown);
+            log.info("handleContacts CallbackQueryHandler");
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error handleContacts CallbackQueryHandler");
         }
     }
 
