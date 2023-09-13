@@ -46,7 +46,7 @@ public class CallbackQueryHandler {
     private final Map<String, String> dogsChoseMenu = new LinkedHashMap<>();
     private final Map<String, String> catsChoseMenu = new LinkedHashMap<>();
 
-    private final Map<String, String> mainMenu = new HashMap<>();
+    private final Map<String, String> mainMenu = new LinkedHashMap<>();
 
     /*
      * Нестатический блок инициализации кнопок и методов

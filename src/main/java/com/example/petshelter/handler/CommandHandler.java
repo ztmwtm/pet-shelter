@@ -101,14 +101,13 @@ public class CommandHandler {
             String logInfo = "HandleStart CommandHandler";
             if (currentUser == null) {
                 String userName = user.firstName();
-
-                registerNewUser(user, chatId);
+                userService.registerNewUser(user, chatId);
                 log.info("User registered successfully");
                 telegramBotService.sendMessage(chatId, userName + GREETING, markupHelper.buildMenu(mainMenu), ParseMode.Markdown);
                 log.info(logInfo);
                 return;
             }
-            if (recurringUser.getRole() == UserRole.VOLUNTEER) {
+            if (currentUser.getRole() == UserRole.VOLUNTEER) {
                 telegramBotService.sendMessage(chatId, VOLUNTEER_MENU, null, null);
                 log.info(logInfo);
                 return;
@@ -124,7 +123,7 @@ public class CommandHandler {
         } catch (Exception e) {
             log.error(e.getMessage() + "Error HandleStart CommandHandler");
         }
-
+    }
     
 
 }
