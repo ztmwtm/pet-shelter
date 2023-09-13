@@ -11,8 +11,8 @@ public enum CallbackData {
     CATS("cats", "Выберите, что вы хотите узнать о приюте для кошек:"),
     DOGS("dogs", "Выберите, что вы хотите узнать о приюте для собак:"),
 
-    CATS_SHELTER_CHOSE("cats.chose", "Выберите, любой из приютов для кошек:"),
-    DOGS_SHELTER_CHOSE("dogs.chose", "Выберите, любой из приютов для собак:"),
+    CATS_SHELTER_CHOSE("cats.chose", "Выберите любой из приютов для кошек:"),
+    DOGS_SHELTER_CHOSE("dogs.chose", "Выберите любой из приютов для собак:"),
 
     RESET_SHELTER("reset.shelter", "\u274C Выбрать другой приют."),
 
