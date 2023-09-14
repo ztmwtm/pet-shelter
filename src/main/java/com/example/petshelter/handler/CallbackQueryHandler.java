@@ -198,8 +198,6 @@ public class CallbackQueryHandler {
         fileMapper.put(CallbackData.DOGS_ADOPTION_REASONS_FOR_REFUSAL, "https://lukaselektro.ru/wp-content/uploads/2023/09/dogs/Dogs_Shelter_Reasons_for_Refusal.pdf");
     }
 
-
-
     @Autowired
     public CallbackQueryHandler(final TelegramBotService telegramBotService, final ShelterService shelterService, UserService userService, final MarkupHelper markupHelper) {
         this.telegramBotService = telegramBotService;
@@ -358,7 +356,7 @@ public class CallbackQueryHandler {
     }
 
     private void handleCatsShelterAddress(User user, Chat chat) {
-        Shelter catShelter = shelterService.getShelterByName(CallbackData.CATS.getTitle());
+        Shelter catShelter = shelterService.getShelterById(userService.getUserByChatId(chat.id()).getSelectedShelterId());
         String address = "\uD83D\uDCCD Адрес приюта для кошек: *" + catShelter.getAddress() + "*";
         telegramBotService.sendMessage(chat.id(), address, null, ParseMode.Markdown);
         telegramBotService.sendLocation(chat.id(), catShelter.getLatitude(), catShelter.getLongitude());
