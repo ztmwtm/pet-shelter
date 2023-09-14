@@ -340,7 +340,7 @@ public class CallbackQueryHandler {
     }
 
     private void handleCatsShelterAddress(User user, Chat chat) {
-        Shelter catShelter = shelterService.getShelterByName(CallbackData.CATS.getTitle());
+        Shelter catShelter = shelterService.getShelterById(userService.getUserByChatId(chat.id()).getSelectedShelterId());
         String address = "\uD83D\uDCCD Адрес приюта для кошек: *" + catShelter.getAddress() + "*";
         telegramBotService.sendMessage(chat.id(), address, null, ParseMode.Markdown);
         telegramBotService.sendLocation(chat.id(), catShelter.getLatitude(), catShelter.getLongitude());
@@ -557,6 +557,4 @@ public class CallbackQueryHandler {
             log.error(e.getMessage() + "Error handleVolunteerHelp CallbackQueryHandler");
         }
     }
-
-
 }

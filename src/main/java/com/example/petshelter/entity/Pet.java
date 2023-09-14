@@ -1,6 +1,7 @@
 package com.example.petshelter.entity;
 
 import com.example.petshelter.util.PetType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -19,8 +20,11 @@ public class Pet {
     private PetType petType;
     private LocalDate dayOfAdopt;
     private int daysToAdaptation;
-
+    @OneToOne
+    @JsonIgnore
+    private User adopter;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
 
@@ -40,6 +44,22 @@ public class Pet {
 
     public void setPetType(PetType petType) {
         this.petType = petType;
+    }
+
+    public User getAdopter() {
+        return adopter;
+    }
+
+    public void setAdopter(User adopter) {
+        this.adopter = adopter;
+    }
+
+    public Shelter getShelter() {
+        return shelter;
+    }
+
+    public void setShelter(Shelter shelter) {
+        this.shelter = shelter;
     }
 
     public Long getId() {
