@@ -2,6 +2,8 @@ package com.example.petshelter.handler;
 
 import com.example.petshelter.helper.MarkupHelper;
 import com.example.petshelter.service.TelegramBotService;
+import com.example.petshelter.service.UserReportPhotoService;
+import com.example.petshelter.service.UserReportService;
 import com.example.petshelter.service.UserService;
 import com.example.petshelter.util.CallbackData;
 import com.example.petshelter.util.Command;
@@ -11,10 +13,11 @@ import com.pengrad.telegrambot.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
+import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 /**
@@ -33,6 +36,8 @@ public class CommandHandler {
             Начните с выбора приюта:""";
     private final Map<Command, BiConsumer<User, Chat>> commandExecutors = new EnumMap<>(Command.class);
     private final TelegramBotService telegramBotService;
+    private final UserReportService userReportService;
+    private final UserReportPhotoService userReportPhotoService;
     private final UserService userService;
     private final MarkupHelper markupHelper;
     private final Map<String, String> mainMenu = new HashMap<>();
@@ -47,7 +52,13 @@ public class CommandHandler {
     }
 
     @Autowired
-    public CommandHandler(final TelegramBotService telegramBotService, final UserService userService, final MarkupHelper markupHelper) {
+    public CommandHandler(final TelegramBotService telegramBotService,
+                          final UserService userService,
+                          final MarkupHelper markupHelper,
+                          final UserReportService userReportService,
+                          final UserReportPhotoService userReportPhotoService) {
+        this.userReportPhotoService = userReportPhotoService;
+        this.userReportService = userReportService;
         this.telegramBotService = telegramBotService;
         this.userService = userService;
         this.markupHelper = markupHelper;
@@ -108,4 +119,17 @@ public class CommandHandler {
         }
     }
 
+    public void checkReload(Update update, Chat chat) {
+        if (update.hasMessage() && update.getMessage().hasText() && !(update.getMessage().hasPhoto())) {
+            telegramBotService.sendMessage(chat.id(), "Пришлите вместе с отчётом фотографию вашего питомца.", markupHelper.buildMenu(mainMenu), null);
+        } else if (update.hasMessage() && update.getMessage().hasPhoto() && !(update.getMessage().hasText())) {
+            telegramBotService.sendMessage(chat.id(), "Пришлите вместе с фотографией текстовый отчёт о питомце.", markupHelper.buildMenu(mainMenu), null);
+        } else {
+            telegramBotService.sendMessage(chat.id(), "Отчёт прошёл валидацию и был добавлен в базу данных.", markupHelper.buildMenu(mainMenu), null);
+            String textReport = update.getMessage().getText();
+            String fileId = update.getMessage().getPhoto().stream().max(Comparator.comparing(PhotoSize::getFileSize)).orElseThrow().getFileId();
+            userReportService.createUserReport(textReport);
+            userReportPhotoService.createUserReportPhoto(fileId);
+        }
+    }
 }

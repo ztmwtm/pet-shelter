@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserReportRepository extends JpaRepository<UserReport, Long> {
+    void save(String fileId);
 
 }

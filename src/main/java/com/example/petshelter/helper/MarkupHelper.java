@@ -15,7 +15,6 @@ import java.util.Map;
 @Slf4j
 @Component
 public class MarkupHelper {
-
     /**
      * Метод отвечающий за создание кнопок меню под сообщением
      * @param menu
@@ -29,9 +28,8 @@ public class MarkupHelper {
             }
             return keyboardMarkup;
         } catch (Exception e) {
-            log.error(e.getMessage() + " Error BuildMenu MArkupHendler");
+            log.error(e.getMessage() + " Error BuildMenu MarkupHendler");
         }
         return null;
     }
-
 }

@@ -2,6 +2,7 @@ package com.example.petshelter.controller;
 
 import com.example.petshelter.entity.User;
 import com.example.petshelter.service.UserService;
+import com.pengrad.telegrambot.model.PhotoSize;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -121,5 +122,4 @@ public class UserController {
         User deletedUser = userService.deleteUserById(id);
         return ResponseEntity.ok(deletedUser);
     }
-
 }
