@@ -555,7 +555,6 @@ public class CallbackQueryHandler {
         }
     }
 
-
     private void handleVolunteerHelp(User user, Chat chat) {
         try {
             String text = "Ожидайте ответа волонтера. Он напишет вам в личном сообщении.";
@@ -593,7 +592,7 @@ public class CallbackQueryHandler {
     private void handleAddAdopter(User user, Chat chat) {
         try {
             String text = "Добавление усыновителя";
-            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(volunteermenu), ParseMode.Markdown);
+            telegramBotService.sendMessage(chat.id(), text, null, null);
             log.info("handleAddAdopter CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error handleAddAdopter CallbackQueryHandler");
@@ -603,7 +602,7 @@ public class CallbackQueryHandler {
     private void handleCheckReports(User user, Chat chat) {
         try {
             String text = "Проверить рапорты";
-            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(volunteermenu), ParseMode.Markdown);
+            telegramBotService.sendMessage(chat.id(), text, null, null);
             log.info("handleCheckReports CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error handleCheckReports CallbackQueryHandler");
@@ -613,7 +612,7 @@ public class CallbackQueryHandler {
     private void handleExtendTrial(User user, Chat chat) {
         try {
             String text = "Продлить срок напроизвольное количество дней";
-            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(volunteermenu), ParseMode.Markdown);
+            telegramBotService.sendMessage(chat.id(), text, null, null);
             log.info("handleExtendTrial CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error handleExtendTrial CallbackQueryHandler");
@@ -622,8 +621,8 @@ public class CallbackQueryHandler {
 
     private void handleKeepAnimal(User user, Chat chat) {
         try {
-            String text = "Окончание испытального срока, животное осется у животного";
-            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(volunteermenu), ParseMode.Markdown);
+            String text = "Окончание испытального срока, животное остается у животного";
+            telegramBotService.sendMessage(chat.id(), text, null, null);
             log.info("handleKeepAnimal CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error handleKeepAnimal CallbackQueryHandler");
