@@ -116,7 +116,6 @@ public class CommandHandler {
                 telegramBotService.sendMessage(chatId, "Выберите что вы хотите узнать о приюте:", markupHelper.buildMenu(mainMenuWithoutChose), ParseMode.Markdown);
                 log.info(logInfo);
                 return;
-
             }
             telegramBotService.sendMessage(chatId, "Выберите приют:", markupHelper.buildMenu(mainMenu), null);
             log.info(logInfo);
@@ -124,6 +123,6 @@ public class CommandHandler {
             log.error(e.getMessage() + "Error HandleStart CommandHandler");
         }
     }
-    
+
 
 }
