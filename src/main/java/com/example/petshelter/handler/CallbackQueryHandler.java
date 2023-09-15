@@ -555,10 +555,14 @@ public class CallbackQueryHandler {
         }
     }
 
+
     private void handleVolunteerHelp(User user, Chat chat) {
         try {
-            String text = "Напишите с чем нужна помощь – отправим ваше сообщение волонтёру";
+            String text = "Ожидайте ответа волонтера. Он напишет вам в личном сообщении.";
             telegramBotService.sendMessage(chat.id(), text, null, null);
+//            Chat volunteer = ;
+            String textVolunteer = "Ответьте на вопросы пользователя @" + chat.username();
+//            telegramBotService.sendMessage(volunteer.id(), textVolunteer, null, null);
             log.info("handleVolunteerHelp CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error handleVolunteerHelp CallbackQueryHandler");
@@ -615,7 +619,7 @@ public class CallbackQueryHandler {
             log.error(e.getMessage() + "Error handleExtendTrial CallbackQueryHandler");
         }
     }
-    
+
     private void handleKeepAnimal(User user, Chat chat) {
         try {
             String text = "Окончание испытального срока, животное осется у животного";
