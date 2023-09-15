@@ -10,8 +10,8 @@ import java.util.Optional;
 public class UserReportService {
     private UserReportRepository userReportRepository;
 
-    public void createUserReport(String fileId) {
-        userReportRepository.save(fileId);
+    public void createUserReport(String text) {
+        userReportRepository.save(text);
     }
 
     public void updateUserReport(String fileId) {

@@ -17,6 +17,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.io.File;
 import java.util.*;
 import java.util.function.BiConsumer;
 
@@ -129,7 +130,7 @@ public class CommandHandler {
             String textReport = update.getMessage().getText();
             String fileId = update.getMessage().getPhoto().stream().max(Comparator.comparing(PhotoSize::getFileSize)).orElseThrow().getFileId();
             userReportService.createUserReport(textReport);
-            userReportPhotoService.createUserReportPhoto(fileId);
+            userReportPhotoService.createUserReportPhoto(new File(fileId));
         }
     }
 }
