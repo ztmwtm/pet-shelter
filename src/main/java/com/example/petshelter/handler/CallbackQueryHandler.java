@@ -48,6 +48,10 @@ public class CallbackQueryHandler {
 
     private final Map<String, String> mainMenu = new LinkedHashMap<>();
 
+    private final Map<String, String> startVolunteer = new LinkedHashMap<>();
+    private final Map<String, String> volunteermenu = new LinkedHashMap<>();
+
+
     /*
      * Нестатический блок инициализации кнопок и методов
      */ {
@@ -101,6 +105,18 @@ public class CallbackQueryHandler {
         queryExecutors.put(CallbackData.REPORT, this::handleReport);
         queryExecutors.put(CallbackData.CONTACTS, this::handleContacts);
         queryExecutors.put(CallbackData.HELP, this::handleVolunteerHelp);
+
+        queryExecutors.put(CallbackData.START_VOLUNTEER, this::handleStartVolunteer);
+        queryExecutors.put(CallbackData.ADD_ADOPTER, this::handleAddAdopter);
+        queryExecutors.put(CallbackData.CHECK_REPORTS, this::handleCheckReports);
+        queryExecutors.put(CallbackData.EXTEND_TRIAL, this::handleExtendTrial);
+        queryExecutors.put(CallbackData.KEEP_ANIMAL, this::handleKeepAnimal);
+
+        startVolunteer.put(CallbackData.START_VOLUNTEER.getTitle(), CallbackData.START_VOLUNTEER.getDescription());
+        volunteermenu.put(CallbackData.ADD_ADOPTER.getTitle(), CallbackData.ADD_ADOPTER.getDescription());
+        volunteermenu.put(CallbackData.CHECK_REPORTS.getTitle(), CallbackData.CHECK_REPORTS.getDescription());
+        volunteermenu.put(CallbackData.EXTEND_TRIAL.getTitle(), CallbackData.EXTEND_TRIAL.getDescription());
+        volunteermenu.put(CallbackData.KEEP_ANIMAL.getTitle(), CallbackData.KEEP_ANIMAL.getDescription());
 
         catsMenu.put(CallbackData.CATS_INFO.getTitle(), CallbackData.CATS_INFO.getDescription());
         catsMenu.put(CallbackData.CATS_TAKE.getTitle(), CallbackData.CATS_TAKE.getDescription());
@@ -181,6 +197,8 @@ public class CallbackQueryHandler {
         fileMapper.put(CallbackData.DOGS_ADOPTION_DOG_HANDLERS_LIST, "https://lukaselektro.ru/wp-content/uploads/2023/09/dogs/Dogs_Shelter_Dog_Handlers_List.pdf");
         fileMapper.put(CallbackData.DOGS_ADOPTION_REASONS_FOR_REFUSAL, "https://lukaselektro.ru/wp-content/uploads/2023/09/dogs/Dogs_Shelter_Reasons_for_Refusal.pdf");
     }
+
+
 
     @Autowired
     public CallbackQueryHandler(final TelegramBotService telegramBotService, final ShelterService shelterService, UserService userService, final MarkupHelper markupHelper) {
@@ -558,5 +576,53 @@ public class CallbackQueryHandler {
         }
     }
 
+    private void handleStartVolunteer(User user, Chat chat) {
+        try {
+            String text = "Меню волонтера";
+            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(volunteermenu), ParseMode.Markdown);
+            log.info("handleStartVolunteer CallbackQueryHandler");
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error handleStartVolunteer CallbackQueryHandler");
+        }
+    }
 
+    private void handleAddAdopter(User user, Chat chat) {
+        try {
+            String text = "Добавление усыновителя";
+            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(volunteermenu), ParseMode.Markdown);
+            log.info("handleAddAdopter CallbackQueryHandler");
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error handleAddAdopter CallbackQueryHandler");
+        }
+    }
+
+    private void handleCheckReports(User user, Chat chat) {
+        try {
+            String text = "Проверить рапорты";
+            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(volunteermenu), ParseMode.Markdown);
+            log.info("handleCheckReports CallbackQueryHandler");
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error handleCheckReports CallbackQueryHandler");
+        }
+    }
+
+    private void handleExtendTrial(User user, Chat chat) {
+        try {
+            String text = "Продлить срок напроизвольное количество дней";
+            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(volunteermenu), ParseMode.Markdown);
+            log.info("handleExtendTrial CallbackQueryHandler");
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error handleExtendTrial CallbackQueryHandler");
+        }
+    }
+    
+    private void handleKeepAnimal(User user, Chat chat) {
+        try {
+            String text = "Окончание испытального срока, животное осется у животного";
+            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(volunteermenu), ParseMode.Markdown);
+            log.info("handleKeepAnimal CallbackQueryHandler");
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error handleKeepAnimal CallbackQueryHandler");
+        }
+    }
 }
