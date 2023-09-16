@@ -1,19 +1,21 @@
 package com.example.petshelter.service;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.File;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
-import com.pengrad.telegrambot.request.SendDocument;
-import com.pengrad.telegrambot.request.SendLocation;
-import com.pengrad.telegrambot.request.SendMessage;
-import com.pengrad.telegrambot.request.SendPhoto;
+import com.pengrad.telegrambot.request.*;
+import com.pengrad.telegrambot.response.GetFileResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Класс отвечающий за отправку сообщений ботом
@@ -150,4 +152,19 @@ public class TelegramBotService {
         telegramBot.execute(new SendLocation(chatId, latitude, longitude));
     }
 
+    public URL getFileURL(String fileId) throws MalformedURLException {
+        GetFile request = new GetFile(fileId);
+        GetFileResponse getFileResponse = telegramBot.execute(request);
+        File file = getFileResponse.file();
+        return new URL(telegramBot.getFullFilePath(file));
+    }
+
+    public void sendDocument(Long chatId, String file) {
+        SendDocument document = new SendDocument(chatId, file);
+        telegramBot.execute(document);
+    }
+
+    public void sendPhoto(Long chatId, java.io.File photo) {
+        telegramBot.execute(new SendPhoto(chatId, photo));
+    }
 }
