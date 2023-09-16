@@ -3,6 +3,7 @@ package com.example.petshelter.util;
 import com.example.petshelter.entity.Pet;
 import com.example.petshelter.service.PetService;
 import com.example.petshelter.service.TelegramBotService;
+import com.example.petshelter.service.UserService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +41,6 @@ public class Scheduler {
 //                "storage/congratulations.jpg",
 //                String.format(CONGRATULATION_OF_ADOPTION, pet.getAdopter().getFirstName(), pet.getNickname())));
     }
-
 
     private boolean compareTimeWithCurrentTime(LocalTime time) {
         return LocalTime.now().getHour() == time.getHour() &&
