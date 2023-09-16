@@ -52,7 +52,7 @@ public class CallbackQueryHandler {
     private final Map<String, String> mainMenu = new LinkedHashMap<>();
 
     private final Map<String, String> startVolunteer = new LinkedHashMap<>();
-    private final Map<String, String> volunteermenu = new LinkedHashMap<>();
+    private final Map<String, String> volunteerMenu = new LinkedHashMap<>();
 
 
     /*
@@ -116,10 +116,10 @@ public class CallbackQueryHandler {
         queryExecutors.put(CallbackData.KEEP_ANIMAL, this::handleKeepAnimal);
 
         startVolunteer.put(CallbackData.START_VOLUNTEER.getTitle(), CallbackData.START_VOLUNTEER.getDescription());
-        volunteermenu.put(CallbackData.ADD_ADOPTER.getTitle(), CallbackData.ADD_ADOPTER.getDescription());
-        volunteermenu.put(CallbackData.CHECK_REPORTS.getTitle(), CallbackData.CHECK_REPORTS.getDescription());
-        volunteermenu.put(CallbackData.EXTEND_TRIAL.getTitle(), CallbackData.EXTEND_TRIAL.getDescription());
-        volunteermenu.put(CallbackData.KEEP_ANIMAL.getTitle(), CallbackData.KEEP_ANIMAL.getDescription());
+        volunteerMenu.put(CallbackData.ADD_ADOPTER.getTitle(), CallbackData.ADD_ADOPTER.getDescription());
+        volunteerMenu.put(CallbackData.CHECK_REPORTS.getTitle(), CallbackData.CHECK_REPORTS.getDescription());
+        volunteerMenu.put(CallbackData.EXTEND_TRIAL.getTitle(), CallbackData.EXTEND_TRIAL.getDescription());
+        volunteerMenu.put(CallbackData.KEEP_ANIMAL.getTitle(), CallbackData.KEEP_ANIMAL.getDescription());
 
         catsMenu.put(CallbackData.CATS_INFO.getTitle(), CallbackData.CATS_INFO.getDescription());
         catsMenu.put(CallbackData.CATS_TAKE.getTitle(), CallbackData.CATS_TAKE.getDescription());
@@ -583,7 +583,7 @@ public class CallbackQueryHandler {
     private void handleStartVolunteer(User user, Chat chat) {
         try {
             String text = "Меню волонтера";
-            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(volunteermenu), ParseMode.Markdown);
+            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(volunteerMenu), ParseMode.Markdown);
             log.info("handleStartVolunteer CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error handleStartVolunteer CallbackQueryHandler");
