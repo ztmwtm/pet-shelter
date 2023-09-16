@@ -1,10 +1,9 @@
 package com.example.petshelter.entity;
 
-import com.example.petshelter.util.PetType;
+import com.example.petshelter.type.PetType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -18,10 +17,11 @@ public class Pet {
     private String nickname;
     @Enumerated(EnumType.STRING)
     private PetType petType;
-    private LocalDate dayOfAdopt;
-    private int daysToAdaptation;
+//    private LocalDate dayOfAdopt;
+//    private int daysToAdaptation;
     @OneToOne
     @JsonIgnore
+    @JoinColumn(name = "user_id")
     private User adopter;
     @ManyToOne
     @JsonIgnore
@@ -86,21 +86,21 @@ public class Pet {
         this.nickname = nickname;
     }
 
-    public LocalDate getDayOfAdopt() {
-        return dayOfAdopt;
-    }
-
-    public void setDayOfAdopt(LocalDate dayOfAdopt) {
-        this.dayOfAdopt = dayOfAdopt;
-    }
-
-    public int getDaysToAdaptation() {
-        return daysToAdaptation;
-    }
-
-    public void setDaysToAdaptation(int daysToAdaptation) {
-        this.daysToAdaptation = daysToAdaptation;
-    }
+//    public LocalDate getDayOfAdopt() {
+//        return dayOfAdopt;
+//    }
+//
+//    public void setDayOfAdopt(LocalDate dayOfAdopt) {
+//        this.dayOfAdopt = dayOfAdopt;
+//    }
+//
+//    public int getDaysToAdaptation() {
+//        return daysToAdaptation;
+//    }
+//
+//    public void setDaysToAdaptation(int daysToAdaptation) {
+//        this.daysToAdaptation = daysToAdaptation;
+//    }
 
     @Override
     public boolean equals(Object o) {

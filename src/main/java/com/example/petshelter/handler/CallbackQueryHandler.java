@@ -1,12 +1,15 @@
 package com.example.petshelter.handler;
 
+import com.example.petshelter.entity.Pet;
 import com.example.petshelter.entity.Shelter;
 import com.example.petshelter.helper.MarkupHelper;
+import com.example.petshelter.service.PetService;
 import com.example.petshelter.service.ShelterService;
 import com.example.petshelter.service.TelegramBotService;
 import com.example.petshelter.service.UserService;
 import com.example.petshelter.util.CallbackData;
-import com.example.petshelter.util.PetType;
+import com.example.petshelter.type.PetType;
+import com.example.petshelter.util.Templates;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.KeyboardButton;
@@ -609,7 +612,7 @@ public class CallbackQueryHandler {
 
     private void handleExtendTrial(User user, Chat chat) {
         try {
-            String text = "Продлить срок напроизвольное количество дней";
+            String text = "Продлить срок на произвольное количество дней";
             telegramBotService.sendMessage(chat.id(), text, null, null);
             log.info("handleExtendTrial CallbackQueryHandler");
         } catch (Exception e) {
@@ -619,8 +622,8 @@ public class CallbackQueryHandler {
 
     private void handleKeepAnimal(User user, Chat chat) {
         try {
-            String text = "Окончание испытального срока, животное остается у животного";
-            telegramBotService.sendMessage(chat.id(), text, null, null);
+            com.example.petshelter.entity.User userFromDB = userService.getUserByChatId(chat.id());
+            telegramBotService.sendMessage(chat.id(), Templates.getCongratulationText(userFromDB), null, ParseMode.Markdown);
             log.info("handleKeepAnimal CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error handleKeepAnimal CallbackQueryHandler");

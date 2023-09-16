@@ -25,15 +25,20 @@ public class Scheduler {
         this.petService = petService;
     }
 
+    @Scheduled(cron = "0 0 22 * * *")
+    public void reportNotification() {
+
+    }
+
     @Scheduled(cron = "0 0 12 * * *")
     public void sendAdoptCongratulationNotification() {
-        List<Pet> recipients = petService.getAllPets().stream() //TODO Не самое видимо эффективное решение перебирать всю базу. Можно реализовать в репе
-                .filter(pet -> pet.getDayOfAdopt().isEqual(LocalDate.now().minusDays(pet.getDaysToAdaptation())))
-                .toList();
-
-        recipients.forEach(pet -> telegramBotService.sendPicture(pet.getAdopter().getChatId(),
-                "storage/congratulations.jpg",
-                String.format(CONGRATULATION_OF_ADOPTION, pet.getAdopter().getFirstName(), pet.getNickname())));
+//        List<Pet> recipients = petService.getAllPets().stream() //TODO Не самое видимо эффективное решение перебирать всю базу. Можно реализовать в репе
+//                .filter(pet -> pet.getDayOfAdopt().isEqual(LocalDate.now().minusDays(pet.getDaysToAdaptation())))
+//                .toList();
+//
+//        recipients.forEach(pet -> telegramBotService.sendPicture(pet.getAdopter().getChatId(),
+//                "storage/congratulations.jpg",
+//                String.format(CONGRATULATION_OF_ADOPTION, pet.getAdopter().getFirstName(), pet.getNickname())));
     }
 
 
