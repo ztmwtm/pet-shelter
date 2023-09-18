@@ -13,7 +13,8 @@ public class UpdateHandler {
     private final ContactHandler contactHandler;
     private final CallbackQueryHandler callbackQueryHandler;
     private final PhotoUploadHandler photoUploadHandler;
-        public UpdateHandler(final CommandHandler commandHandler,
+
+    public UpdateHandler(final CommandHandler commandHandler,
                          final ContactHandler contactHandler,
                          final CallbackQueryHandler callbackQueryHandler, PhotoUploadHandler photoUploadHandler) {
         this.commandHandler = commandHandler;
