@@ -1,6 +1,6 @@
 {
   "message": {
-    "chat": {
+    "from": {
       "id": 123
     },
     "text": "%text%"

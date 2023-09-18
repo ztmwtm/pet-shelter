@@ -16,13 +16,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.Objects;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UpdateHandlerTest {
+class CallbackQueryHandlerTest {
 
     private final TelegramBot telegramBot = Mockito.mock(TelegramBot.class);
     private final CommandHandler commandHandler = Mockito.mock(CommandHandler.class);
@@ -52,15 +58,29 @@ class UpdateHandlerTest {
     }
 
     @Test
-    void handle() {
-        Update update = new Update();
+    void handle() throws URISyntaxException, IOException {
+        String json = Files.readString(
+                Paths.get(
+                        Objects.requireNonNull(
+                                CallbackQueryHandlerTest.class.getResource("callback_query_update.json")
+                        ).toURI()
+                )
+        );
+        Update update = getUpdate(json, "/cats");
         listener.process(Collections.singletonList(update));
 
         ArgumentCaptor<BaseRequest<SetMyCommands, BaseResponse>> argumentCaptor = ArgumentCaptor.forClass(BaseRequest.class);
-
         verify(telegramBot).execute(argumentCaptor.capture());
-        verify(telegramBot, times(1))
-                .execute(argumentCaptor.capture());
+
+        verify(callbackQueryHandler).handle(
+                update.callbackQuery().from(),
+                update.callbackQuery().message().chat(),
+                update.callbackQuery().data()
+        );
+    }
+
+    private Update getUpdate(String json, String replaced) {
+        return BotUtils.fromJson(json.replace("%button_text%", replaced), Update.class);
     }
 
 }
