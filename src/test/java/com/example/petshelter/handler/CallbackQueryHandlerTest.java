@@ -60,14 +60,12 @@ class CallbackQueryHandlerTest {
     private final static Map<String, String> dogsChoseMenu = new LinkedHashMap<>();
     private final static Map<String, String> catsChoseMenu = new LinkedHashMap<>();
     private final static Map<String, String> mainMenu = new LinkedHashMap<>();
-    private final static Map<String, String> startVolunteer = new LinkedHashMap<>();
     private final static Map<String, String> volunteermenu = new LinkedHashMap<>();
 
     static {
         mainMenu.put(CallbackData.CATS.getTitle(), "\uD83D\uDC08 Приют для кошек");
         mainMenu.put(CallbackData.DOGS.getTitle(), "\uD83D\uDC15 Приют для собак");
 
-        startVolunteer.put(CallbackData.START_VOLUNTEER.getTitle(), CallbackData.START_VOLUNTEER.getDescription());
         volunteermenu.put(CallbackData.ADD_ADOPTER.getTitle(), CallbackData.ADD_ADOPTER.getDescription());
         volunteermenu.put(CallbackData.CHECK_REPORTS.getTitle(), CallbackData.CHECK_REPORTS.getDescription());
         volunteermenu.put(CallbackData.EXTEND_TRIAL.getTitle(), CallbackData.EXTEND_TRIAL.getDescription());
@@ -250,20 +248,22 @@ class CallbackQueryHandlerTest {
                 Arguments.of(CallbackData.DOGS_SHELTER_INFO.getTitle(),
                         fileMapper.get(CallbackData.DOGS_SHELTER_INFO),
                         CallbackData.DOGS_SHELTER_INFO.getDescription()),
+                Arguments.of(CallbackData.DOGS_SHELTER_ENTRY_PASS.getTitle(),
+                        fileMapper.get(CallbackData.DOGS_SHELTER_ENTRY_PASS),
+                        CallbackData.DOGS_SHELTER_ENTRY_PASS.getDescription()),
+                Arguments.of(CallbackData.DOGS_SHELTER_SAFETY_RULES.getTitle(),
+                        fileMapper.get(CallbackData.DOGS_SHELTER_SAFETY_RULES),
+                        CallbackData.DOGS_SHELTER_SAFETY_RULES.getDescription()),
 
                 Arguments.of(CallbackData.CATS_SHELTER_INFO.getTitle(),
                         fileMapper.get(CallbackData.CATS_SHELTER_INFO),
                         CallbackData.CATS_SHELTER_INFO.getDescription()),
-
-
                 Arguments.of(CallbackData.CATS_SHELTER_SAFETY_RULES.getTitle(),
                         fileMapper.get(CallbackData.CATS_SHELTER_SAFETY_RULES),
                         CallbackData.CATS_SHELTER_SAFETY_RULES.getDescription()),
                 Arguments.of(CallbackData.CATS_SHELTER_ENTRY_PASS.getTitle(),
                         fileMapper.get(CallbackData.CATS_SHELTER_ENTRY_PASS),
                         CallbackData.CATS_SHELTER_ENTRY_PASS.getDescription()),
-
-
                 Arguments.of(CallbackData.CATS_ADOPTION_REASONS_FOR_REFUSAL.getTitle(),
                         fileMapper.get(CallbackData.CATS_ADOPTION_REASONS_FOR_REFUSAL),
                         CallbackData.CATS_ADOPTION_REASONS_FOR_REFUSAL.getDescription()),
@@ -284,18 +284,11 @@ class CallbackQueryHandlerTest {
                         CallbackData.CATS_ADOPTION_DOCUMENTS.getDescription()),
                 Arguments.of(CallbackData.CATS_ADOPTION_SAY_HI_RULES.getTitle(),
                         fileMapper.get(CallbackData.CATS_ADOPTION_SAY_HI_RULES),
-                        CallbackData.CATS_ADOPTION_SAY_HI_RULES.getDescription()),
-
-
-                Arguments.of(CallbackData.DOGS_SHELTER_ENTRY_PASS.getTitle(),
-                        fileMapper.get(CallbackData.DOGS_SHELTER_ENTRY_PASS),
-                        CallbackData.DOGS_SHELTER_ENTRY_PASS.getDescription()),
-                Arguments.of(CallbackData.DOGS_SHELTER_SAFETY_RULES.getTitle(),
-                        fileMapper.get(CallbackData.DOGS_SHELTER_SAFETY_RULES),
-                        CallbackData.DOGS_SHELTER_SAFETY_RULES.getDescription())
+                        CallbackData.CATS_ADOPTION_SAY_HI_RULES.getDescription())
 
         );
     }
+
     public static Stream<Arguments> provideParamsForHandleWithTextAndNullParseModeAndNullKeyboard() {
         return Stream.of(
                 Arguments.of(CallbackData.KEEP_ANIMAL.getTitle(),
@@ -349,8 +342,7 @@ class CallbackQueryHandlerTest {
         fillSheltersChooseMenuMethod.invoke(callbackQueryHandler);
 
         callbackQueryHandler.handle(user, chat, "cats");
-        Mockito.verify(
-                        telegramBotServiceMock, Mockito.times(1))
+        Mockito.verify(telegramBotServiceMock, Mockito.times(1))
                 .sendMessage(chat.id(), CallbackData.CATS_SHELTER_CHOSE.getDescription(),
                         markupHelper.buildMenu(catsChoseMenu), null);
     }
@@ -376,8 +368,7 @@ class CallbackQueryHandlerTest {
         fillSheltersChooseMenuMethod.invoke(callbackQueryHandler);
 
         callbackQueryHandler.handle(user, chat, "dogs");
-        Mockito.verify(
-                        telegramBotServiceMock, Mockito.times(1))
+        Mockito.verify(telegramBotServiceMock, Mockito.times(1))
                 .sendMessage(chat.id(), CallbackData.DOGS_SHELTER_CHOSE.getDescription(),
                         markupHelper.buildMenu(dogsChoseMenu), null);
     }
@@ -403,8 +394,7 @@ class CallbackQueryHandlerTest {
         catsChoseMenu.put(String.valueOf(shelterCatTwo.getId()), shelterCatTwo.getName());
 
         callbackQueryHandler.handle(user, chat, "7771");
-        Mockito.verify(
-                        telegramBotServiceMock, Mockito.times(1))
+        Mockito.verify(telegramBotServiceMock, Mockito.times(1))
                 .sendMessage(chat.id(), CallbackData.CATS.getDescription(),
                         markupHelper.buildMenu(catsMenu), ParseMode.Markdown);
     }
@@ -431,8 +421,7 @@ class CallbackQueryHandlerTest {
 
         callbackQueryHandler.handle(user, chat, "202");
 
-        Mockito.verify(
-                        telegramBotServiceMock, Mockito.times(1))
+        Mockito.verify(telegramBotServiceMock, Mockito.times(1))
                 .sendMessage(chat.id(), CallbackData.DOGS.getDescription(),
                         markupHelper.buildMenu(dogsMenu), ParseMode.Markdown);
     }
@@ -440,13 +429,13 @@ class CallbackQueryHandlerTest {
     @Test
     void handleResetShelterChoseTest() {
         callbackQueryHandler.handle(user, chat, CallbackData.RESET_SHELTER.getTitle());
-        Mockito.verify(
-                        userServiceMock, Mockito.times(1)).
+        Mockito.verify(userServiceMock, Mockito.times(1)).
                 resetSelectedShelterId(chat.id());
         Mockito.verify(telegramBotServiceMock, Mockito.times(1)).
                 sendMessage(chat.id(), "Выберите новый приют:", markupHelper.buildMenu(mainMenu), ParseMode.Markdown);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void handleContactsTest() throws NoSuchFieldException, IllegalAccessException {
         callbackQueryHandler.handle(user, chat, CallbackData.CONTACTS.getTitle());
@@ -454,8 +443,7 @@ class CallbackQueryHandlerTest {
         ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<ParseMode> parseModeArgumentCaptor = ArgumentCaptor.forClass(ParseMode.class);
-        Mockito.verify(
-                        telegramBotServiceMock, Mockito.times(1)).
+        Mockito.verify(telegramBotServiceMock, Mockito.times(1)).
                 sendContact(longArgumentCaptor.capture(), stringArgumentCaptor.capture(),
                         replyKeyboardMarkupArgumentCaptor.capture(), parseModeArgumentCaptor.capture());
         assertThat(replyKeyboardMarkupArgumentCaptor.getAllValues()).hasSize(1);
@@ -535,8 +523,7 @@ class CallbackQueryHandlerTest {
     @MethodSource("provideParamsForHandleWithTextTest")
     void handleWithTextTest(String callbackData, String text, HashMap<String, String> menu, @Nullable ParseMode parseMode) {
         callbackQueryHandler.handle(user, chat, callbackData);
-        Mockito.verify(
-                        telegramBotServiceMock, Mockito.times(1)).
+        Mockito.verify(telegramBotServiceMock, Mockito.times(1)).
                 sendMessage(chat.id(), text, markupHelper.buildMenu(menu), parseMode);
 
     }
@@ -557,8 +544,7 @@ class CallbackQueryHandlerTest {
     @MethodSource("provideParamsForHandleWithPdfSend")
     void handleWithPdfSendTest(String callbackData, String file, String caption) {
         callbackQueryHandler.handle(user, chat, callbackData);
-        Mockito.verify(
-                        telegramBotServiceMock, Mockito.times(1)).
+        Mockito.verify(telegramBotServiceMock, Mockito.times(1)).
                 sendPDFDocument(chat.id(), file, caption);
     }
 
@@ -567,8 +553,7 @@ class CallbackQueryHandlerTest {
     @MethodSource("provideParamsForHandleWithPictureSend")
     void handleWithPictureSendTest(String callbackData, String file, String caption) {
         callbackQueryHandler.handle(user, chat, callbackData);
-        Mockito.verify(
-                        telegramBotServiceMock, Mockito.times(1)).
+        Mockito.verify(telegramBotServiceMock, Mockito.times(1)).
                 sendPicture(chat.id(), file, caption);
     }
 
@@ -577,8 +562,7 @@ class CallbackQueryHandlerTest {
     @MethodSource("provideParamsForHandleWithNullKeyboardAndNotNullParseMode")
     void handleWithNullKeyboardAndNotNullParseModeTest(String callbackData, String text, ParseMode parseMode) {
         callbackQueryHandler.handle(user, chat, callbackData);
-        Mockito.verify(
-                        telegramBotServiceMock, Mockito.times(1)).
+        Mockito.verify(telegramBotServiceMock, Mockito.times(1)).
                 sendMessage(chat.id(), text, null, parseMode);
     }
 }
