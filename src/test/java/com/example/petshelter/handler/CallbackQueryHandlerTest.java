@@ -6,7 +6,7 @@ import com.example.petshelter.service.ShelterService;
 import com.example.petshelter.service.TelegramBotService;
 import com.example.petshelter.service.UserService;
 import com.example.petshelter.util.CallbackData;
-import com.example.petshelter.util.PetType;
+import com.example.petshelter.type.PetType;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.KeyboardButton;
