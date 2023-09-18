@@ -352,13 +352,13 @@ public class CallbackQueryHandler {
     }
 
     private void handleCatsShelterWorkHours(User user, Chat chat) {
-        Shelter catShelter = shelterService.getShelterByName(CallbackData.CATS.getTitle());
+        Shelter catShelter = shelterService.getShelterById(userService.getUserByChatId(chat.id()).getSelectedShelterId());
         String workSchedule = "⌛ Часы работы приюта для кошек: *" + catShelter.getWorkSchedule() + "*";
         telegramBotService.sendMessage(chat.id(), workSchedule, null, ParseMode.Markdown);
     }
 
     private void handleCatsShelterAddress(User user, Chat chat) {
-        Shelter catShelter = shelterService.getShelterByName(CallbackData.CATS.getTitle());
+        Shelter catShelter = shelterService.getShelterById(userService.getUserByChatId(chat.id()).getSelectedShelterId());
         String address = "\uD83D\uDCCD Адрес приюта для кошек: *" + catShelter.getAddress() + "*";
         telegramBotService.sendMessage(chat.id(), address, null, ParseMode.Markdown);
         telegramBotService.sendLocation(chat.id(), catShelter.getLatitude(), catShelter.getLongitude());
@@ -389,13 +389,13 @@ public class CallbackQueryHandler {
     }
 
     private void handleDogsShelterWorkHours(User user, Chat chat) {
-        Shelter dogShelter = shelterService.getShelterByName(CallbackData.DOGS.getTitle());
+        Shelter dogShelter = shelterService.getShelterById(userService.getUserByChatId(chat.id()).getSelectedShelterId());
         String workSchedule = "⌛ Часы работы приюта для собак: *" + dogShelter.getWorkSchedule() + "*";
         telegramBotService.sendMessage(chat.id(), workSchedule, null, ParseMode.Markdown);
     }
 
     private void handleDogsShelterAddress(User user, Chat chat) {
-        Shelter dogShelter = shelterService.getShelterByName(CallbackData.DOGS.getTitle());
+        Shelter dogShelter = shelterService.getShelterById(userService.getUserByChatId(chat.id()).getSelectedShelterId());
         String address = "\uD83D\uDCCD Адрес приюта для собак: *" + dogShelter.getAddress() + "*";
         telegramBotService.sendMessage(chat.id(), address, null, ParseMode.Markdown);
         telegramBotService.sendLocation(chat.id(), dogShelter.getLatitude(), dogShelter.getLongitude());
