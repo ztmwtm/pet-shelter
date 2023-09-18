@@ -1,6 +1,6 @@
 package com.example.petshelter.entity;
 
-import com.example.petshelter.util.PetType;
+import com.example.petshelter.type.PetType;
 import jakarta.persistence.*;
 
 import java.util.List;

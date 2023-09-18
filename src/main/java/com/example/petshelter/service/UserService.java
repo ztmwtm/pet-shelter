@@ -3,7 +3,7 @@ package com.example.petshelter.service;
 import com.example.petshelter.entity.User;
 import com.example.petshelter.exception.UserNotFoundException;
 import com.example.petshelter.repository.UserRepository;
-import com.example.petshelter.util.UserRole;
+import com.example.petshelter.type.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

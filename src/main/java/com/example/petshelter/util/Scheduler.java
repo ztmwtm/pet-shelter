@@ -18,29 +18,29 @@ public class Scheduler {
     private final TelegramBotService telegramBotService;
     private final PetService petService;
 
-    private final String CONGRATULATION_OF_ADOPTION = "Уважаемый %s поздравляем вас с окончательным усыновлением %s\n" +
+    private final static String CONGRATULATION_OF_ADOPTION = "Уважаемый %s поздравляем вас с окончательным усыновлением %s\n" +
             "Теперь вы полноправный владелец, окружите вашего питомца заботой и любовью, а он ответит вам взаимностью.";
 
-    public Scheduler(TelegramBotService telegramBotService, UserService userService, PetService petService) {
+    public Scheduler(TelegramBotService telegramBotService, PetService petService) {
         this.telegramBotService = telegramBotService;
-        this.userService = userService;
         this.petService = petService;
     }
 
-    @Scheduled(cron = "0 0 12 * * *" )
-    public void sendAdoptCongratulationNotification() {
-        List<Pet> recipients = new ArrayList<>();
-        recipients = petService.getAllPets().stream() //TODO Не самое видимо эффективное решение перебирать всю базу. Можно реализовать в репе
-                .filter(pet -> pet.getDayOfAdopt().isEqual(LocalDate.now().minusDays(pet.getDaysToAdaptation())))
-                .toList();
+    @Scheduled(cron = "0 0 22 * * *")
+    public void reportNotification() {
 
-//        recipients.forEach(pet -> telegramBotService.sendPicture(pet.getUser().getChatId,
-//                "storage/congratulations.jpg",
-//                String.format(CONGRATULATION_OF_ADOPTION, pet.getUser().getName(), pet.getNickname())));
     }
 
-
-
+    @Scheduled(cron = "0 0 12 * * *")
+    public void sendAdoptCongratulationNotification() {
+//        List<Pet> recipients = petService.getAllPets().stream() //TODO Не самое видимо эффективное решение перебирать всю базу. Можно реализовать в репе
+//                .filter(pet -> pet.getDayOfAdopt().isEqual(LocalDate.now().minusDays(pet.getDaysToAdaptation())))
+//                .toList();
+//
+//        recipients.forEach(pet -> telegramBotService.sendPicture(pet.getAdopter().getChatId(),
+//                "storage/congratulations.jpg",
+//                String.format(CONGRATULATION_OF_ADOPTION, pet.getAdopter().getFirstName(), pet.getNickname())));
+    }
 
     private boolean compareTimeWithCurrentTime(LocalTime time) {
         return LocalTime.now().getHour() == time.getHour() &&

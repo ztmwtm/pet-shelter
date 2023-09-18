@@ -19,6 +19,10 @@ public class PetService {
         this.petRepository = petRepository;
     }
 
+    public Pet getPetByUserId(Long userId) {
+        return petRepository.getPetByAdopter_Id(userId).orElseThrow();
+    }
+
     public Pet addPet(Pet pet){
         logger.info("Was called method to add pet");
         return petRepository.save(pet);

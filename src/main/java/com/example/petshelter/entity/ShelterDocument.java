@@ -1,5 +1,6 @@
 package com.example.petshelter.entity;
 
+import com.example.petshelter.type.ShelterDocumentType;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -13,18 +14,19 @@ public class ShelterDocument {
     private Long id;
     private String filePath;
     private Long fileSize;
-    private String title;
+    @Enumerated(value = EnumType.STRING)
+    private ShelterDocumentType type;
     private String mediaType;
 
     @ManyToOne
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
 
-    public ShelterDocument(Long id, String filePath, Long fileSize, String title, String mediaType, Shelter shelter) {
+    public ShelterDocument(Long id, String filePath, Long fileSize, ShelterDocumentType type, String mediaType, Shelter shelter) {
         this.id = id;
         this.filePath = filePath;
         this.fileSize = fileSize;
-        this.title = title;
+        this.type = type;
         this.mediaType = mediaType;
         this.shelter = shelter;
     }
@@ -64,12 +66,12 @@ public class ShelterDocument {
         this.fileSize = fileSize;
     }
 
-    public String getTitle() {
-        return title;
+    public ShelterDocumentType getType() {
+        return type;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setType(ShelterDocumentType title) {
+        this.type = title;
     }
 
     public Shelter getShelter() {
@@ -85,12 +87,12 @@ public class ShelterDocument {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ShelterDocument that = (ShelterDocument) o;
-        return filePath.equals(that.filePath) && Objects.equals(fileSize, that.fileSize) && Objects.equals(title, that.title);
+        return filePath.equals(that.filePath) && Objects.equals(fileSize, that.fileSize) && Objects.equals(type, that.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(filePath, fileSize, title);
+        return Objects.hash(filePath, fileSize, type);
     }
 
     @Override
@@ -99,7 +101,7 @@ public class ShelterDocument {
                 "id=" + id +
                 ", filePath='" + filePath + '\'' +
                 ", fileSize=" + fileSize +
-                ", title='" + title + '\'' +
+                ", title='" + type + '\'' +
                 ", shelter=" + shelter +
                 '}';
     }
