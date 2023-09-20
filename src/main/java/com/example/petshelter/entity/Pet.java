@@ -18,6 +18,7 @@ public class Pet {
     private String nickname;
     @Enumerated(EnumType.STRING)
     private PetType petType;
+    @JsonIgnore
     private LocalDate dayOfAdopt;
     private int daysToAdaptation;
     @OneToOne
@@ -30,11 +31,11 @@ public class Pet {
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
 
-    public Pet(Long id, String species, String nickname,  Shelter shelter, PetType petType) {
-        this.id = id;
+    public Pet(final String species,
+               final String nickname,
+               final PetType petType) {
         this.species = species;
         this.nickname = nickname;
-        this.shelter = shelter;
         this.petType = petType;
     }
 
@@ -120,10 +121,15 @@ public class Pet {
     @Override
     public String toString() {
         return "Pet{" +
-                "id=" + id +
-                ", species='" + species + '\'' +
-                ", nickname='" + nickname + '\'' +
-                '}';
+               "id=" + id +
+               ", species='" + species + '\'' +
+               ", nickname='" + nickname + '\'' +
+               ", petType=" + petType +
+               ", dayOfAdopt=" + dayOfAdopt +
+               ", daysToAdaptation=" + daysToAdaptation +
+               ", adopter=" + adopter +
+               ", shelter=" + shelter +
+               '}';
     }
 
 }

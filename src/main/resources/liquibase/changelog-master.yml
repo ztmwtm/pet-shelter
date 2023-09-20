@@ -31,3 +31,17 @@ databaseChangeLog:
       file: liquibase/scripts/shelters_update_10_9_23.sql
   - include:
       file: liquibase/scripts/users_update_11_9_23.sql
+  - include:
+      file: liquibase/scripts/pets_update_20_9_23.sql
+  - include:
+      file: liquibase/scripts/pets_update_20-1_9_23.sql
+  - include:
+      file: liquibase/scripts/pets_update_20-2_9_23.sql
+  - include:
+      file: liquibase/scripts/shelter_documents_update_20_9_23.sql
+  - include:
+      file: liquibase/scripts/user_report_photos_update_20_9_23.sql
+  - include:
+      file: liquibase/db/insert_shelters.sql
+  - include:
+      file: liquibase/db/insert_pets.sql

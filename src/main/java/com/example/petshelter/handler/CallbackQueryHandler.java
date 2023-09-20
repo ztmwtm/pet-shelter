@@ -1,14 +1,12 @@
 package com.example.petshelter.handler;
 
-import com.example.petshelter.entity.Pet;
 import com.example.petshelter.entity.Shelter;
 import com.example.petshelter.helper.MarkupHelper;
-import com.example.petshelter.service.PetService;
 import com.example.petshelter.service.ShelterService;
 import com.example.petshelter.service.TelegramBotService;
 import com.example.petshelter.service.UserService;
-import com.example.petshelter.util.CallbackData;
 import com.example.petshelter.type.PetType;
+import com.example.petshelter.util.CallbackData;
 import com.example.petshelter.util.Templates;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;
@@ -16,7 +14,6 @@ import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.EnumMap;
@@ -44,7 +41,7 @@ public class CallbackQueryHandler {
     private final Map<String, String> dogsInfoMenu = new LinkedHashMap<>();
     private final Map<String, String> catsTakeMenu = new LinkedHashMap<>();
     private final Map<String, String> dogsTakeMenu = new LinkedHashMap<>();
-    private final EnumMap<CallbackData, String> fileMapper = new EnumMap<>(CallbackData.class);
+    private final Map<CallbackData, String> fileMapper = new EnumMap<>(CallbackData.class);
 
     private final Map<String, String> dogsChoseMenu = new LinkedHashMap<>();
     private final Map<String, String> catsChoseMenu = new LinkedHashMap<>();
@@ -201,7 +198,6 @@ public class CallbackQueryHandler {
         fileMapper.put(CallbackData.DOGS_ADOPTION_REASONS_FOR_REFUSAL, "https://lukaselektro.ru/wp-content/uploads/2023/09/dogs/Dogs_Shelter_Reasons_for_Refusal.pdf");
     }
 
-    @Autowired
     public CallbackQueryHandler(final TelegramBotService telegramBotService, final ShelterService shelterService, UserService userService, final MarkupHelper markupHelper) {
         this.telegramBotService = telegramBotService;
         this.shelterService = shelterService;
