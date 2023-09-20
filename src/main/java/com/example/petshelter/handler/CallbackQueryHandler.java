@@ -16,10 +16,7 @@ import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.EnumMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 /**
@@ -554,11 +551,19 @@ public class CallbackQueryHandler {
 
     private void handleVolunteerHelp(User user, Chat chat) {
         try {
+            String textVolunteer = "Пользователь @" + chat.username() + " запросил помощь по приюту для животных. Свяжись с ним немедленно!";
+            List<com.example.petshelter.entity.User> volunteersList = userService.getVolunteers();
+            Map<Long, String> volunteersTgNames = new HashMap<>();
+            volunteersList.forEach(v -> volunteersTgNames.put(v.getChatId(), v.getTgUsername()));
+            if (!volunteersList.isEmpty()) {
+                volunteersTgNames.forEach((chatId, tgName) -> {
+                    telegramBotService.sendMessage(chatId, tgName + ", привет! " + textVolunteer);
+                });
+            } else {
+                telegramBotService.sendMessage(chat.id(), "Волонтёров не найдено!");
+            }
             String text = "Ожидайте ответа волонтера. Он напишет вам в личном сообщении.";
-            telegramBotService.sendMessage(chat.id(), text, null, null);
-//            Chat volunteer = ;
-            String textVolunteer = "Ответьте на вопросы пользователя @" + chat.username();
-//            telegramBotService.sendMessage(volunteer.id(), textVolunteer, null, null);
+            telegramBotService.sendMessage(chat.id(), text);
             log.info("handleVolunteerHelp CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error handleVolunteerHelp CallbackQueryHandler");
