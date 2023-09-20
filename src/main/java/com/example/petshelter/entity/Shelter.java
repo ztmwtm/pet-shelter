@@ -24,19 +24,40 @@ public class Shelter {
     private PetType petType;
     private float latitude;
     private float longitude;
-  
 
-    public Shelter(Long id, String name, String address, String phoneNumber, String workSchedule, PetType petType) {
-
-        this.id = id;
+    public Shelter(final String name,
+                   final String address,
+                   final String phoneNumber,
+                   final String workSchedule,
+                   final PetType petType,
+                   final float latitude,
+                   final float longitude) {
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.workSchedule = workSchedule;
         this.petType = petType;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public Shelter() {
+    }
+
+    public List<ShelterDocument> getShelterDocuments() {
+        return shelterDocuments;
+    }
+
+    public void setShelterDocuments(final List<ShelterDocument> shelterDocuments) {
+        this.shelterDocuments = shelterDocuments;
+    }
+
+    public PetType getPetType() {
+        return petType;
+    }
+
+    public void setPetType(final PetType petType) {
+        this.petType = petType;
     }
 
     public float getLatitude() {
@@ -111,11 +132,16 @@ public class Shelter {
     @Override
     public String toString() {
         return "Shelter{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", workSchedule='" + workSchedule + '\'' +
-                '}';
+               "id=" + id +
+               ", name='" + name + '\'' +
+               ", address='" + address + '\'' +
+               ", phoneNumber='" + phoneNumber + '\'' +
+               ", workSchedule='" + workSchedule + '\'' +
+               ", shelterDocuments=" + shelterDocuments +
+               ", petType=" + petType +
+               ", latitude=" + latitude +
+               ", longitude=" + longitude +
+               '}';
     }
+
 }
