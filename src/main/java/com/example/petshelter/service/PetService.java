@@ -19,6 +19,10 @@ public class PetService {
         this.petRepository = petRepository;
     }
 
+    public Pet getPetByUserId(Long userId) {
+        return petRepository.getPetByAdopter_Id(userId).orElseThrow();
+    }
+
     public Pet addPet(Pet pet){
         logger.info("Was called method to add pet");
         return petRepository.save(pet);
@@ -29,7 +33,6 @@ public class PetService {
         Pet oldPet = petRepository.findById(id).orElseThrow(() -> new PetNotFoundException(id));
         oldPet.setSpecies(pet.getSpecies());
         oldPet.setNickname(pet.getNickname());
-        oldPet.setAdopted(pet.getAdopted());
         return petRepository.save(oldPet);
     }
 

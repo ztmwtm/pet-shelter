@@ -1,7 +1,10 @@
 package com.example.petshelter.entity;
 
+import com.example.petshelter.type.PetType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -13,21 +16,53 @@ public class Pet {
     private Long id;
     private String species;
     private String nickname;
-    private boolean adopted;
+    @Enumerated(EnumType.STRING)
+    private PetType petType;
+    @JsonIgnore
+    private LocalDate dayOfAdopt;
+    private int daysToAdaptation;
+    @OneToOne
+    @JsonIgnore
+    @JoinColumn(name = "user_id")
+    private User adopter;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
 
-    public Pet(Long id, String species, String nickname, boolean adopted, Shelter shelter) {
-        this.id = id;
+    public Pet(final String species,
+               final String nickname,
+               final PetType petType) {
         this.species = species;
         this.nickname = nickname;
-        this.adopted = adopted;
-        this.shelter = shelter;
+        this.petType = petType;
     }
 
     public Pet() {
+    }
+    public PetType getPetType() {
+        return petType;
+    }
+
+    public void setPetType(PetType petType) {
+        this.petType = petType;
+    }
+
+    public User getAdopter() {
+        return adopter;
+    }
+
+    public void setAdopter(User adopter) {
+        this.adopter = adopter;
+    }
+
+    public Shelter getShelter() {
+        return shelter;
+    }
+
+    public void setShelter(Shelter shelter) {
+        this.shelter = shelter;
     }
 
     public Long getId() {
@@ -54,12 +89,20 @@ public class Pet {
         this.nickname = nickname;
     }
 
-    public boolean getAdopted() {
-        return adopted;
+    public LocalDate getDayOfAdopt() {
+        return dayOfAdopt;
     }
 
-    public void setAdopted(boolean adopted) {
-        this.adopted = adopted;
+    public void setDayOfAdopt(LocalDate dayOfAdopt) {
+        this.dayOfAdopt = dayOfAdopt;
+    }
+
+    public int getDaysToAdaptation() {
+        return daysToAdaptation;
+    }
+
+    public void setDaysToAdaptation(int daysToAdaptation) {
+        this.daysToAdaptation = daysToAdaptation;
     }
 
     @Override
@@ -67,22 +110,26 @@ public class Pet {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Pet pet = (Pet) o;
-        return adopted == pet.adopted && Objects.equals(id, pet.id) && Objects.equals(species, pet.species) && Objects.equals(nickname, pet.nickname);
+        return Objects.equals(id, pet.id) && Objects.equals(species, pet.species) && Objects.equals(nickname, pet.nickname);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, species, nickname, adopted);
+        return Objects.hash(id, species, nickname);
     }
 
     @Override
     public String toString() {
         return "Pet{" +
-                "id=" + id +
-                ", species='" + species + '\'' +
-                ", nickname='" + nickname + '\'' +
-                ", isAdopted=" + adopted +
-                '}';
+               "id=" + id +
+               ", species='" + species + '\'' +
+               ", nickname='" + nickname + '\'' +
+               ", petType=" + petType +
+               ", dayOfAdopt=" + dayOfAdopt +
+               ", daysToAdaptation=" + daysToAdaptation +
+               ", adopter=" + adopter +
+               ", shelter=" + shelter +
+               '}';
     }
 
 }

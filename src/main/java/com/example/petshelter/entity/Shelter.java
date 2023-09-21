@@ -1,5 +1,6 @@
 package com.example.petshelter.entity;
 
+import com.example.petshelter.type.PetType;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -18,16 +19,61 @@ public class Shelter {
     private String workSchedule;
     @OneToMany(mappedBy = "shelter")
     private List<ShelterDocument> shelterDocuments;
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private PetType petType;
+    private float latitude;
+    private float longitude;
 
-    public Shelter(Long id, String name, String address, String phoneNumber, String workSchedule) {
-        this.id = id;
+    public Shelter(final String name,
+                   final String address,
+                   final String phoneNumber,
+                   final String workSchedule,
+                   final PetType petType,
+                   final float latitude,
+                   final float longitude) {
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.workSchedule = workSchedule;
+        this.petType = petType;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public Shelter() {
+    }
+
+    public List<ShelterDocument> getShelterDocuments() {
+        return shelterDocuments;
+    }
+
+    public void setShelterDocuments(final List<ShelterDocument> shelterDocuments) {
+        this.shelterDocuments = shelterDocuments;
+    }
+
+    public PetType getPetType() {
+        return petType;
+    }
+
+    public void setPetType(final PetType petType) {
+        this.petType = petType;
+    }
+
+    public float getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(float latitude) {
+        this.latitude = latitude;
+    }
+
+    public float getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(float longitude) {
+        this.longitude = longitude;
     }
 
     public Long getId() {
@@ -86,11 +132,16 @@ public class Shelter {
     @Override
     public String toString() {
         return "Shelter{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", workSchedule='" + workSchedule + '\'' +
-                '}';
+               "id=" + id +
+               ", name='" + name + '\'' +
+               ", address='" + address + '\'' +
+               ", phoneNumber='" + phoneNumber + '\'' +
+               ", workSchedule='" + workSchedule + '\'' +
+               ", shelterDocuments=" + shelterDocuments +
+               ", petType=" + petType +
+               ", latitude=" + latitude +
+               ", longitude=" + longitude +
+               '}';
     }
+
 }
