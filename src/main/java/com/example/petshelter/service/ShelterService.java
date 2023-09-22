@@ -3,7 +3,7 @@ package com.example.petshelter.service;
 import com.example.petshelter.entity.Shelter;
 import com.example.petshelter.exception.ShelterNotFoundException;
 import com.example.petshelter.repository.ShelterRepository;
-import com.example.petshelter.util.PetType;
+import com.example.petshelter.type.PetType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

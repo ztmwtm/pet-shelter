@@ -65,6 +65,10 @@ public class TelegramBotService {
         }
     }
 
+    public void sendMessage(final Long chatId, final String text) {
+        sendMessage(chatId, text, null, null);
+    }
+
     public void sendContact(final Long chatId,
                             final String text,
                             @Nullable ReplyKeyboardMarkup keyboard,

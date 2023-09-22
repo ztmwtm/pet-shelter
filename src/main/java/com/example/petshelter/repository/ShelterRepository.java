@@ -1,7 +1,7 @@
 package com.example.petshelter.repository;
 
 import com.example.petshelter.entity.Shelter;
-import com.example.petshelter.util.PetType;
+import com.example.petshelter.type.PetType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

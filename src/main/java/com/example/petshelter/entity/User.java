@@ -1,6 +1,6 @@
 package com.example.petshelter.entity;
 
-import com.example.petshelter.util.UserRole;
+import com.example.petshelter.type.UserRole;
 import jakarta.persistence.*;
 
 import java.util.Objects;

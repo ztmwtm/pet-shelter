@@ -1,6 +1,7 @@
 package com.example.petshelter.entity;
 
-import com.example.petshelter.util.PetType;
+import com.example.petshelter.type.PetType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -17,24 +18,27 @@ public class Pet {
     private String nickname;
     @Enumerated(EnumType.STRING)
     private PetType petType;
+    @JsonIgnore
     private LocalDate dayOfAdopt;
     private int daysToAdaptation;
     @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "user_id")
+    private User adopter;
+    @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Pet(Long id, String species, String nickname, PetType petType, LocalDate dayOfAdopt, int daysToAdaptation, Shelter shelter, User user) {
-        this.id = id;
+    public Pet(final String species,
+               final String nickname,
+               final PetType petType) {
         this.species = species;
         this.nickname = nickname;
         this.petType = petType;
-        this.dayOfAdopt = dayOfAdopt;
-        this.daysToAdaptation = daysToAdaptation;
-        this.shelter = shelter;
-        this.user = user;
     }
 
     public Pet() {
@@ -45,6 +49,22 @@ public class Pet {
 
     public void setPetType(PetType petType) {
         this.petType = petType;
+    }
+
+    public User getAdopter() {
+        return adopter;
+    }
+
+    public void setAdopter(User adopter) {
+        this.adopter = adopter;
+    }
+
+    public Shelter getShelter() {
+        return shelter;
+    }
+
+    public void setShelter(Shelter shelter) {
+        this.shelter = shelter;
     }
 
     public Long getId() {
@@ -103,10 +123,15 @@ public class Pet {
     @Override
     public String toString() {
         return "Pet{" +
-                "id=" + id +
-                ", species='" + species + '\'' +
-                ", nickname='" + nickname + '\'' +
-                '}';
+               "id=" + id +
+               ", species='" + species + '\'' +
+               ", nickname='" + nickname + '\'' +
+               ", petType=" + petType +
+               ", dayOfAdopt=" + dayOfAdopt +
+               ", daysToAdaptation=" + daysToAdaptation +
+               ", adopter=" + adopter +
+               ", shelter=" + shelter +
+               '}';
     }
 
 }

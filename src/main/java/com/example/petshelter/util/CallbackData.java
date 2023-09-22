@@ -73,7 +73,7 @@ public enum CallbackData {
 
     public String getTitle() {
         try {
-            log.info("GetTitle CallbackData");
+//            log.info("GetTitle CallbackData");
             return title;
         } catch (Exception e) {
             log.error(e.getMessage() + "Error GetTitle CallbackData");
@@ -83,7 +83,7 @@ public enum CallbackData {
 
     public String getDescription() {
         try {
-            log.info("GetDescription CallbackData");
+//            log.info("GetDescription CallbackData");
             return description;
         } catch (Exception e) {
             log.error(e.getMessage() + "Error GetDescription CallbackData");

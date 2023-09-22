@@ -1,4 +1,4 @@
-package com.example.petshelter.util;
+package com.example.petshelter.type;
 
 public enum PetType {
     DOG("DOG"),

@@ -26,9 +26,9 @@ import java.util.Objects;
 @Service
 public class UserReportPhotoService {
 
-    private final static Logger logger = LoggerFactory.getLogger("UserReportPhotoFileInfoService.class");
+    private final Logger logger = LoggerFactory.getLogger("UserReportPhotoFileInfoService.class");
     @Value("${petshelter.files.user.report.photo.dir.path}")
-    private String USER_REPORTS_PHOTO_DIR_PATH;
+    private String userReportsPhotoDirPath;
     private final TelegramBotService telegramBotService;
     private final UserReportPhotoRepository userReportPhotoRepository;
     private final UserReportRepository userReportRepository;
@@ -67,7 +67,7 @@ public class UserReportPhotoService {
         try {
             tgFileURL = telegramBotService.getFileURL(fileId);
             tgFileURL = new URL(tgFileURL.getProtocol(), tgFileURL.getHost(), 443, tgFileURL.getFile());
-            ourFilePath = Path.of(USER_REPORTS_PHOTO_DIR_PATH, fileUniqId +
+            ourFilePath = Path.of(userReportsPhotoDirPath, fileUniqId +
                     tgFileURL.toString().substring(tgFileURL.toString().lastIndexOf('.')));
         } catch (MalformedURLException e) {
             logger.error(e.toString());

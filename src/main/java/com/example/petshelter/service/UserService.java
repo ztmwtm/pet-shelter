@@ -3,12 +3,13 @@ package com.example.petshelter.service;
 import com.example.petshelter.entity.User;
 import com.example.petshelter.exception.UserNotFoundException;
 import com.example.petshelter.repository.UserRepository;
-import com.example.petshelter.util.UserRole;
+import com.example.petshelter.type.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -94,5 +95,10 @@ public class UserService {
         user.setPhoneNumber(phoneNumber);
         this.updateUser(userId, user);
         logger.info("Was called method to set phone number for UserId {}", userId);
+    }
+
+    public List<User> getVolunteers() {
+        logger.info("Was called method to get all volunteers");
+        return userRepository.findUsersByRoleIs(UserRole.VOLUNTEER);
     }
 }

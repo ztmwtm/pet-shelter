@@ -5,6 +5,7 @@ import com.example.petshelter.entity.UserReport;
 import com.example.petshelter.entity.UserReportPhoto;
 import com.example.petshelter.helper.MarkupHelper;
 import com.example.petshelter.service.*;
+import com.example.petshelter.type.UserRole;
 import com.example.petshelter.util.CallbackData;
 import com.example.petshelter.util.Command;
 import com.example.petshelter.util.UserReportStatus;
@@ -13,7 +14,6 @@ import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.EnumMap;
@@ -68,10 +68,12 @@ public class CommandHandler {
 
     }
 
-    @Autowired
     public CommandHandler(final TelegramBotService telegramBotService,
                           final UserService userService,
-                          UserReportService userReportService, UserReportPhotoService userReportPhotoService, PetService petService, final MarkupHelper markupHelper) {
+                          final UserReportService userReportService,
+                          final UserReportPhotoService userReportPhotoService,
+                          final PetService petService,
+                          final MarkupHelper markupHelper) {
         this.telegramBotService = telegramBotService;
         this.userService = userService;
         this.userReportService = userReportService;

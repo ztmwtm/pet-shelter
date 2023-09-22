@@ -5,23 +5,20 @@ import com.example.petshelter.entity.UserReport;
 import com.example.petshelter.entity.UserReportPhoto;
 import com.example.petshelter.helper.MarkupHelper;
 import com.example.petshelter.service.*;
+import com.example.petshelter.type.PetType;
 import com.example.petshelter.util.CallbackData;
-import com.example.petshelter.util.PetType;
 import com.example.petshelter.util.UserReportStatus;
+import com.example.petshelter.util.Templates;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.EnumMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 /**
@@ -45,7 +42,7 @@ public class CallbackQueryHandler {
     private final Map<String, String> dogsInfoMenu = new LinkedHashMap<>();
     private final Map<String, String> catsTakeMenu = new LinkedHashMap<>();
     private final Map<String, String> dogsTakeMenu = new LinkedHashMap<>();
-    private final EnumMap<CallbackData, String> fileMapper = new EnumMap<>(CallbackData.class);
+    private final Map<CallbackData, String> fileMapper = new EnumMap<>(CallbackData.class);
 
     private final Map<String, String> dogsChoseMenu = new LinkedHashMap<>();
     private final Map<String, String> catsChoseMenu = new LinkedHashMap<>();
@@ -53,7 +50,7 @@ public class CallbackQueryHandler {
     private final Map<String, String> mainMenu = new LinkedHashMap<>();
 
     private final Map<String, String> startVolunteer = new LinkedHashMap<>();
-    private final Map<String, String> volunteermenu = new LinkedHashMap<>();
+    private final Map<String, String> volunteerMenu = new LinkedHashMap<>();
 
 
     /*
@@ -117,10 +114,10 @@ public class CallbackQueryHandler {
         queryExecutors.put(CallbackData.KEEP_ANIMAL, this::handleKeepAnimal);
 
         startVolunteer.put(CallbackData.START_VOLUNTEER.getTitle(), CallbackData.START_VOLUNTEER.getDescription());
-        volunteermenu.put(CallbackData.ADD_ADOPTER.getTitle(), CallbackData.ADD_ADOPTER.getDescription());
-        volunteermenu.put(CallbackData.CHECK_REPORTS.getTitle(), CallbackData.CHECK_REPORTS.getDescription());
-        volunteermenu.put(CallbackData.EXTEND_TRIAL.getTitle(), CallbackData.EXTEND_TRIAL.getDescription());
-        volunteermenu.put(CallbackData.KEEP_ANIMAL.getTitle(), CallbackData.KEEP_ANIMAL.getDescription());
+        volunteerMenu.put(CallbackData.ADD_ADOPTER.getTitle(), CallbackData.ADD_ADOPTER.getDescription());
+        volunteerMenu.put(CallbackData.CHECK_REPORTS.getTitle(), CallbackData.CHECK_REPORTS.getDescription());
+        volunteerMenu.put(CallbackData.EXTEND_TRIAL.getTitle(), CallbackData.EXTEND_TRIAL.getDescription());
+        volunteerMenu.put(CallbackData.KEEP_ANIMAL.getTitle(), CallbackData.KEEP_ANIMAL.getDescription());
 
         catsMenu.put(CallbackData.CATS_INFO.getTitle(), CallbackData.CATS_INFO.getDescription());
         catsMenu.put(CallbackData.CATS_TAKE.getTitle(), CallbackData.CATS_TAKE.getDescription());
@@ -202,10 +199,12 @@ public class CallbackQueryHandler {
         fileMapper.put(CallbackData.DOGS_ADOPTION_REASONS_FOR_REFUSAL, "https://lukaselektro.ru/wp-content/uploads/2023/09/dogs/Dogs_Shelter_Reasons_for_Refusal.pdf");
     }
 
-
-
-    @Autowired
-    public CallbackQueryHandler(final TelegramBotService telegramBotService, final ShelterService shelterService, UserService userService, UserReportService userReportService, PetService petService, UserReportPhotoService userReportPhotoService, final MarkupHelper markupHelper) {
+    public CallbackQueryHandler(final TelegramBotService telegramBotService,
+                                final ShelterService shelterService,
+                                final UserService userService,
+                                final UserReportService userReportService,
+                                final UserReportPhotoService userReportPhotoService,
+                                final MarkupHelper markupHelper) {
         this.telegramBotService = telegramBotService;
         this.shelterService = shelterService;
         this.userService = userService;
@@ -358,13 +357,13 @@ public class CallbackQueryHandler {
     }
 
     private void handleCatsShelterWorkHours(User user, Chat chat) {
-        Shelter catShelter = shelterService.getShelterByName(CallbackData.CATS.getTitle());
+        Shelter catShelter = shelterService.getShelterById(userService.getUserByChatId(chat.id()).getSelectedShelterId());
         String workSchedule = "⌛ Часы работы приюта для кошек: *" + catShelter.getWorkSchedule() + "*";
         telegramBotService.sendMessage(chat.id(), workSchedule, null, ParseMode.Markdown);
     }
 
     private void handleCatsShelterAddress(User user, Chat chat) {
-        Shelter catShelter = shelterService.getShelterByName(CallbackData.CATS.getTitle());
+        Shelter catShelter = shelterService.getShelterById(userService.getUserByChatId(chat.id()).getSelectedShelterId());
         String address = "\uD83D\uDCCD Адрес приюта для кошек: *" + catShelter.getAddress() + "*";
         telegramBotService.sendMessage(chat.id(), address, null, ParseMode.Markdown);
         telegramBotService.sendLocation(chat.id(), catShelter.getLatitude(), catShelter.getLongitude());
@@ -395,13 +394,13 @@ public class CallbackQueryHandler {
     }
 
     private void handleDogsShelterWorkHours(User user, Chat chat) {
-        Shelter dogShelter = shelterService.getShelterByName(CallbackData.DOGS.getTitle());
+        Shelter dogShelter = shelterService.getShelterById(userService.getUserByChatId(chat.id()).getSelectedShelterId());
         String workSchedule = "⌛ Часы работы приюта для собак: *" + dogShelter.getWorkSchedule() + "*";
         telegramBotService.sendMessage(chat.id(), workSchedule, null, ParseMode.Markdown);
     }
 
     private void handleDogsShelterAddress(User user, Chat chat) {
-        Shelter dogShelter = shelterService.getShelterByName(CallbackData.DOGS.getTitle());
+        Shelter dogShelter = shelterService.getShelterById(userService.getUserByChatId(chat.id()).getSelectedShelterId());
         String address = "\uD83D\uDCCD Адрес приюта для собак: *" + dogShelter.getAddress() + "*";
         telegramBotService.sendMessage(chat.id(), address, null, ParseMode.Markdown);
         telegramBotService.sendLocation(chat.id(), dogShelter.getLatitude(), dogShelter.getLongitude());
@@ -600,11 +599,19 @@ public class CallbackQueryHandler {
 
     private void handleVolunteerHelp(User user, Chat chat) {
         try {
+            String textVolunteer = "Пользователь @" + chat.username() + " запросил помощь по приюту для животных. Свяжись с ним немедленно!";
+            List<com.example.petshelter.entity.User> volunteersList = userService.getVolunteers();
+            Map<Long, String> volunteersTgNames = new HashMap<>();
+            volunteersList.forEach(v -> volunteersTgNames.put(v.getChatId(), v.getTgUsername()));
+            if (!volunteersList.isEmpty()) {
+                volunteersTgNames.forEach((chatId, tgName) -> {
+                    telegramBotService.sendMessage(chatId, tgName + ", привет! " + textVolunteer);
+                });
+            } else {
+                telegramBotService.sendMessage(chat.id(), "Волонтёров не найдено!");
+            }
             String text = "Ожидайте ответа волонтера. Он напишет вам в личном сообщении.";
-            telegramBotService.sendMessage(chat.id(), text, null, null);
-//            Chat volunteer = ;
-            String textVolunteer = "Ответьте на вопросы пользователя @" + chat.username();
-//            telegramBotService.sendMessage(volunteer.id(), textVolunteer, null, null);
+            telegramBotService.sendMessage(chat.id(), text);
             log.info("handleVolunteerHelp CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error handleVolunteerHelp CallbackQueryHandler");
@@ -625,7 +632,7 @@ public class CallbackQueryHandler {
     private void handleStartVolunteer(User user, Chat chat) {
         try {
             String text = "Меню волонтера";
-            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(volunteermenu), ParseMode.Markdown);
+            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(volunteerMenu), ParseMode.Markdown);
             log.info("handleStartVolunteer CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error handleStartVolunteer CallbackQueryHandler");
@@ -654,7 +661,7 @@ public class CallbackQueryHandler {
 
     private void handleExtendTrial(User user, Chat chat) {
         try {
-            String text = "Продлить срок напроизвольное количество дней";
+            String text = "Продлить срок на произвольное количество дней";
             telegramBotService.sendMessage(chat.id(), text, null, null);
             log.info("handleExtendTrial CallbackQueryHandler");
         } catch (Exception e) {
@@ -664,8 +671,8 @@ public class CallbackQueryHandler {
 
     private void handleKeepAnimal(User user, Chat chat) {
         try {
-            String text = "Окончание испытального срока, животное остается у животного";
-            telegramBotService.sendMessage(chat.id(), text, null, null);
+            com.example.petshelter.entity.User userFromDB = userService.getUserByChatId(chat.id());
+            telegramBotService.sendMessage(chat.id(), Templates.getCongratulationText(userFromDB), null, ParseMode.Markdown);
             log.info("handleKeepAnimal CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error handleKeepAnimal CallbackQueryHandler");
