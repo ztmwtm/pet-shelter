@@ -17,6 +17,7 @@ public class Scheduler {
     private static final int APPROX_VALUE = 5;
     private final TelegramBotService telegramBotService;
     private final PetService petService;
+    private final UserService userService;
 
     private final String CONGRATULATION_OF_ADOPTION = "Уважаемый %s поздравляем вас с окончательным усыновлением %s\n" +
             "Теперь вы полноправный владелец, окружите вашего питомца заботой и любовью, а он ответит вам взаимностью.";

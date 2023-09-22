@@ -19,17 +19,22 @@ public class Pet {
     private PetType petType;
     private LocalDate dayOfAdopt;
     private int daysToAdaptation;
-
     @ManyToOne
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public Pet(Long id, String species, String nickname,  Shelter shelter, PetType petType) {
+    public Pet(Long id, String species, String nickname, PetType petType, LocalDate dayOfAdopt, int daysToAdaptation, Shelter shelter, User user) {
         this.id = id;
         this.species = species;
         this.nickname = nickname;
-        this.shelter = shelter;
         this.petType = petType;
+        this.dayOfAdopt = dayOfAdopt;
+        this.daysToAdaptation = daysToAdaptation;
+        this.shelter = shelter;
+        this.user = user;
     }
 
     public Pet() {
