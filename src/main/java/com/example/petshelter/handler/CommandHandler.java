@@ -9,7 +9,6 @@ import com.example.petshelter.type.UserRole;
 import com.example.petshelter.util.CallbackData;
 import com.example.petshelter.util.Command;
 import com.example.petshelter.util.UserReportStatus;
-import com.example.petshelter.util.UserRole;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.ParseMode;

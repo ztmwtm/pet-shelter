@@ -38,10 +38,6 @@ databaseChangeLog:
   - include:
       file: liquibase/scripts/user_reports_update_22_9_23.sql
   - include:
-      file: liquibase/scripts/pets_update_20_9_23.sql
-  - include:
-      file: liquibase/scripts/pets_update_20-1_9_23.sql
-  - include:
       file: liquibase/scripts/pets_update_20-2_9_23.sql
   - include:
       file: liquibase/scripts/shelter_documents_update_20_9_23.sql

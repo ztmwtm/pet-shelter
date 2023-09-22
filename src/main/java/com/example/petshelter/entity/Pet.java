@@ -29,9 +29,6 @@ public class Pet {
     @JsonIgnore
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 
     public Pet(final String species,
                final String nickname,

@@ -21,6 +21,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.BiConsumer;
 
+import static com.example.petshelter.type.UserRole.ADOPTER;
+
 /**
  * Класс отвечающий за обработку команд поступающих из чата
  */
@@ -522,61 +524,70 @@ public class CallbackQueryHandler {
 
     private void handleReport(User user, Chat chat) {
         try {
-            Long chatId = chat.id();
             Long userId = user.id();
 
-            UserReport thisReport = userReportService.getUserReportByUserIdAndStatusCreated(userId);
-            UpdateHandler.activeMenu = "handleReport";
+            com.example.petshelter.entity.User thisUser = userService.getUserByChatId(userId);
 
-            if (thisReport == null){
+            if (!thisUser.getRole().equals(ADOPTER)) {
 
-                com.example.petshelter.entity.User thisUser = userService.getUserByChatId(userId);
-                UserReport userReport = new UserReport(0L, null, null, null, LocalDateTime.now().toLocalDate(), UserReportStatus.CREATED, thisUser, null);
-                userReportService.addUserReport(userReport);
-
-                String text =
-                        """
-                        В отчет о животном должна обязательно входить следующая информация:
-
-                        - *Фото животного.*
-                        - *Рацион животного.*
-                        - *Общее самочувствие и привыкание к новому месту.*
-                        - *Изменение в поведении: отказ от старых привычек, приобретение новых.*
-
-                        Для начала, пришлите Id животного.
-                        """;
-
-                telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
+                String txt = user.firstName() + ", прислать отчет о питомце может только усыновитель, которым вы, к сожалению, еще не стали.";
+                telegramBotService.sendMessage(chat.id(), txt, null, ParseMode.Markdown);
 
             } else {
 
-                String text = "У вас есть незаполненный отчет. Прошу его заполнить, прежде чем начинать новый.";
-                telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
+                UserReport thisReport = userReportService.getUserReportByUserIdAndStatusCreated(userId);
+                UpdateHandler.activeMenu = "handleReport";
 
-                UserReportPhoto thisReportPhoto = userReportPhotoService.findUserReportPhoto(thisReport.getId());
+                if (thisReport == null) {
 
-                if (thisReport.getPet() == null) {
-                    String txt = "Пришлите, пожалуйста, Id животного.";
-                    telegramBotService.sendMessage(chat.id(), txt, null, ParseMode.Markdown);
-                    return;
-                } else if (thisReportPhoto == null) {
-                    String txt = "Пришлите, пожалуйста, фото питомца.";
-                    telegramBotService.sendMessage(chat.id(), txt, null, ParseMode.Markdown);
-                    return;
-                } else if (thisReport.getPetDiet() == null) {
-                    String txt = "Пришлите, пожалуйста, в текстовом сообщении описание рациона питомца.";
-                    telegramBotService.sendMessage(chat.id(), txt, null, ParseMode.Markdown);
-                    return;
-                } else if (thisReport.getHealth() == null) {
-                    String txt = "Пришлите, пожалуйста, в текстовом сообщении описание общего самочувствия питомца и особенности привыкания к новому месту.";
-                    telegramBotService.sendMessage(chat.id(), txt, null, ParseMode.Markdown);
-                    return;
+
+                    UserReport userReport = new UserReport(0L, null, null, null, LocalDateTime.now().toLocalDate(), UserReportStatus.CREATED, thisUser, null);
+                    userReportService.addUserReport(userReport);
+
+                    String text =
+                            """
+                                    В отчет о животном должна обязательно входить следующая информация:
+
+                                    - *Фото животного.*
+                                    - *Рацион животного.*
+                                    - *Общее самочувствие и привыкание к новому месту.*
+                                    - *Изменение в поведении: отказ от старых привычек, приобретение новых.*
+
+                                    Для начала, пришлите Id животного.
+                                    """;
+
+                    telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
+
                 } else {
-                    String txt = "Пришлите, пожалуйста, в текстовом сообщении особенности поведения питомца: отказ от старых привычек, приобретение новых.";
-                    telegramBotService.sendMessage(chat.id(), txt, null, ParseMode.Markdown);
-                    return;
-                }
 
+                    String text = "У вас есть незаполненный отчет. Прошу его заполнить, прежде чем начинать новый.";
+                    telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
+
+                    UserReportPhoto thisReportPhoto = userReportPhotoService.findUserReportPhoto(thisReport.getId());
+
+                    if (thisReport.getPet() == null) {
+                        String txt = "Пришлите, пожалуйста, Id животного.";
+                        telegramBotService.sendMessage(chat.id(), txt, null, ParseMode.Markdown);
+                        return;
+                    } else if (thisReportPhoto == null) {
+                        String txt = "Пришлите, пожалуйста, фото питомца.";
+                        telegramBotService.sendMessage(chat.id(), txt, null, ParseMode.Markdown);
+                        return;
+                    } else if (thisReport.getPetDiet() == null) {
+                        String txt = "Пришлите, пожалуйста, в текстовом сообщении описание рациона питомца.";
+                        telegramBotService.sendMessage(chat.id(), txt, null, ParseMode.Markdown);
+                        return;
+                    } else if (thisReport.getHealth() == null) {
+                        String txt = "Пришлите, пожалуйста, в текстовом сообщении описание общего самочувствия питомца и особенности привыкания к новому месту.";
+                        telegramBotService.sendMessage(chat.id(), txt, null, ParseMode.Markdown);
+                        return;
+                    } else {
+                        String txt = "Пришлите, пожалуйста, в текстовом сообщении особенности поведения питомца: отказ от старых привычек, приобретение новых.";
+                        telegramBotService.sendMessage(chat.id(), txt, null, ParseMode.Markdown);
+                        return;
+                    }
+
+                }
             }
 
             log.info("HandleReport CallbackQueryHandler");

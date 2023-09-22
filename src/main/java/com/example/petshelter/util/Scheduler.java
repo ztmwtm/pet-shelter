@@ -1,16 +1,12 @@
 package com.example.petshelter.util;
 
-import com.example.petshelter.entity.Pet;
 import com.example.petshelter.service.PetService;
 import com.example.petshelter.service.TelegramBotService;
 import com.example.petshelter.service.UserService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class Scheduler {
@@ -22,9 +18,10 @@ public class Scheduler {
     private final static String CONGRATULATION_OF_ADOPTION = "Уважаемый %s поздравляем вас с окончательным усыновлением %s\n" +
             "Теперь вы полноправный владелец, окружите вашего питомца заботой и любовью, а он ответит вам взаимностью.";
 
-    public Scheduler(TelegramBotService telegramBotService, PetService petService) {
+    public Scheduler(TelegramBotService telegramBotService, PetService petService, UserService userService) {
         this.telegramBotService = telegramBotService;
         this.petService = petService;
+        this.userService = userService;
     }
 
     @Scheduled(cron = "0 0 22 * * *")
