@@ -21,11 +21,10 @@ public class Pet {
     @JsonIgnore
     private LocalDate dayOfAdopt;
     private int daysToAdaptation;
-    @OneToOne
+    @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "user_id")
     private User adopter;
-
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "shelter_id")
