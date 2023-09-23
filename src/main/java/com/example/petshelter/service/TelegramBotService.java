@@ -1,4 +1,4 @@
-package com.example.petshelter.service1;
+package com.example.petshelter.service;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;

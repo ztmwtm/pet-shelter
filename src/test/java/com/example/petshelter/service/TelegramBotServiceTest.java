@@ -1,4 +1,4 @@
-package com.example.petshelter.service1;
+package com.example.petshelter.service;
 
 public class TelegramBotServiceTest {
 
