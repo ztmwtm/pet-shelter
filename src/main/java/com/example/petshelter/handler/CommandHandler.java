@@ -1,10 +1,10 @@
 package com.example.petshelter.handler;
 
 import com.example.petshelter.helper.MarkupHelper;
-import com.example.petshelter.service.TelegramBotService;
-import com.example.petshelter.service.UserReportPhotoService;
-import com.example.petshelter.service.UserReportService;
-import com.example.petshelter.service.UserService;
+import com.example.petshelter.service1.TelegramBotService;
+import com.example.petshelter.service1.UserReportPhotoService;
+import com.example.petshelter.service1.UserReportService;
+import com.example.petshelter.service1.UserService;
 import com.example.petshelter.util.CallbackData;
 import com.example.petshelter.util.Command;
 import com.example.petshelter.util.UserRole;
@@ -13,7 +13,6 @@ import com.pengrad.telegrambot.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
