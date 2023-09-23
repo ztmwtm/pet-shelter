@@ -11,10 +11,8 @@ import java.util.Collection;
 
 @Service
 public class PetService {
-
     private final PetRepository petRepository;
     private final Logger logger = LoggerFactory.getLogger(PetService.class);
-
     public PetService(PetRepository petRepository) {
         this.petRepository = petRepository;
     }
@@ -50,11 +48,4 @@ public class PetService {
         petRepository.deleteById(id);
         return pet;
     }
-
-
-
-
-
-
-
 }
