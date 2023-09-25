@@ -28,7 +28,7 @@ public class TelegramBotService {
     private final TelegramBot telegramBot;
     private final Logger logger = LoggerFactory.getLogger(TelegramBotService.class);
 
-    public TelegramBotService(final TelegramBot telegramBot, Logger logger) {
+    public TelegramBotService(final TelegramBot telegramBot) {
         this.telegramBot = telegramBot;
         this.logger.info("Constructor TelegramBotService");
     }

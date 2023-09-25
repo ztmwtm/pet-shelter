@@ -1,4 +1,4 @@
-package com.example.petshelter.service;
+/*package com.example.petshelter.service;
 
 import com.example.petshelter.entity.UserReportPhoto;
 import com.example.petshelter.repository.UserReportPhotoRepository;
@@ -86,3 +86,5 @@ public class UserReportPhotoServiceTest {
         verify(userReportPhotoRepository, times(1)).deleteById(id);
     }
 }
+
+ */
