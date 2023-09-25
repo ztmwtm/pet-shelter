@@ -31,7 +31,7 @@ public class ShelterServiceTest {
 
     @Test
     public void testAddShelter() {
-        Shelter shelterToAdd = new Shelter(/* Initialize a Shelter object here */);
+        Shelter shelterToAdd = new Shelter();
         when(shelterRepository.save(shelterToAdd)).thenReturn(shelterToAdd);
 
         Shelter addedShelter = shelterService.addShelter(shelterToAdd);
@@ -43,8 +43,8 @@ public class ShelterServiceTest {
     @Test
     public void testUpdateShelter() {
         Long idToUpdate = 1L;
-        Shelter updatedShelter = new Shelter(/* Initialize a Shelter object here */);
-        Shelter existingShelter = new Shelter(/* Initialize an existing Shelter object here */);
+        Shelter updatedShelter = new Shelter();
+        Shelter existingShelter = new Shelter();
 
         when(shelterRepository.findById(idToUpdate)).thenReturn(Optional.of(existingShelter));
         when(shelterRepository.save(existingShelter)).thenReturn(updatedShelter);
@@ -59,7 +59,7 @@ public class ShelterServiceTest {
     @Test
     public void testGetShelterById() {
         Long idToGet = 1L;
-        Shelter shelterToReturn = new Shelter(/* Initialize a Shelter object here */);
+        Shelter shelterToReturn = new Shelter();
 
         when(shelterRepository.findById(idToGet)).thenReturn(Optional.of(shelterToReturn));
 
@@ -72,7 +72,7 @@ public class ShelterServiceTest {
     @Test
     public void testGetShelterByName() {
         String nameToGet = "ShelterName";
-        Shelter shelterToReturn = new Shelter(/* Initialize a Shelter object here */);
+        Shelter shelterToReturn = new Shelter();
 
         when(shelterRepository.findShelterByName(nameToGet)).thenReturn(shelterToReturn);
 
@@ -85,7 +85,6 @@ public class ShelterServiceTest {
     @Test
     public void testGetAllShelters() {
         List<Shelter> sheltersToReturn = new ArrayList<>();
-        // Add some Shelter objects to the sheltersToReturn list
 
         when(shelterRepository.findAll()).thenReturn(sheltersToReturn);
 
@@ -98,7 +97,7 @@ public class ShelterServiceTest {
     @Test
     public void testDeleteShelterById() {
         Long idToDelete = 1L;
-        Shelter shelterToDelete = new Shelter(/* Initialize a Shelter object here */);
+        Shelter shelterToDelete = new Shelter();
 
         when(shelterRepository.findById(idToDelete)).thenReturn(Optional.of(shelterToDelete));
 

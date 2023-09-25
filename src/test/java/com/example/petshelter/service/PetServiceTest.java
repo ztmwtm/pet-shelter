@@ -31,7 +31,7 @@ public class PetServiceTest {
 
     @Test
     public void testAddPet() {
-        Pet petToAdd = new Pet(/* Initialize a Pet object here */);
+        Pet petToAdd = new Pet();
         when(petRepository.save(petToAdd)).thenReturn(petToAdd);
 
         Pet addedPet = petService.addPet(petToAdd);
@@ -43,8 +43,8 @@ public class PetServiceTest {
     @Test
     public void testUpdatePet() {
         Long idToUpdate = 1L;
-        Pet updatedPet = new Pet(/* Initialize a Pet object here */);
-        Pet existingPet = new Pet(/* Initialize an existing Pet object here */);
+        Pet updatedPet = new Pet();
+        Pet existingPet = new Pet();
 
         when(petRepository.findById(idToUpdate)).thenReturn(Optional.of(existingPet));
         when(petRepository.save(existingPet)).thenReturn(updatedPet);
@@ -59,7 +59,7 @@ public class PetServiceTest {
     @Test
     public void testGetPetById() {
         Long idToGet = 1L;
-        Pet petToReturn = new Pet(/* Initialize a Pet object here */);
+        Pet petToReturn = new Pet();
 
         when(petRepository.findById(idToGet)).thenReturn(Optional.of(petToReturn));
 
@@ -72,7 +72,6 @@ public class PetServiceTest {
     @Test
     public void testGetAllPets() {
         List<Pet> petsToReturn = new ArrayList<>();
-        // Add some Pet objects to the petsToReturn list
 
         when(petRepository.findAll()).thenReturn(petsToReturn);
 
@@ -85,7 +84,7 @@ public class PetServiceTest {
     @Test
     public void testDeletePetById() {
         Long idToDelete = 1L;
-        Pet petToDelete = new Pet(/* Initialize a Pet object here */);
+        Pet petToDelete = new Pet();
 
         when(petRepository.findById(idToDelete)).thenReturn(Optional.of(petToDelete));
 
