@@ -71,4 +71,8 @@ public class UserReportService {
         logger.info("Was called method to get report by userId {} and report status 'CREATED'", userId);
         return userReportRepository.getUserReportByUser_idAndStatusCreated(userId).orElse(null);
     }
+
+    public List<UserReport> getUserReportByStatus(UserReportStatus status) {
+        return userReportRepository.getUserReportByStatus(status);
+    }
 }

@@ -22,5 +22,6 @@ public interface UserReportRepository extends JpaRepository<UserReport, Long> {
     @Query(value = "SELECT * FROM user_reports ur WHERE ur.status = 'CREATED'", nativeQuery = true)
     Optional<UserReport> getUserReportByUser_idAndStatusCreated(Long userId);
 
+    List<UserReport> getUserReportByStatus(UserReportStatus status);
 
 }
