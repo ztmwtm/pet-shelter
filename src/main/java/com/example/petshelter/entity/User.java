@@ -1,6 +1,6 @@
 package com.example.petshelter.entity;
 
-import com.example.petshelter.util.UserRole;
+import com.example.petshelter.type.UserRole;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -19,6 +19,8 @@ public class User {
     private String phoneNumber;
     @Enumerated(EnumType.STRING)
     private UserRole role;
+    @Column(name = "selected_shelter_id")
+    private long selectedShelterId;
 
     public User(Long chatId, String firstName, String lastName, String tgUsername, String phoneNumber, UserRole role) {
         this.chatId = chatId;
@@ -30,6 +32,14 @@ public class User {
     }
 
     public User() {
+    }
+
+    public long getSelectedShelterId() {
+        return selectedShelterId;
+    }
+
+    public void setSelectedShelterId(long selectedShelterId) {
+        this.selectedShelterId = selectedShelterId;
     }
 
     public UserRole getRole() {

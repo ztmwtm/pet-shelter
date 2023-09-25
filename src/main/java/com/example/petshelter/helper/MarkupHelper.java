@@ -15,10 +15,11 @@ import java.util.Map;
 @Slf4j
 @Component
 public class MarkupHelper {
+
     /**
      * Метод отвечающий за создание кнопок меню под сообщением
-     * @param menu
-     * @return
+     * @param menu InlineKeyboardMarkup
+     * @return InlineKeyboardMarkup
      */
     public InlineKeyboardMarkup buildMenu(@NotNull Map<String, String> menu) {
         try {
@@ -28,8 +29,9 @@ public class MarkupHelper {
             }
             return keyboardMarkup;
         } catch (Exception e) {
-            log.error(e.getMessage() + " Error BuildMenu MarkupHendler");
+            log.error(e.getMessage() + " Error BuildMenu MarkupHandler");
         }
         return null;
     }
+
 }
