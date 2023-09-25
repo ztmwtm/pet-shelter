@@ -132,7 +132,7 @@ public class CommandHandler {
 
                     log.info("Handle CommandHandler - Add Pet Diet");
 
-                    String text = "Отлично! Информация добавлена в отчет. Теперь пришлите, пожалуйста, в текстовом сообщении описание общего самочувствия питомца и особенности привыкания к новому месту";
+                    String text = "Отлично! Информация добавлена в отчет. Теперь пришлите, пожалуйста, в текстовом сообщении описание общего самочувствия питомца и особенностей привыкания к новому месту";
                     telegramBotService.sendMessage(chatId, text, null, ParseMode.Markdown);
 
                     return;
