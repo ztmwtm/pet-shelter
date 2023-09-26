@@ -1,4 +1,4 @@
-package com.example.petshelter.service;
+package com.example.petshelter.service1;
 
 import com.example.petshelter.entity.Shelter;
 import com.example.petshelter.exception.ShelterNotFoundException;

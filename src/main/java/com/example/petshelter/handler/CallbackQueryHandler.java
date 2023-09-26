@@ -2,8 +2,8 @@ package com.example.petshelter.handler;
 
 import com.example.petshelter.entity.Shelter;
 import com.example.petshelter.helper.MarkupHelper;
-import com.example.petshelter.service.ShelterService;
-import com.example.petshelter.service.TelegramBotService;
+import com.example.petshelter.service1.ShelterService;
+import com.example.petshelter.service1.TelegramBotService;
 import com.example.petshelter.util.CallbackData;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;

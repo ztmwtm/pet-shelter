@@ -1,7 +1,7 @@
 package com.example.petshelter.controller;
 
 import com.example.petshelter.entity.Shelter;
-import com.example.petshelter.service.ShelterService;
+import com.example.petshelter.service1.ShelterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;

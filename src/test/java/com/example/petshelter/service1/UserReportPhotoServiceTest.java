@@ -1,4 +1,4 @@
-package com.example.petshelter.service;
+package com.example.petshelter.service1;
 
 import com.example.petshelter.entity.UserReportPhoto;
 import com.example.petshelter.repository.UserReportPhotoRepository;
