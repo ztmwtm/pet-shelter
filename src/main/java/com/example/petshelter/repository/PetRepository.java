@@ -1,6 +1,7 @@
 package com.example.petshelter.repository;
 
 import com.example.petshelter.entity.Pet;
+import com.example.petshelter.type.PetStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +14,6 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
 
     Optional<Pet> getPetByAdopter_Id(Long userId);
     List<Pet> getPetsByAdopter_Id(Long userId);
+    List<Pet> findPetsByPetStatus(final PetStatus status);
 
 }

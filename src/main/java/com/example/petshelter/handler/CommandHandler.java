@@ -5,6 +5,7 @@ import com.example.petshelter.entity.UserReport;
 import com.example.petshelter.entity.UserReportPhoto;
 import com.example.petshelter.helper.MarkupHelper;
 import com.example.petshelter.service.*;
+import com.example.petshelter.type.PetStatus;
 import com.example.petshelter.type.UserRole;
 import com.example.petshelter.util.CallbackData;
 import com.example.petshelter.util.Command;
@@ -13,10 +14,14 @@ import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -82,6 +87,7 @@ public class CommandHandler {
         log.info("Constructor CommandHandler");
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void handle(User user, Chat chat, String commandText) {
         try {
 
@@ -97,13 +103,36 @@ public class CommandHandler {
                 }
             }
 
+            if (commandText.startsWith("/pet")) {
+                Long petId = Long.valueOf(commandText.replace("/pet", ""));
+                petService.changePetStatus(petId, PetStatus.CHOSEN);
+                log.info("Chosen Pet Id {}", petId);
+                String text = getListOfAvailableAdopters();
+                telegramBotService.sendMessage(chatId, text);
+
+                return;
+            }
+
+            if (commandText.startsWith("/user")) {
+                Long adopterId = Long.valueOf(commandText.replace("/user", ""));
+                List<Pet> pets = petService.getPetsWithStatus(PetStatus.CHOSEN);
+                Long petId = pets.get(0).getId();
+                com.example.petshelter.entity.User adopter = userService.getUserById(adopterId);
+                petService.makePetAdopted(petId, adopter, PetStatus.ADOPTED);
+                userService.updateUserRoleByUserId(adopterId, UserRole.ADOPTER);
+                String text = "Готово! Животное выдано пользователю.";
+                telegramBotService.sendMessage(chatId, text);
+
+                return;
+            }
+
             if ("handleReport".equals(UpdateHandler.activeMenu)) {
 
                 com.example.petshelter.entity.User thisUser = userService.getUserByChatId(userId);
                 UserReport thisReport = userReportService.getUserReportByUserIdAndStatusCreated(thisUser.getId());
                 UserReportPhoto thisReportPhoto = userReportPhotoService.findUserReportPhoto(thisReport.getId());
 
-                if(thisReport.getPet() == null) {
+                if (thisReport.getPet() == null) {
 
                     Pet thisPet = petService.getPetById(parseLong(commandText));
 
@@ -118,7 +147,7 @@ public class CommandHandler {
                     return;
                 }
 
-                if (thisReportPhoto == null){
+                if (thisReportPhoto == null) {
 
                     String text = "Теперь пришлите, пожалуйста, фото питомца";
                     telegramBotService.sendMessage(chatId, text, null, ParseMode.Markdown);
@@ -126,7 +155,7 @@ public class CommandHandler {
                     return;
                 }
 
-                if (thisReport.getPetDiet() == null){
+                if (thisReport.getPetDiet() == null) {
                     thisReport.setPetDiet(commandText);
                     userReportService.updateUserReport(thisReport.getId(), thisReport);
 
@@ -138,7 +167,7 @@ public class CommandHandler {
                     return;
                 }
 
-                if (thisReport.getHealth() == null){
+                if (thisReport.getHealth() == null) {
                     thisReport.setHealth(commandText);
                     userReportService.updateUserReport(thisReport.getId(), thisReport);
 
@@ -150,7 +179,7 @@ public class CommandHandler {
                     return;
                 }
 
-                if (thisReport.getBehavior() == null){
+                if (thisReport.getBehavior() == null) {
                     thisReport.setBehavior(commandText);
                     userReportService.updateUserReport(thisReport.getId(), thisReport);
 
@@ -172,6 +201,30 @@ public class CommandHandler {
         } catch (Exception e) {
             log.error(e.getMessage() + "Error Handle CommandHandler");
         }
+    }
+
+    @NotNull
+    private String getListOfAvailableAdopters() {
+        String text;
+        List<com.example.petshelter.entity.User> availableAdopters = userService.getUsersAvailableForAdopt();
+        if (availableAdopters.isEmpty()) {
+            List<Pet> pets = petService.getPetsWithStatus(PetStatus.CHOSEN);
+            pets.forEach(pet -> petService.changePetStatus(pet.getId(), PetStatus.AVAILABLE));
+            text = "Усыновителей, к сожалению, не найдено";
+        } else {
+            StringBuilder builder = new StringBuilder();
+            availableAdopters.forEach((adopter) -> builder.append(adopter.getId())
+                    .append(". ")
+                    .append(adopter.getFirstName())
+                    .append(", ")
+                    .append(adopter.getTgUsername())
+                    .append(" => /user")
+                    .append(adopter.getId())
+                    .append("\n"));
+            text = "Выберите пользователя, кликнув по нужной ссылке:\n" + builder;
+        }
+
+        return text;
     }
 
     /**

@@ -1,13 +1,19 @@
 package com.example.petshelter.service;
 
 import com.example.petshelter.entity.Pet;
+import com.example.petshelter.entity.User;
 import com.example.petshelter.exception.PetNotFoundException;
 import com.example.petshelter.repository.PetRepository;
+import com.example.petshelter.type.PetStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
+
+import static java.time.LocalDate.now;
 
 @Service
 public class PetService {
@@ -30,9 +36,16 @@ public class PetService {
 
     public Pet updatePet(Long id, Pet pet){
         logger.info("Was called method to update pet with id {}", id);
-        Pet oldPet = petRepository.findById(id).orElseThrow(() -> new PetNotFoundException(id));
+        Pet oldPet = petRepository.findById(id)
+                .orElseThrow(() -> new PetNotFoundException(id));
         oldPet.setSpecies(pet.getSpecies());
         oldPet.setNickname(pet.getNickname());
+        oldPet.setAdopter(pet.getAdopter());
+        oldPet.setShelter(pet.getShelter());
+        oldPet.setPetType(pet.getPetType());
+        oldPet.setPetStatus(pet.getPetStatus());
+        oldPet.setDayOfAdopt(pet.getDayOfAdopt());
+        oldPet.setDaysToAdaptation(pet.getDaysToAdaptation());
         return petRepository.save(oldPet);
     }
 
@@ -54,10 +67,25 @@ public class PetService {
         return pet;
     }
 
+    public List<Pet> getPetsWithStatus(final PetStatus status) {
+        logger.info("Was called method to fetch pets with status {}", status);
+        return petRepository.findPetsByPetStatus(status);
+    }
 
+    public void changePetStatus(final Long petId, final PetStatus status) {
+        Pet pet = this.getPetById(petId);
+        pet.setPetStatus(status);
+        this.updatePet(petId, pet);
+        logger.info("Was called method to set status {} for PetId {}", status, petId);
+    }
 
-
-
-
-
+    public void makePetAdopted(final Long petId, final User user, final PetStatus status) {
+        Pet pet = this.getPetById(petId);
+        pet.setAdopter(user);
+        pet.setPetStatus(status);
+        pet.setDayOfAdopt(LocalDate.now());
+        pet.setDaysToAdaptation(30);
+        this.updatePet(petId, pet);
+        logger.info("Was called method to make Pet adopted for PetId {}", petId);
+    }
 }

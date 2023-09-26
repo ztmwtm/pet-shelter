@@ -16,17 +16,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
 
     public User addUser(User user) {
         logger.info("Was called method to add user");
         return userRepository.save(user);
     }
-
 
     public User updateUser(Long id, User user) {
         logger.info("Was called method to update user with id {}", id);
@@ -100,5 +97,17 @@ public class UserService {
     public List<User> getVolunteers() {
         logger.info("Was called method to get all volunteers");
         return userRepository.findUsersByRoleIs(UserRole.VOLUNTEER);
+    }
+
+    public List<User> getUsersAvailableForAdopt() {
+        logger.info("Was called method to get all users with role USER");
+        return userRepository.findUsersByRoleIs(UserRole.USER);
+    }
+
+    public void updateUserRoleByUserId(final Long userId, final UserRole role) {
+        User user = this.getUserById(userId);
+        user.setRole(role);
+        this.updateUser(userId, user);
+        logger.info("Was called method to set role {} for UserId {}", role, userId);
     }
 }
