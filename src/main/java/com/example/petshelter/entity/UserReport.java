@@ -1,9 +1,7 @@
 package com.example.petshelter.entity;
 
-import com.example.petshelter.util.UserReportStatus;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -15,10 +13,6 @@ public class UserReport {
     private String petDiet;
     private String health;
     private String behavior;
-    private LocalDate dateOfCreation;
-
-    @Enumerated(EnumType.STRING)
-    private UserReportStatus status;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -28,13 +22,11 @@ public class UserReport {
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
-    public UserReport(Long id, String petDiet, String health, String behavior, LocalDate dateOfCreation, UserReportStatus status, User user, Pet pet) {
+    public UserReport(Long id, String petDiet, String health, String behavior, User user, Pet pet) {
         this.id = id;
         this.petDiet = petDiet;
         this.health = health;
         this.behavior = behavior;
-        this.dateOfCreation = dateOfCreation;
-        this.status = status;
         this.user = user;
         this.pet = pet;
     }
@@ -90,33 +82,18 @@ public class UserReport {
         this.pet = pet;
     }
 
-    public UserReportStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(UserReportStatus status) {
-        this.status = status;
-    }
-
-    public LocalDate getDateOfCreation() {
-        return dateOfCreation;
-    }
-
-    public void setDateOfCreation(LocalDate dateOfCreation) {
-        this.dateOfCreation = dateOfCreation;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserReport that = (UserReport) o;
-        return Objects.equals(id, that.id) && Objects.equals(petDiet, that.petDiet) && Objects.equals(health, that.health) && Objects.equals(behavior, that.behavior) && Objects.equals(dateOfCreation, that.dateOfCreation) && status == that.status && Objects.equals(user, that.user) && Objects.equals(pet, that.pet);
+        return Objects.equals(id, that.id) && Objects.equals(petDiet, that.petDiet) && Objects.equals(health, that.health) && Objects.equals(behavior, that.behavior) && Objects.equals(user, that.user) && Objects.equals(pet, that.pet);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, petDiet, health, behavior, dateOfCreation, user, pet);
+        return Objects.hash(id, petDiet, health, behavior, user, pet);
     }
 
     @Override
@@ -126,8 +103,6 @@ public class UserReport {
                 ", petDiet='" + petDiet + '\'' +
                 ", health='" + health + '\'' +
                 ", behavior='" + behavior + '\'' +
-                ", dateOfCreation=" + dateOfCreation +
-                ", status=" + status +
                 ", user=" + user +
                 ", pet=" + pet +
                 '}';
