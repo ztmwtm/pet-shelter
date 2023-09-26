@@ -9,6 +9,7 @@ import com.example.petshelter.type.PetStatus;
 import com.example.petshelter.type.UserRole;
 import com.example.petshelter.util.CallbackData;
 import com.example.petshelter.util.Command;
+import com.example.petshelter.util.Menu;
 import com.example.petshelter.util.UserReportStatus;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.User;
@@ -94,11 +95,12 @@ public class CommandHandler {
             Long chatId = chat.id();
             Long userId = user.id();
 
+            com.example.petshelter.entity.User thisUser = userService.getUserByChatId(chatId);
+
             Command[] commands = Command.values();
             for (Command command : commands) {
                 if (("/" + command.getTitle()).equals(commandText)) {
                     commandExecutors.get(command).accept(user, chat);
-                    UpdateHandler.activeMenu = "";
                     break;
                 }
             }
@@ -126,9 +128,8 @@ public class CommandHandler {
                 return;
             }
 
-            if ("handleReport".equals(UpdateHandler.activeMenu)) {
+            if (thisUser.getActiveMenu().equals(Menu.REPORT)) {
 
-                com.example.petshelter.entity.User thisUser = userService.getUserByChatId(userId);
                 UserReport thisReport = userReportService.getUserReportByUserIdAndStatusCreated(thisUser.getId());
                 UserReportPhoto thisReportPhoto = userReportPhotoService.findUserReportPhoto(thisReport.getId());
 
@@ -191,8 +192,6 @@ public class CommandHandler {
                     thisReport.setStatus(UserReportStatus.ON_VERIFICATION);
                     userReportService.updateUserReport(thisReport.getId(), thisReport);
 
-                    UpdateHandler.activeMenu = "";
-
                     log.info("Handle CommandHandler - User report on verification");
                     return;
                 }
@@ -243,20 +242,31 @@ public class CommandHandler {
                 userService.registerNewUser(user, chatId);
                 log.info("User registered successfully");
                 telegramBotService.sendMessage(chatId, userName + GREETING, markupHelper.buildMenu(mainMenu), ParseMode.Markdown);
+
+                com.example.petshelter.entity.User thisUser = userService.getUserByChatId(chatId);
+                thisUser.setActiveMenu(Menu.MAIN_MENU);
+                userService.updateUser(thisUser.getId(),thisUser);
+
                 log.info(logInfo);
                 return;
             }
             if (currentUser.getRole() == UserRole.VOLUNTEER) {
                 telegramBotService.sendMessage(chatId, GREETING_VOLUNTEER, markupHelper.buildMenu(startVolunteer), ParseMode.Markdown);
+                currentUser.setActiveMenu(Menu.START_VOLUNTEER);
+                userService.updateUser(currentUser.getId(),currentUser);
                 log.info(logInfo);
                 return;
             }
             if (currentUser.getSelectedShelterId() != 0) {
                 telegramBotService.sendMessage(chatId, "Выберите что вы хотите узнать о приюте:", markupHelper.buildMenu(mainMenuWithoutChose), ParseMode.Markdown);
+                currentUser.setActiveMenu(Menu.MAIN_MENU_WITHOUT_CHOSE);
+                userService.updateUser(currentUser.getId(),currentUser);
                 log.info(logInfo);
                 return;
             }
             telegramBotService.sendMessage(chatId, "Выберите приют:", markupHelper.buildMenu(mainMenu), null);
+            currentUser.setActiveMenu(Menu.MAIN_MENU);
+            userService.updateUser(currentUser.getId(),currentUser);
             log.info(logInfo);
         } catch (Exception e) {
             log.error(e.getMessage() + "Error HandleStart CommandHandler");
