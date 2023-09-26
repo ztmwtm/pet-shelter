@@ -1,10 +1,12 @@
 package com.example.petshelter.handler;
 
+import com.example.petshelter.entity.Pet;
 import com.example.petshelter.entity.Shelter;
 import com.example.petshelter.entity.UserReport;
 import com.example.petshelter.entity.UserReportPhoto;
 import com.example.petshelter.helper.MarkupHelper;
 import com.example.petshelter.service.*;
+import com.example.petshelter.type.PetStatus;
 import com.example.petshelter.type.PetType;
 import com.example.petshelter.util.CallbackData;
 import com.example.petshelter.util.UserReportStatus;
@@ -15,6 +17,7 @@ import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -37,6 +40,7 @@ public class CallbackQueryHandler {
     private final UserService userService;
     private final UserReportService userReportService;
     private final UserReportPhotoService userReportPhotoService;
+    private final PetService petService;
     private final MarkupHelper markupHelper;
     private final Map<String, String> catsMenu = new LinkedHashMap<>();
     private final Map<String, String> dogsMenu = new LinkedHashMap<>();
@@ -206,12 +210,13 @@ public class CallbackQueryHandler {
                                 final UserService userService,
                                 final UserReportService userReportService,
                                 final UserReportPhotoService userReportPhotoService,
-                                final MarkupHelper markupHelper) {
+                                final PetService petService, final MarkupHelper markupHelper) {
         this.telegramBotService = telegramBotService;
         this.shelterService = shelterService;
         this.userService = userService;
         this.userReportService = userReportService;
         this.userReportPhotoService = userReportPhotoService;
+        this.petService = petService;
         this.markupHelper = markupHelper;
         fillSheltersChooseMenu();
         log.info("Constructor CallbackQueryHandler");
@@ -652,12 +657,35 @@ public class CallbackQueryHandler {
 
     private void handleAddAdopter(User user, Chat chat) {
         try {
-            String text = "Добавление усыновителя";
-            telegramBotService.sendMessage(chat.id(), text, null, null);
+            String text = getListOfPetsAvailableForAdoption();
+            telegramBotService.sendMessage(chat.id(), text);
             log.info("handleAddAdopter CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error handleAddAdopter CallbackQueryHandler");
         }
+    }
+
+    @NotNull
+    private String getListOfPetsAvailableForAdoption() {
+        String text;
+        List<Pet> petsToAdopt = petService.getPetsWithStatus(PetStatus.AVAILABLE);
+        if (petsToAdopt.isEmpty()) {
+            text = "Все животные выданы усыновителям.";
+        } else {
+            StringBuilder builder = new StringBuilder();
+            petsToAdopt.forEach((pet) -> builder.append(pet.getId())
+                    .append(". ")
+                    .append(pet.getSpecies())
+                    .append(", ")
+                    .append(pet.getNickname())
+                    .append(", ")
+                    .append(pet.getPetType())
+                    .append(" => /pet")
+                    .append(pet.getId())
+                    .append("\n"));
+            text = "Выберите животное, кликнув по нужной ссылке:\n" + builder;
+        }
+        return text;
     }
 
     private void handleCheckReports(User user, Chat chat) {

@@ -1,5 +1,6 @@
 package com.example.petshelter.entity;
 
+import com.example.petshelter.type.PetStatus;
 import com.example.petshelter.type.PetType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -25,6 +26,8 @@ public class Pet {
     @JsonIgnore
     @JoinColumn(name = "user_id")
     private User adopter;
+    @Enumerated(EnumType.STRING)
+    private PetStatus petStatus;
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "shelter_id")
@@ -104,6 +107,14 @@ public class Pet {
         this.daysToAdaptation = daysToAdaptation;
     }
 
+    public PetStatus getPetStatus() {
+        return petStatus;
+    }
+
+    public void setPetStatus(final PetStatus petStatus) {
+        this.petStatus = petStatus;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -127,8 +138,8 @@ public class Pet {
                ", dayOfAdopt=" + dayOfAdopt +
                ", daysToAdaptation=" + daysToAdaptation +
                ", adopter=" + adopter +
+               ", petStatus=" + petStatus +
                ", shelter=" + shelter +
                '}';
     }
-
 }
