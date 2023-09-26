@@ -1,48 +1,79 @@
 package com.example.petshelter.handler;
 
-import com.example.petshelter.service.TelegramBotService;
+import com.example.petshelter.entity.User;
 import com.example.petshelter.service.UserService;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Contact;
-import com.pengrad.telegrambot.model.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
 
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(MockitoExtension.class)
 class ContactHandlerTest {
 
     @Mock
-    private TelegramBotService telegramBotServiceMock;
-
-    @Mock
     private UserService userServiceMock;
 
-    @InjectMocks
-    ContactHandler contactHandler;
-
-    private static User updatedUser;
-    private static Chat chat;
-    private static Contact contact;
-
     @Test
-    void handle() throws NoSuchFieldException, IllegalAccessException {
-        chat = new Chat();
+    void handlePositiveTest() throws NoSuchFieldException, IllegalAccessException {
+        Chat chat = new Chat();
         Field idField = Chat.class.getDeclaredField("id");
         idField.setAccessible(true);
-        idField.set(chat, 1000L);
+        idField.set(chat, 1L);
 
-        String newPhoneNumber = "888999000888777";
+        Contact contact = new Contact();
+        Field phoneNumber = Contact.class.getDeclaredField("phone_number");
+        phoneNumber.setAccessible(true);
+        phoneNumber.set(contact, "+79569878589");
+        String newNumber = contact.phoneNumber();
 
-        updatedUser = new User(1L);
+        User user = new User();
+        Field userName = User.class.getDeclaredField("firstName");
+        userName.setAccessible(true);
+        userName.set(user, "Hercules");
+        Field userPhoneNumber = User.class.getDeclaredField("phoneNumber");
+        userPhoneNumber.setAccessible(true);
+        userPhoneNumber.set(user, "+79569878589");
 
+        doNothing().when(userServiceMock).updateUserPhoneNumber(chat.id(), newNumber);
+        userServiceMock.updateUserPhoneNumber(chat.id(), newNumber);
+
+        assertThat(user.getPhoneNumber()).isNotEmpty();
+        assertThat(user.getPhoneNumber()).isEqualTo(newNumber);
     }
+
+    @Test
+    void handleNegativeTest() throws NoSuchFieldException, IllegalAccessException {
+        Chat chat = new Chat();
+        Field idField = Chat.class.getDeclaredField("id");
+        idField.setAccessible(true);
+        idField.set(chat, 1L);
+
+        Contact contact = new Contact();
+        Field phoneNumber = Contact.class.getDeclaredField("phone_number");
+        phoneNumber.setAccessible(true);
+        phoneNumber.set(contact, "+79569878580");
+        String newNumber = contact.phoneNumber();
+
+        User user = new User();
+        Field userName = User.class.getDeclaredField("firstName");
+        userName.setAccessible(true);
+        userName.set(user, "Hercules");
+        Field userPhoneNumber = User.class.getDeclaredField("phoneNumber");
+        userPhoneNumber.setAccessible(true);
+        userPhoneNumber.set(user, "+79569878589");
+
+        doNothing().when(userServiceMock).updateUserPhoneNumber(chat.id(), newNumber);
+        userServiceMock.updateUserPhoneNumber(chat.id(), newNumber);
+
+        assertThat(user.getPhoneNumber()).isNotEmpty();
+        assertThat(user.getPhoneNumber()).isNotEqualTo(newNumber);
+    }
+
 }
