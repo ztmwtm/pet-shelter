@@ -13,8 +13,6 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
-import static java.time.LocalDate.now;
-
 @Service
 public class PetService {
 
@@ -87,5 +85,10 @@ public class PetService {
         pet.setDaysToAdaptation(30);
         this.updatePet(petId, pet);
         logger.info("Was called method to make Pet adopted for PetId {}", petId);
+    }
+
+    public List<Pet> getPetsForAdopter(Long userId) {
+        logger.info("Was called method to get pets for adopter with Id {}", userId);
+        return petRepository.getPetsByAdopter_Id(userId);
     }
 }
