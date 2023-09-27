@@ -13,7 +13,8 @@ public enum CallbackData {
 
     CATS_SHELTER_CHOSE("cats.chose", "Выберите любой из приютов для кошек:"),
     DOGS_SHELTER_CHOSE("dogs.chose", "Выберите любой из приютов для собак:"),
-
+    USER_CHOOSE("user.choose", "Выберите пользователя:"),
+    PET_CHOOSE("pet.choose", "Выберите питомца"),
     RESET_SHELTER("reset.shelter", "\u274C Выбрать другой приют."),
 
     CATS_INFO("cats.info", "ℹ Узнать информацию о приюте"),
@@ -61,7 +62,8 @@ public enum CallbackData {
     ADD_ADOPTER("add.adopter", "Добавить усыновителя"),
     CHECK_REPORTS("check.reports", "Проверить отчеты"),
     EXTEND_TRIAL("extend.trial","Продлить испытательный срок"),
-    KEEP_ANIMAL("keep.animal", "Оставить животное у хозяина");
+    KEEP_ANIMAL("keep.animal", "Оставить животное у хозяина"),
+    FAIL_TRIAL("fail.trial", "Вернуть животное в приют с испытательного срока" );
 
     private final String title;
     private final String description;

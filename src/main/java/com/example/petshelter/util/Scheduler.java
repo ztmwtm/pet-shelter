@@ -12,12 +12,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class Scheduler {
-    private final int DAYS_REPORT_MISSED_TO_VOLUNTEER_ALARM = 2;
+    private static final int DAYS_REPORT_MISSED_TO_VOLUNTEER_ALARM = 2;
     private final TelegramBotService telegramBotService;
     private final PetService petService;
     private final UserService userService;
@@ -31,11 +30,6 @@ public class Scheduler {
         this.userService = userService;
         this.userReportService = userReportService;
         this.userReportPhotoService = userReportPhotoService;
-    }
-
-    @Scheduled(cron = "0 0 22 * * *")
-    public void congratulationOfAdoption() {
-
     }
 
     @Scheduled(cron = "0 0 20 * * *")

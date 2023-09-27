@@ -33,4 +33,6 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
                         """
             , nativeQuery = true)
     List<Long> getPetsIdReadyToKept();
+
+    List<Pet> findPetByPetStatus(PetStatus status);
 }

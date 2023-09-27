@@ -24,6 +24,7 @@ public class User {
     private long selectedShelterId;
     @Enumerated(EnumType.STRING)
     private Menu activeMenu;
+    private long selectedPetId;
 
     public User(Long chatId, String firstName, String lastName, String tgUsername, String phoneNumber, UserRole role) {
         this.chatId = chatId;
@@ -107,6 +108,14 @@ public class User {
 
     public void setActiveMenu(Menu activeMenu) {
         this.activeMenu = activeMenu;
+    }
+
+    public long getSelectedPetId() {
+        return selectedPetId;
+    }
+
+    public void setSelectedPetId(long selectedPetId) {
+        this.selectedPetId = selectedPetId;
     }
 
     @Override

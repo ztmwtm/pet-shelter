@@ -112,17 +112,6 @@ public class CommandHandler {
                 log.info("Chosen Pet Id {}", petId);
                 String text = getListOfAvailableAdopters();
                 telegramBotService.sendMessage(chatId, text);
-
-                return;
-            }
-
-            if (commandText.startsWith("/petExtend")) {
-                Long petId = Long.valueOf(commandText.replace("/petExtend", ""));
-
-                log.info("Chosen Pet Id {}", petId);
-                String text = getListOfAvailableAdopters();
-                telegramBotService.sendMessage(chatId, text);
-
                 return;
             }
 
@@ -222,7 +211,7 @@ public class CommandHandler {
             text = "Усыновителей, к сожалению, не найдено";
         } else {
             StringBuilder builder = new StringBuilder();
-            availableAdopters.forEach((adopter) -> builder.append(adopter.getId())
+            availableAdopters.forEach(adopter -> builder.append(adopter.getId())
                     .append(". ")
                     .append(adopter.getFirstName())
                     .append(", ")
@@ -244,7 +233,7 @@ public class CommandHandler {
             text = "Питомцы, к сожалению, не найдены";
         } else {
             StringBuilder builder = new StringBuilder();
-            pets.forEach((pet) -> builder.append(pet.getId())
+            pets.forEach(pet -> builder.append(pet.getId())
                     .append(". ")
                     .append(pet.getNickname())
                     .append(" => /adoptedPet")

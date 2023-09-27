@@ -92,9 +92,19 @@ public class PetService {
     public List<Long> getPetsReadyToFinalAdopt() {
         return petRepository.getPetsIdReadyToKept();
     }
-  
+
     public List<Pet> getPetsForAdopter(Long userId) {
         logger.info("Was called method to get pets for adopter with Id {}", userId);
         return petRepository.getPetsByAdopter_Id(userId);
+    }
+
+    public List<Pet> getPetsByPetStatus(PetStatus status) {
+        return petRepository.findPetByPetStatus(status);
+    }
+
+    public void extendTrial(Long id, int days) {
+        Pet pet = this.getPetById(id);
+        pet.setDaysToAdaptation(pet.getDaysToAdaptation() + days);
+        this.updatePet(id, pet);
     }
 }
