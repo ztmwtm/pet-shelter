@@ -13,7 +13,6 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
-
 @Service
 public class PetService {
 
@@ -89,7 +88,13 @@ public class PetService {
         logger.info("Was called method to make Pet adopted for PetId {}", petId);
     }
 
+
     public List<Long> getPetsReadyToFinalAdopt() {
         return petRepository.getPetsIdReadyToKept();
+    }
+  
+    public List<Pet> getPetsForAdopter(Long userId) {
+        logger.info("Was called method to get pets for adopter with Id {}", userId);
+        return petRepository.getPetsByAdopter_Id(userId);
     }
 }

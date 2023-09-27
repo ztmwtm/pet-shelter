@@ -9,6 +9,7 @@ import com.example.petshelter.service.*;
 import com.example.petshelter.type.PetStatus;
 import com.example.petshelter.type.PetType;
 import com.example.petshelter.util.CallbackData;
+import com.example.petshelter.util.Menu;
 import com.example.petshelter.util.UserReportStatus;
 import com.example.petshelter.util.Templates;
 import com.pengrad.telegrambot.model.Chat;
@@ -42,6 +43,7 @@ public class CallbackQueryHandler {
     private final UserReportPhotoService userReportPhotoService;
     private final PetService petService;
     private final MarkupHelper markupHelper;
+    private final CommandHandler commandHandler;
     private final Map<String, String> catsMenu = new LinkedHashMap<>();
     private final Map<String, String> dogsMenu = new LinkedHashMap<>();
     private final Map<String, String> catsInfoMenu = new LinkedHashMap<>();
@@ -210,7 +212,7 @@ public class CallbackQueryHandler {
                                 final UserService userService,
                                 final UserReportService userReportService,
                                 final UserReportPhotoService userReportPhotoService,
-                                final PetService petService, final MarkupHelper markupHelper) {
+                                final PetService petService, final MarkupHelper markupHelper, CommandHandler commandHandler) {
         this.telegramBotService = telegramBotService;
         this.shelterService = shelterService;
         this.userService = userService;
@@ -218,6 +220,7 @@ public class CallbackQueryHandler {
         this.userReportPhotoService = userReportPhotoService;
         this.petService = petService;
         this.markupHelper = markupHelper;
+        this.commandHandler = commandHandler;
         fillSheltersChooseMenu();
         log.info("Constructor CallbackQueryHandler");
     }
@@ -532,6 +535,8 @@ public class CallbackQueryHandler {
             Long userId = user.id();
 
             com.example.petshelter.entity.User thisUser = userService.getUserByChatId(userId);
+            thisUser.setActiveMenu(Menu.REPORT);
+            userService.updateUser(thisUser.getId(),thisUser);
 
             if (!thisUser.getRole().equals(ADOPTER)) {
 
@@ -541,7 +546,6 @@ public class CallbackQueryHandler {
             } else {
 
                 UserReport thisReport = userReportService.getUserReportByUserIdAndStatusCreated(userId);
-                UpdateHandler.activeMenu = "handleReport";
 
                 if (thisReport == null) {
 
@@ -557,9 +561,9 @@ public class CallbackQueryHandler {
                                     - *Рацион животного.*
                                     - *Общее самочувствие и привыкание к новому месту.*
                                     - *Изменение в поведении: отказ от старых привычек, приобретение новых.*
-
-                                    Для начала, пришлите Id животного.
-                                    """;
+                                    
+                                    """
+                            + commandHandler.getListOfPetsForAdopter(thisUser.getId());
 
                     telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
 
@@ -571,7 +575,7 @@ public class CallbackQueryHandler {
                     UserReportPhoto thisReportPhoto = userReportPhotoService.findUserReportPhoto(thisReport.getId());
 
                     if (thisReport.getPet() == null) {
-                        String txt = "Пришлите, пожалуйста, Id животного.";
+                        String txt = commandHandler.getListOfPetsForAdopter(thisUser.getId());
                         telegramBotService.sendMessage(chat.id(), txt, null, ParseMode.Markdown);
                         return;
                     } else if (thisReportPhoto == null) {
@@ -639,6 +643,11 @@ public class CallbackQueryHandler {
             String text = "Выберите новый приют:";
             userService.resetSelectedShelterId(chat.id());
             telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(mainMenu), ParseMode.Markdown);
+
+            com.example.petshelter.entity.User currentUser = userService.getUserByChatId(chat.id());
+            currentUser.setActiveMenu(Menu.MAIN_MENU);
+            userService.updateUser(currentUser.getId(),currentUser);
+
             log.info("handleVolunteerHelp CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error handleVolunteerHelp CallbackQueryHandler");
