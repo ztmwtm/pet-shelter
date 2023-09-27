@@ -56,17 +56,6 @@ public class UserReportService {
         return userReport;
     }
 
-    public List<UserReport> getUserReportsByUserId(Long id) {
-        return userReportRepository.getUserReportsByUser_id(id);
-    }
-
-    public List<UserReport> getUserReportByUserIdAndStatus(Long id, UserReportStatus status) {
-        return userReportRepository.getUserReportByUser_idAndStatus(id, status);
-    }
-    public List<UserReport> getUserReportsByPetId(Long id) {
-        return userReportRepository.getUserReportsByPet_id(id);
-    }
-
     public UserReport  getUserReportByUserIdAndStatusCreated(Long userId) {
         logger.info("Was called method to get report by userId {} and report status 'CREATED'", userId);
         return userReportRepository.getUserReportByUser_idAndStatusCreated(userId).orElse(null);
