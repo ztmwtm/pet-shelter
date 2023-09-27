@@ -61,7 +61,9 @@ public enum CallbackData {
     ADD_ADOPTER("add.adopter", "Добавить усыновителя"),
     CHECK_REPORTS("check.reports", "Проверить отчеты"),
     EXTEND_TRIAL("extend.trial","Продлить испытательный срок"),
-    KEEP_ANIMAL("keep.animal", "Оставить животное у хозяина");
+    KEEP_ANIMAL("keep.animal", "Оставить животное у хозяина"),
+    ACCEPT_REPORT("accept.report", "Принять отчет"),
+    REJECT_REPORT("reject.report", "Отклонить отчет");
 
     private final String title;
     private final String description;

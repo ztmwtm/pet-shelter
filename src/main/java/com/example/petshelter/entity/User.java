@@ -25,6 +25,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Menu activeMenu;
 
+    private Long activeReportForChecking;
+
     public User(Long chatId, String firstName, String lastName, String tgUsername, String phoneNumber, UserRole role) {
         this.chatId = chatId;
         this.firstName = firstName;
@@ -107,6 +109,14 @@ public class User {
 
     public void setActiveMenu(Menu activeMenu) {
         this.activeMenu = activeMenu;
+    }
+
+    public Long getActiveReportForChecking() {
+        return activeReportForChecking;
+    }
+
+    public void setActiveReportForChecking(Long activeReportForChecking) {
+        this.activeReportForChecking = activeReportForChecking;
     }
 
     @Override

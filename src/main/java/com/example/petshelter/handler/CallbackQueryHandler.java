@@ -59,6 +59,7 @@ public class CallbackQueryHandler {
 
     private final Map<String, String> startVolunteer = new LinkedHashMap<>();
     private final Map<String, String> volunteerMenu = new LinkedHashMap<>();
+    private final Map<String, String> volunteerCheckReportsMenu = new LinkedHashMap<>();
 
 
     /*
@@ -120,12 +121,18 @@ public class CallbackQueryHandler {
         queryExecutors.put(CallbackData.CHECK_REPORTS, this::handleCheckReports);
         queryExecutors.put(CallbackData.EXTEND_TRIAL, this::handleExtendTrial);
         queryExecutors.put(CallbackData.KEEP_ANIMAL, this::handleKeepAnimal);
+        queryExecutors.put(CallbackData.ACCEPT_REPORT, this::handleAcceptReport);
+        queryExecutors.put(CallbackData.REJECT_REPORT, this::handleRejectReport);
 
         startVolunteer.put(CallbackData.START_VOLUNTEER.getTitle(), CallbackData.START_VOLUNTEER.getDescription());
+
         volunteerMenu.put(CallbackData.ADD_ADOPTER.getTitle(), CallbackData.ADD_ADOPTER.getDescription());
         volunteerMenu.put(CallbackData.CHECK_REPORTS.getTitle(), CallbackData.CHECK_REPORTS.getDescription());
         volunteerMenu.put(CallbackData.EXTEND_TRIAL.getTitle(), CallbackData.EXTEND_TRIAL.getDescription());
         volunteerMenu.put(CallbackData.KEEP_ANIMAL.getTitle(), CallbackData.KEEP_ANIMAL.getDescription());
+
+        volunteerCheckReportsMenu.put(CallbackData.ACCEPT_REPORT.getTitle(), CallbackData.ACCEPT_REPORT.getDescription());
+        volunteerCheckReportsMenu.put(CallbackData.REJECT_REPORT.getTitle(), CallbackData.REJECT_REPORT.getDescription());
 
         catsMenu.put(CallbackData.CATS_INFO.getTitle(), CallbackData.CATS_INFO.getDescription());
         catsMenu.put(CallbackData.CATS_TAKE.getTitle(), CallbackData.CATS_TAKE.getDescription());
@@ -536,7 +543,7 @@ public class CallbackQueryHandler {
 
             com.example.petshelter.entity.User thisUser = userService.getUserByChatId(userId);
             thisUser.setActiveMenu(Menu.REPORT);
-            userService.updateUser(thisUser.getId(),thisUser);
+            userService.updateUser(thisUser.getId(), thisUser);
 
             if (!thisUser.getRole().equals(ADOPTER)) {
 
@@ -561,9 +568,9 @@ public class CallbackQueryHandler {
                                     - *Рацион животного.*
                                     - *Общее самочувствие и привыкание к новому месту.*
                                     - *Изменение в поведении: отказ от старых привычек, приобретение новых.*
-                                    
+                                                                        
                                     """
-                            + commandHandler.getListOfPetsForAdopter(thisUser.getId());
+                                    + commandHandler.getListOfPetsForAdopter(thisUser.getId());
 
                     telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
 
@@ -646,7 +653,7 @@ public class CallbackQueryHandler {
 
             com.example.petshelter.entity.User currentUser = userService.getUserByChatId(chat.id());
             currentUser.setActiveMenu(Menu.MAIN_MENU);
-            userService.updateUser(currentUser.getId(),currentUser);
+            userService.updateUser(currentUser.getId(), currentUser);
 
             log.info("handleVolunteerHelp CallbackQueryHandler");
         } catch (Exception e) {
@@ -699,8 +706,29 @@ public class CallbackQueryHandler {
 
     private void handleCheckReports(User user, Chat chat) {
         try {
-            String text = "Проверить рапорты";
+            String text;
+            List<UserReport> userReports = userReportService.getUserReportByStatus(UserReportStatus.ON_VERIFICATION);
+
+            if (userReports.isEmpty()) {
+                text = "На текущий момент нет отчетов для проверки";
+            } else {
+                StringBuilder builder = new StringBuilder();
+                userReports.forEach((UserReport) -> builder.append("Id отчета: ")
+                        .append(UserReport.getId())
+                        .append(". Питомец: ")
+                        .append(UserReport.getPet().getNickname())
+                        .append(", Усыновитель: ")
+                        .append(UserReport.getUser().getLastName())
+                        .append(" ")
+                        .append(UserReport.getUser().getFirstName())
+                        .append(" => /reportsForValidation")
+                        .append(UserReport.getId())
+                        .append("\n"));
+                text = "Выберите отчет, кликнув по нужной ссылке:\n" + builder;
+
+            }
             telegramBotService.sendMessage(chat.id(), text, null, null);
+
             log.info("handleCheckReports CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error handleCheckReports CallbackQueryHandler");
@@ -722,6 +750,69 @@ public class CallbackQueryHandler {
             com.example.petshelter.entity.User userFromDB = userService.getUserByChatId(chat.id());
             telegramBotService.sendMessage(chat.id(), Templates.getCongratulationText(userFromDB), null, ParseMode.Markdown);
             log.info("handleKeepAnimal CallbackQueryHandler");
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error handleKeepAnimal CallbackQueryHandler");
+        }
+    }
+
+    private void handleAcceptReport(User user, Chat chat) {
+        try {
+            com.example.petshelter.entity.User thisVolunteer = userService.getUserByChatId(chat.id());
+            UserReport thisUserReport = userReportService.getUserReportById(thisVolunteer.getActiveReportForChecking());
+            com.example.petshelter.entity.User thisAdopter = userService.getUserById(thisUserReport.getUser().getId());
+
+            thisUserReport.setStatus(UserReportStatus.VERIFIED);
+            userReportService.updateUserReport(thisUserReport.getId(), thisUserReport);
+
+
+            String textToAdopter = "Уважаемый, "
+                    + thisAdopter.getFirstName()
+                    + ", ваш отчет по питомцу "
+                    + thisUserReport.getPet().getNickname()
+                    + " за "
+                    + thisUserReport.getDateOfCreation()
+                    + " принят.";
+            telegramBotService.sendMessage(chat.id(), textToAdopter, null, ParseMode.Markdown);
+
+            String text = "Отчет принят. Усыновителю отправлено соответствующее уведомление.";
+            telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
+
+            log.info("handleAcceptReport CallbackQueryHandler");
+        } catch (Exception e) {
+            log.error(e.getMessage() + "Error handleKeepAnimal CallbackQueryHandler");
+        }
+    }
+
+    private void handleRejectReport(User user, Chat chat) {
+        try {
+
+            com.example.petshelter.entity.User thisVolunteer = userService.getUserByChatId(chat.id());
+            UserReport thisUserReport = userReportService.getUserReportById(thisVolunteer.getActiveReportForChecking());
+            com.example.petshelter.entity.User thisAdopter = userService.getUserById(thisUserReport.getUser().getId());
+
+            thisUserReport.setStatus(UserReportStatus.DECLINED);
+            userReportService.updateUserReport(thisUserReport.getId(), thisUserReport);
+
+            String textToAdopter = "Уважаемый, "
+                    + thisAdopter.getFirstName()
+                    + ", ваш отчет по питомцу "
+                    + thisUserReport.getPet().getNickname()
+                    + " за "
+                    + thisUserReport.getDateOfCreation()
+                    + " отклонен."
+                    + """
+                    
+                    Мы заметили, что Вы заполняете отчет не так подробно, как необходимо. 
+                    Пожалуйста, подойдите ответственнее к этому занятию. 
+                    В противном случае волонтеры приюта будут обязаны самолично проверять условия содержания животного.
+                    
+                    """;
+            telegramBotService.sendMessage(chat.id(), textToAdopter, null, ParseMode.Markdown);
+
+            String text = "Отчет отклонен. Усыновителю отправлено соответствующее уведомление.";
+            telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
+
+            log.info("handleRejectReport CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error handleKeepAnimal CallbackQueryHandler");
         }
