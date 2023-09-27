@@ -26,6 +26,8 @@ public class User {
     private Menu activeMenu;
     private long selectedPetId;
 
+    private Long activeReportForChecking;
+
     public User(Long chatId, String firstName, String lastName, String tgUsername, String phoneNumber, UserRole role) {
         this.chatId = chatId;
         this.firstName = firstName;
@@ -110,12 +112,21 @@ public class User {
         this.activeMenu = activeMenu;
     }
 
+
     public long getSelectedPetId() {
         return selectedPetId;
     }
 
     public void setSelectedPetId(long selectedPetId) {
         this.selectedPetId = selectedPetId;
+
+    public Long getActiveReportForChecking() {
+        return activeReportForChecking;
+    }
+
+    public void setActiveReportForChecking(Long activeReportForChecking) {
+        this.activeReportForChecking = activeReportForChecking;
+
     }
 
     @Override

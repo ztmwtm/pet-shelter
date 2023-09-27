@@ -20,13 +20,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
-
-import static java.lang.Long.parseLong;
 
 /**
  * Класс отвечающий за приветствие пользователя и предлагающий выбор приюта
@@ -56,6 +55,7 @@ public class CommandHandler {
     private final Map<String, String> mainMenu = new LinkedHashMap<>();
     private final Map<String, String> startVolunteer = new LinkedHashMap<>();
     private final Map<String, String> mainMenuWithoutChose = new LinkedHashMap<>();
+    private final Map<String, String> volunteerCheckReportsMenu = new LinkedHashMap<>();
 
     /*
      * Нестатический блок инициализации метода и кнопок
@@ -63,7 +63,10 @@ public class CommandHandler {
         commandExecutors.put(Command.START, this::handleStart);
         mainMenu.put(CallbackData.CATS.getTitle(), "\uD83D\uDC08 Приют для кошек");
         mainMenu.put(CallbackData.DOGS.getTitle(), "\uD83D\uDC15 Приют для собак");
+
         startVolunteer.put(CallbackData.START_VOLUNTEER.getTitle(), CallbackData.START_VOLUNTEER.getDescription());
+        volunteerCheckReportsMenu.put(CallbackData.ACCEPT_REPORT.getTitle(), CallbackData.ACCEPT_REPORT.getDescription());
+        volunteerCheckReportsMenu.put(CallbackData.REJECT_REPORT.getTitle(), CallbackData.REJECT_REPORT.getDescription());
 
         mainMenuWithoutChose.put(CallbackData.CATS_INFO.getTitle(), CallbackData.CATS_INFO.getDescription());
         mainMenuWithoutChose.put(CallbackData.CATS_TAKE.getTitle(), CallbackData.CATS_TAKE.getDescription());
@@ -93,10 +96,6 @@ public class CommandHandler {
         try {
 
             Long chatId = chat.id();
-            Long userId = user.id();
-
-            com.example.petshelter.entity.User thisUser = userService.getUserByChatId(chatId);
-            UserReport thisReport = userReportService.getUserReportByUserIdAndStatusCreated(thisUser.getId());
 
             Command[] commands = Command.values();
             for (Command command : commands) {
@@ -105,6 +104,9 @@ public class CommandHandler {
                     break;
                 }
             }
+
+            com.example.petshelter.entity.User thisUser = userService.getUserByChatId(chatId);
+            UserReport thisReport = userReportService.getUserReportByUserIdAndStatusCreated(thisUser.getId());
 
             if (commandText.startsWith("/pet")) {
                 Long petId = Long.valueOf(commandText.replace("/pet", ""));
@@ -138,7 +140,57 @@ public class CommandHandler {
                 log.info("Handle CommandHandler - Select Adopted Pet");
 
                 String text = "Теперь пришлите, пожалуйста, фото питомца";
+                telegramBotService.sendMessage(chatId, text);
+
+                return;
+            }
+
+            if (commandText.startsWith("/reportsForValidation")) {
+                Long reportId = Long.valueOf(commandText.replace("/reportsForValidation", ""));
+                UserReport thisUserReport = userReportService.getUserReportById(reportId);
+
+                thisUser.setActiveReportForChecking(reportId);
+                userService.updateUser(thisUser.getId(), thisUser);
+
+                log.info("Handle CommandHandler - Select User report for validation");
+
+                StringBuilder builder = new StringBuilder();
+                builder
+                        .append("*Id отчета:* \n")
+                        .append(thisUserReport.getId())
+                        .append("\n \n")
+                        .append("*Дата создания отчета:* \n")
+                        .append(thisUserReport.getDateOfCreation())
+                        .append("\n \n")
+                        .append("*Питомец:* \n")
+                        .append(thisUserReport.getPet().getNickname())
+                        .append("\n \n")
+                        .append("*Усыновитель:* \n")
+                        .append(thisUserReport.getUser().getFirstName())
+                        .append(" ")
+                        .append(thisUserReport.getUser().getLastName())
+                        .append("\n \n")
+                        .append("*Диета:* \n")
+                        .append(thisUserReport.getPetDiet())
+                        .append("\n \n")
+                        .append("*Состояние здоровья:* \n")
+                        .append(thisUserReport.getHealth())
+                        .append("\n \n")
+                        .append("*Поведение и привычки:* \n")
+                        .append(thisUserReport.getBehavior())
+                        .append("\n \n")
+                        .append("*Фото питомца:* \n")
+                        .append("\n");
+
+                String text = builder.toString();
+
                 telegramBotService.sendMessage(chatId, text, null, ParseMode.Markdown);
+
+                UserReportPhoto photo = userReportPhotoService.findUserReportPhoto(thisUserReport.getId());
+                telegramBotService.sendPhoto(chat.id(), new File(photo.getFilePath()));
+
+                String txt = "Проверка отчета";
+                telegramBotService.sendMessage(chat.id(), txt, markupHelper.buildMenu(volunteerCheckReportsMenu), ParseMode.Markdown);
 
                 return;
             }
@@ -150,7 +202,7 @@ public class CommandHandler {
                 if (thisReportPhoto == null) {
 
                     String text = "Теперь пришлите, пожалуйста, фото питомца";
-                    telegramBotService.sendMessage(chatId, text, null, ParseMode.Markdown);
+                    telegramBotService.sendMessage(chatId, text);
 
                     return;
                 }
@@ -162,7 +214,7 @@ public class CommandHandler {
                     log.info("Handle CommandHandler - Add Pet Diet");
 
                     String text = "Отлично! Информация добавлена в отчет. Теперь пришлите, пожалуйста, в текстовом сообщении описание общего самочувствия питомца и особенностей привыкания к новому месту";
-                    telegramBotService.sendMessage(chatId, text, null, ParseMode.Markdown);
+                    telegramBotService.sendMessage(chatId, text);
 
                     return;
                 }
@@ -174,7 +226,7 @@ public class CommandHandler {
                     log.info("Handle CommandHandler - Add Pet Health");
 
                     String text = "Отлично! Информация добавлена в отчет. Теперь пришлите, пожалуйста, в текстовом сообщении особенности поведения питомца: отказ от старых привычек, приобретение новых";
-                    telegramBotService.sendMessage(chatId, text, null, ParseMode.Markdown);
+                    telegramBotService.sendMessage(chatId, text);
 
                     return;
                 }
@@ -186,7 +238,7 @@ public class CommandHandler {
                     log.info("Handle CommandHandler- Add Pet Behavior");
 
                     String text = "Отлично! Вы предоставили всю необходимую информацию для отчета. Отчет отправляется на проверку волонтеру";
-                    telegramBotService.sendMessage(chatId, text, null, ParseMode.Markdown);
+                    telegramBotService.sendMessage(chatId, text);
 
                     thisReport.setStatus(UserReportStatus.ON_VERIFICATION);
                     userReportService.updateUserReport(thisReport.getId(), thisReport);

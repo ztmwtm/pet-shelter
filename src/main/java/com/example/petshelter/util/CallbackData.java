@@ -64,6 +64,9 @@ public enum CallbackData {
     EXTEND_TRIAL("extend.trial","Продлить испытательный срок"),
     KEEP_ANIMAL("keep.animal", "Оставить животное у хозяина"),
     FAIL_TRIAL("fail.trial", "Вернуть животное в приют с испытательного срока" );
+    ACCEPT_REPORT("accept.report", "Принять отчет"),
+    REJECT_REPORT("reject.report", "Отклонить отчет");
+
 
     private final String title;
     private final String description;
