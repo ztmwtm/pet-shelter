@@ -110,4 +110,12 @@ public class UserService {
         this.updateUser(userId, user);
         logger.info("Was called method to set role {} for UserId {}", role, userId);
     }
+
+    public List<Long> getUsersWithFailedReport() {
+        return userRepository.getUsersWithFailedReport();
+    }
+
+    public List<Long> getUsersWithMissedReport(int daysReportMissedToVolunteerAlarm) {
+        return userRepository.getUsersWithMissedReport(daysReportMissedToVolunteerAlarm);
+    }
 }

@@ -113,6 +113,16 @@ public class CommandHandler {
                 return;
             }
 
+            if (commandText.startsWith("/petExtend")) {
+                Long petId = Long.valueOf(commandText.replace("/petExtend", ""));
+
+                log.info("Chosen Pet Id {}", petId);
+                String text = getListOfAvailableAdopters();
+                telegramBotService.sendMessage(chatId, text);
+
+                return;
+            }
+
             if (commandText.startsWith("/user")) {
                 Long adopterId = Long.valueOf(commandText.replace("/user", ""));
                 List<Pet> pets = petService.getPetsWithStatus(PetStatus.CHOSEN);

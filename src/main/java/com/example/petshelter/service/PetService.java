@@ -90,6 +90,6 @@ public class PetService {
     }
 
     public List<Long> getPetsReadyToFinalAdopt() {
-        return petRepository.getPetsIdReadyToFinalAdopt();
+        return petRepository.getPetsIdReadyToKept();
     }
 }

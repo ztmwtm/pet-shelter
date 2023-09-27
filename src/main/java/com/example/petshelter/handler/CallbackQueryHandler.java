@@ -673,7 +673,7 @@ public class CallbackQueryHandler {
             text = "Все животные выданы усыновителям.";
         } else {
             StringBuilder builder = new StringBuilder();
-            petsToAdopt.forEach((pet) -> builder.append(pet.getId())
+            petsToAdopt.forEach(pet -> builder.append(pet.getId())
                     .append(". ")
                     .append(pet.getSpecies())
                     .append(", ")
@@ -700,12 +700,34 @@ public class CallbackQueryHandler {
 
     private void handleExtendTrial(User user, Chat chat) {
         try {
-            String text = "Продлить срок на произвольное количество дней";
+            String text = getListOfPetsAvailableForExtendTrial();
             telegramBotService.sendMessage(chat.id(), text, null, null);
             log.info("handleExtendTrial CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error handleExtendTrial CallbackQueryHandler");
         }
+    }
+
+    private String getListOfPetsAvailableForExtendTrial() {
+        String text;
+        List<Pet> petsChosen = petService.getPetsWithStatus(PetStatus.CHOSEN);
+        if (petsChosen.isEmpty()) {
+            text = "Нет животных на испытательном сроке.";
+        } else {
+            StringBuilder builder = new StringBuilder();
+            petsChosen.forEach(pet -> builder.append(pet.getId())
+                    .append(". ")
+                    .append(pet.getSpecies())
+                    .append(", ")
+                    .append(pet.getNickname())
+                    .append(", ")
+                    .append(pet.getPetType())
+                    .append(" => /petExtend")
+                    .append(pet.getId())
+                    .append("\n"));
+            text = "Выберите животное, кликнув по нужной ссылке:\n" + builder;
+        }
+        return text;
     }
 
     private void handleKeepAnimal(User user, Chat chat) {
