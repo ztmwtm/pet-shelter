@@ -1,28 +1,25 @@
 package com.example.petshelter.util;
 
+import com.example.petshelter.entity.Pet;
 import com.example.petshelter.entity.UserReport;
 import com.example.petshelter.service.*;
+import com.example.petshelter.type.PetStatus;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalTime;
 import java.util.List;
 
 @Service
 public class Scheduler {
-    private static final int APPROX_VALUE = 5;
     private final TelegramBotService telegramBotService;
     private final PetService petService;
     private final UserService userService;
     private final UserReportService userReportService;
     private final UserReportPhotoService userReportPhotoService;
-    private final Logger logger = LoggerFactory.getLogger(UserReportService.class);
-
-    private final static String CONGRATULATION_OF_ADOPTION = "Уважаемый %s поздравляем вас с окончательным усыновлением %s\n" +
-            "Теперь вы полноправный владелец, окружите вашего питомца заботой и любовью, а он ответит вам взаимностью.";
+    private final Logger logger = LoggerFactory.getLogger(Scheduler.class);
 
     public Scheduler(TelegramBotService telegramBotService, PetService petService, UserService userService, UserReportService userReportService, UserReportPhotoService userReportPhotoService) {
         this.telegramBotService = telegramBotService;
@@ -33,7 +30,7 @@ public class Scheduler {
     }
 
     @Scheduled(cron = "0 0 22 * * *")
-    public void reportNotification() {
+    public void congratulationOfAdoption() {
 
     }
 
@@ -84,20 +81,13 @@ public class Scheduler {
 
     }
 
-    @Scheduled(cron = "0 0 12 * * *")
+    @Scheduled(cron = "0 0 10-22 * * *")
     public void sendAdoptCongratulationNotification() {
-//        List<Pet> recipients = petService.getAllPets().stream() //TODO Не самое видимо эффективное решение перебирать всю базу. Можно реализовать в репе
-//                .filter(pet -> pet.getDayOfAdopt().isEqual(LocalDate.now().minusDays(pet.getDaysToAdaptation())))
-//                .toList();
-//
-//        recipients.forEach(pet -> telegramBotService.sendPicture(pet.getAdopter().getChatId(),
-//                "storage/congratulations.jpg",
-//                String.format(CONGRATULATION_OF_ADOPTION, pet.getAdopter().getFirstName(), pet.getNickname())));
-    }
-
-    private boolean compareTimeWithCurrentTime(LocalTime time) {
-        return LocalTime.now().getHour() == time.getHour() &&
-                LocalTime.now().getMinute() == time.getMinute() &&
-                Math.abs(LocalTime.now().getSecond() - time.getSecond()) <= APPROX_VALUE;
+        List<Long> readyToFinalAdoptPetsId = petService.getPetsReadyToFinalAdopt();
+        List<Pet> recipients = petService.getAllPets().stream()
+                .filter(pet -> readyToFinalAdoptPetsId.contains(pet.getId()))
+                .toList();
+        recipients.forEach(pet -> telegramBotService.sendMessage(pet.getAdopter().getChatId(), Templates.getCongratulationText(pet.getAdopter())));
+        recipients.forEach(pet -> petService.changePetStatus(pet.getId(), PetStatus.ADOPTED));
     }
 }

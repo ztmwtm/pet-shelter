@@ -16,6 +16,7 @@ import java.util.List;
 @Service
 public class PetService {
 
+    private static final int DEFAULT_ADAPTATION_PERIOD = 30;
     private final PetRepository petRepository;
     private final Logger logger = LoggerFactory.getLogger(PetService.class);
 
@@ -27,12 +28,12 @@ public class PetService {
         return petRepository.getPetByAdopter_Id(userId).orElseThrow();
     }
 
-    public Pet addPet(Pet pet){
+    public Pet addPet(Pet pet) {
         logger.info("Was called method to add pet");
         return petRepository.save(pet);
     }
 
-    public Pet updatePet(Long id, Pet pet){
+    public Pet updatePet(Long id, Pet pet) {
         logger.info("Was called method to update pet with id {}", id);
         Pet oldPet = petRepository.findById(id)
                 .orElseThrow(() -> new PetNotFoundException(id));
@@ -82,11 +83,16 @@ public class PetService {
         pet.setAdopter(user);
         pet.setPetStatus(status);
         pet.setDayOfAdopt(LocalDate.now());
-        pet.setDaysToAdaptation(30);
+        pet.setDaysToAdaptation(DEFAULT_ADAPTATION_PERIOD);
         this.updatePet(petId, pet);
         logger.info("Was called method to make Pet adopted for PetId {}", petId);
     }
 
+
+    public List<Long> getPetsReadyToFinalAdopt() {
+        return petRepository.getPetsIdReadyToFinalAdopt();
+    }
+  
     public List<Pet> getPetsForAdopter(Long userId) {
         logger.info("Was called method to get pets for adopter with Id {}", userId);
         return petRepository.getPetsByAdopter_Id(userId);
