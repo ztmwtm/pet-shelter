@@ -171,4 +171,8 @@ public class TelegramBotService {
     public void sendPhoto(Long chatId, java.io.File photo) {
         telegramBot.execute(new SendPhoto(chatId, photo));
     }
+
+    public void sendPhoto(Long chatId, String photo) {
+        telegramBot.execute(new SendPhoto(chatId, photo));
+    }
 }
