@@ -96,6 +96,7 @@ public class CommandHandler {
             Long userId = user.id();
 
             com.example.petshelter.entity.User thisUser = userService.getUserByChatId(chatId);
+            UserReport thisReport = userReportService.getUserReportByUserIdAndStatusCreated(thisUser.getId());
 
             Command[] commands = Command.values();
             for (Command command : commands) {
@@ -128,25 +129,24 @@ public class CommandHandler {
                 return;
             }
 
+            if (commandText.startsWith("/adoptedPet")) {
+                Long petId = Long.valueOf(commandText.replace("/adoptedPet", ""));
+                Pet thisPet = petService.getPetById(petId);
+
+                thisReport.setPet(thisPet);
+                userReportService.updateUserReport(thisReport.getId(), thisReport);
+
+                log.info("Handle CommandHandler - Select Adopted Pet");
+
+                String text = "Теперь пришлите, пожалуйста, фото питомца";
+                telegramBotService.sendMessage(chatId, text, null, ParseMode.Markdown);
+
+                return;
+            }
+
             if (thisUser.getActiveMenu().equals(Menu.REPORT)) {
 
-                UserReport thisReport = userReportService.getUserReportByUserIdAndStatusCreated(thisUser.getId());
                 UserReportPhoto thisReportPhoto = userReportPhotoService.findUserReportPhoto(thisReport.getId());
-
-                if (thisReport.getPet() == null) {
-
-                    Pet thisPet = petService.getPetById(parseLong(commandText));
-
-                    thisReport.setPet(thisPet);
-                    userReportService.updateUserReport(thisReport.getId(), thisReport);
-
-                    log.info("Handle CommandHandler - Add Pet Id");
-
-                    String text = "Теперь пришлите, пожалуйста, фото питомца";
-                    telegramBotService.sendMessage(chatId, text, null, ParseMode.Markdown);
-
-                    return;
-                }
 
                 if (thisReportPhoto == null) {
 
@@ -221,6 +221,26 @@ public class CommandHandler {
                     .append(adopter.getId())
                     .append("\n"));
             text = "Выберите пользователя, кликнув по нужной ссылке:\n" + builder;
+        }
+
+        return text;
+    }
+
+    @NotNull
+    public String getListOfPetsForAdopter(Long userId) {
+        String text;
+        List<Pet> pets = petService.getPetsForAdopter(userId);
+        if (pets.isEmpty()) {
+            text = "Питомцы, к сожалению, не найдены";
+        } else {
+            StringBuilder builder = new StringBuilder();
+            pets.forEach((pet) -> builder.append(pet.getId())
+                    .append(". ")
+                    .append(pet.getNickname())
+                    .append(" => /adoptedPet")
+                    .append(pet.getId())
+                    .append("\n"));
+            text = "Выберите питомца, кликнув по нужной ссылке:\n" + builder;
         }
 
         return text;
