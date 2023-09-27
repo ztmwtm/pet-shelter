@@ -24,6 +24,7 @@ public class User {
     private long selectedShelterId;
     @Enumerated(EnumType.STRING)
     private Menu activeMenu;
+    private long selectedPetId;
 
     private Long activeReportForChecking;
 
@@ -111,12 +112,21 @@ public class User {
         this.activeMenu = activeMenu;
     }
 
+
+    public long getSelectedPetId() {
+        return selectedPetId;
+    }
+
+    public void setSelectedPetId(long selectedPetId) {
+        this.selectedPetId = selectedPetId;
+
     public Long getActiveReportForChecking() {
         return activeReportForChecking;
     }
 
     public void setActiveReportForChecking(Long activeReportForChecking) {
         this.activeReportForChecking = activeReportForChecking;
+
     }
 
     @Override

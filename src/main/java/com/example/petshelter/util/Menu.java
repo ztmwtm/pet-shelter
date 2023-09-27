@@ -46,6 +46,7 @@ public enum Menu {
     ADD_ADOPTER,
     CHECK_REPORTS,
     EXTEND_TRIAL,
+    FAIL_TRIAL,
     KEEP_ANIMAL,
     MAIN_MENU,
     MAIN_MENU_WITHOUT_CHOSE,

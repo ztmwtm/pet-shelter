@@ -8,6 +8,7 @@ import com.example.petshelter.helper.MarkupHelper;
 import com.example.petshelter.service.*;
 import com.example.petshelter.type.PetStatus;
 import com.example.petshelter.type.PetType;
+import com.example.petshelter.type.UserRole;
 import com.example.petshelter.util.CallbackData;
 import com.example.petshelter.util.Menu;
 import com.example.petshelter.util.UserReportStatus;
@@ -26,6 +27,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 import static com.example.petshelter.type.UserRole.ADOPTER;
+import static com.example.petshelter.type.UserRole.USER;
 
 /**
  * Класс отвечающий за обработку команд поступающих из чата
@@ -50,16 +52,19 @@ public class CallbackQueryHandler {
     private final Map<String, String> dogsInfoMenu = new LinkedHashMap<>();
     private final Map<String, String> catsTakeMenu = new LinkedHashMap<>();
     private final Map<String, String> dogsTakeMenu = new LinkedHashMap<>();
+    private final Map<String, String> extendTrialMenu = new LinkedHashMap<>();
     private final Map<CallbackData, String> fileMapper = new EnumMap<>(CallbackData.class);
 
-    private final Map<String, String> dogsChoseMenu = new LinkedHashMap<>();
-    private final Map<String, String> catsChoseMenu = new LinkedHashMap<>();
-
+    private final Map<String, String> dogsSheltersChoseMenu = new LinkedHashMap<>();
+    private final Map<String, String> catsSheltersChoseMenu = new LinkedHashMap<>();
     private final Map<String, String> mainMenu = new LinkedHashMap<>();
 
     private final Map<String, String> startVolunteer = new LinkedHashMap<>();
     private final Map<String, String> volunteerMenu = new LinkedHashMap<>();
     private final Map<String, String> volunteerCheckReportsMenu = new LinkedHashMap<>();
+
+    private static final int EXTEND_AMOUNT_OF_DAY_FIRST = 14;
+    private static final int EXTEND_AMOUNT_OF_DAY_SECOND = 30;
 
 
     /*
@@ -68,6 +73,11 @@ public class CallbackQueryHandler {
 
         mainMenu.put(CallbackData.CATS.getTitle(), "\uD83D\uDC08 Приют для кошек");
         mainMenu.put(CallbackData.DOGS.getTitle(), "\uD83D\uDC15 Приют для собак");
+
+        extendTrialMenu.put("EXTEND" + EXTEND_AMOUNT_OF_DAY_FIRST,
+                String.format("Продлить испытательный срок на %d дней", EXTEND_AMOUNT_OF_DAY_FIRST));
+        extendTrialMenu.put("EXTEND" + EXTEND_AMOUNT_OF_DAY_SECOND,
+                String.format("Продлить испытательный срок на %d дней", EXTEND_AMOUNT_OF_DAY_SECOND));
 
         queryExecutors.put(CallbackData.CATS, this::handleCats);
         queryExecutors.put(CallbackData.DOGS, this::handleDogs);
@@ -120,16 +130,19 @@ public class CallbackQueryHandler {
         queryExecutors.put(CallbackData.ADD_ADOPTER, this::handleAddAdopter);
         queryExecutors.put(CallbackData.CHECK_REPORTS, this::handleCheckReports);
         queryExecutors.put(CallbackData.EXTEND_TRIAL, this::handleExtendTrial);
+
+        queryExecutors.put(CallbackData.FAIL_TRIAL, this::handleFailTrial);
         queryExecutors.put(CallbackData.KEEP_ANIMAL, this::handleKeepAnimal);
         queryExecutors.put(CallbackData.ACCEPT_REPORT, this::handleAcceptReport);
         queryExecutors.put(CallbackData.REJECT_REPORT, this::handleRejectReport);
+
 
         startVolunteer.put(CallbackData.START_VOLUNTEER.getTitle(), CallbackData.START_VOLUNTEER.getDescription());
 
         volunteerMenu.put(CallbackData.ADD_ADOPTER.getTitle(), CallbackData.ADD_ADOPTER.getDescription());
         volunteerMenu.put(CallbackData.CHECK_REPORTS.getTitle(), CallbackData.CHECK_REPORTS.getDescription());
         volunteerMenu.put(CallbackData.EXTEND_TRIAL.getTitle(), CallbackData.EXTEND_TRIAL.getDescription());
-        volunteerMenu.put(CallbackData.KEEP_ANIMAL.getTitle(), CallbackData.KEEP_ANIMAL.getDescription());
+        volunteerMenu.put(CallbackData.FAIL_TRIAL.getTitle(), CallbackData.FAIL_TRIAL.getDescription());
 
         volunteerCheckReportsMenu.put(CallbackData.ACCEPT_REPORT.getTitle(), CallbackData.ACCEPT_REPORT.getDescription());
         volunteerCheckReportsMenu.put(CallbackData.REJECT_REPORT.getTitle(), CallbackData.REJECT_REPORT.getDescription());
@@ -241,17 +254,63 @@ public class CallbackQueryHandler {
                     return;
                 }
             }
-            for (String catsHashCode : catsChoseMenu.keySet()) {
-                if (Objects.equals(catsHashCode, data)) {
+            for (String catsSheltersHashCode : catsSheltersChoseMenu.keySet()) {
+                if (Objects.equals(catsSheltersHashCode, data)) {
                     userService.updateUserSelectedShelterId(chat.id(), data);
                     queryExecutors.get(CallbackData.CATS_SHELTER_CHOSE).accept(user, chat);
                     return;
                 }
             }
-            for (String dogsHashCode : dogsChoseMenu.keySet()) {
-                if (Objects.equals(dogsHashCode, data)) {
+            for (String dogsSheltersHashCode : dogsSheltersChoseMenu.keySet()) {
+                if (Objects.equals(dogsSheltersHashCode, data)) {
                     userService.updateUserSelectedShelterId(chat.id(), data);
                     queryExecutors.get(CallbackData.DOGS_SHELTER_CHOSE).accept(user, chat);
+                    return;
+                }
+            }
+            for (String petsId : petService.getAllPets().stream().map(pet -> String.valueOf(pet.getId())).toList()) {
+                if (Objects.equals("PET" + petsId, data)) {
+                    com.example.petshelter.entity.User userFromDb = userService.getUserByChatId(chat.id());
+                    userService.updateUserSelectedPetId(chat.id(), data.replaceFirst("PET", ""));
+                    Map<String, String> menu = switch (userFromDb.getActiveMenu()) {
+                        case ADD_ADOPTER -> getUsersByRoleChooseMenu(USER);
+                        case EXTEND_TRIAL -> extendTrialMenu;
+                        case FAIL_TRIAL -> {
+                            failTrial(userFromDb, petsId);
+                            yield volunteerMenu;
+                        }
+                        default -> null;
+                    };
+                    telegramBotService.sendMessage(chat.id(), CallbackData.USER_CHOOSE.getDescription(), markupHelper.buildMenu(menu), null);
+                    return;
+                }
+            }
+
+            for (String usersId : userService.getUsersByRole(USER).stream().map(u -> String.valueOf(u.getId())).toList()) {
+                if (Objects.equals("USER" + usersId, data)) {
+                    Long adopterId = Long.valueOf(data.replace("USER", ""));
+                    Long petId = userService.getUserByChatId(chat.id()).getSelectedPetId();
+                    com.example.petshelter.entity.User adopter = userService.getUserById(adopterId);
+                    petService.makePetAdopted(petId, adopter, PetStatus.ADOPTED);
+                    userService.updateUserRoleByUserId(adopterId, UserRole.ADOPTER);
+                    telegramBotService.sendMessage(chat.id(),
+                            String.format("Пользователю %s отдано животное.", adopter.getFirstName()));
+                    return;
+                }
+            }
+
+            for (String daysToExtend : extendTrialMenu.keySet()) {
+                if (Objects.equals(daysToExtend, data)) {
+                    int days = switch (daysToExtend) {
+                        case ("EXTEND" + EXTEND_AMOUNT_OF_DAY_FIRST) -> EXTEND_AMOUNT_OF_DAY_FIRST;
+                        case ("EXTEND" + EXTEND_AMOUNT_OF_DAY_SECOND) -> EXTEND_AMOUNT_OF_DAY_SECOND;
+                        default -> 0;
+                    };
+                    Pet petForExtendTrial = petService.getPetById(userService.getUserByChatId(chat.id()).getSelectedPetId());
+                    com.example.petshelter.entity.User userForExtendTrial = petForExtendTrial.getAdopter();
+                    petService.extendTrial(petForExtendTrial.getId(), days);
+                    telegramBotService.sendMessage(chat.id(), "Испытательный срок продлен.");
+                    telegramBotService.sendMessage(petForExtendTrial.getAdopter().getChatId(), Templates.getAdditionalTimeText(userForExtendTrial, days));
                     return;
                 }
             }
@@ -261,14 +320,50 @@ public class CallbackQueryHandler {
         }
     }
 
+    private void failTrial(com.example.petshelter.entity.User user, String petsId) {
+        Pet pet = petService.getPetById(Long.valueOf(petsId));
+        pet.setDaysToAdaptation(Pet.DEFAULT_ADAPTATION_DAYS);
+        pet.setAdopter(null);
+        pet.setDayOfAdopt(null);
+        pet.setPetStatus(PetStatus.AVAILABLE);
+        petService.updatePet(pet.getId(), pet);
+        user.setRole(USER);
+        userService.updateUser(user.getId(), user);
+        telegramBotService.sendMessage(user.getChatId(), Templates.getAdoptionFailText(user));
+    }
+
     private void fillSheltersChooseMenu() {
-        for (Shelter shelter : shelterService.getShelterByType(PetType.CAT)) {
-            catsChoseMenu.put(String.valueOf(shelter.getId()), shelter.getName());
+        for (Shelter shelter : shelterService.getSheltersByType(PetType.CAT)) {
+            catsSheltersChoseMenu.put(String.valueOf(shelter.getId()), shelter.getName());
         }
-        for (Shelter shelter : shelterService.getShelterByType(PetType.DOG)) {
-            dogsChoseMenu.put(String.valueOf(shelter.getId()), shelter.getName());
+        for (Shelter shelter : shelterService.getSheltersByType(PetType.DOG)) {
+            dogsSheltersChoseMenu.put(String.valueOf(shelter.getId()), shelter.getName());
         }
     }
+
+    private Map<String, String> getPetsByStatusChooseMenu(PetStatus status) {
+        Map<String, String> menu = new LinkedHashMap<>();
+        for (Pet pet : petService.getPetsByPetStatus(status)) {
+            menu.put("PET" + pet.getId(), pet.getNickname());
+        }
+        return menu;
+    }
+
+    private Map<String, String> getUsersByRoleChooseMenu(UserRole role) {
+        Map<String, String> menu = new LinkedHashMap<>();
+        for (com.example.petshelter.entity.User user : userService.getUsersByRole(role)) {
+            menu.put("USER" + user.getId(), user.getTgUsername());
+        }
+        return menu;
+    }
+
+
+    private void handleFailTrial(User user, Chat chat) {
+        userService.updateActiveMenuByChatId(chat.id(), Menu.FAIL_TRIAL);
+        String text = CallbackData.FAIL_TRIAL.getDescription();
+        telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(getPetsByStatusChooseMenu(PetStatus.ADOPTED)), ParseMode.Markdown);
+    }
+
 
     /**
      * Метод отвечающий за переход в меню связанных с собаками
@@ -279,7 +374,7 @@ public class CallbackQueryHandler {
     private void handleDogs(User user, Chat chat) {
         try {
             String text = CallbackData.DOGS_SHELTER_CHOSE.getDescription();
-            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(dogsChoseMenu), null);
+            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(dogsSheltersChoseMenu), null);
             log.info("HandleDogs CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error HandleDogs CallbackQueryHandler");
@@ -296,6 +391,7 @@ public class CallbackQueryHandler {
         }
     }
 
+
     /**
      * Метод отвечающий за переход в меню связанных с кошками
      *
@@ -305,7 +401,7 @@ public class CallbackQueryHandler {
     private void handleCats(User user, Chat chat) {
         try {
             String text = CallbackData.CATS_SHELTER_CHOSE.getDescription();
-            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(catsChoseMenu), null);
+            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(catsSheltersChoseMenu), null);
             log.info("HandleCats CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error HandleCats CallbackQueryHandler");
@@ -631,9 +727,9 @@ public class CallbackQueryHandler {
             Map<Long, String> volunteersTgNames = new HashMap<>();
             volunteersList.forEach(v -> volunteersTgNames.put(v.getChatId(), v.getTgUsername()));
             if (!volunteersList.isEmpty()) {
-                volunteersTgNames.forEach((chatId, tgName) -> {
-                    telegramBotService.sendMessage(chatId, tgName + ", привет! " + textVolunteer);
-                });
+                volunteersTgNames.forEach((chatId, tgName) ->
+                        telegramBotService.sendMessage(chatId, tgName + ", привет! " + textVolunteer));
+
             } else {
                 telegramBotService.sendMessage(chat.id(), "Волонтёров не найдено!");
             }
@@ -673,8 +769,9 @@ public class CallbackQueryHandler {
 
     private void handleAddAdopter(User user, Chat chat) {
         try {
-            String text = getListOfPetsAvailableForAdoption();
-            telegramBotService.sendMessage(chat.id(), text);
+            String text = "Выберите животное для усыновления:";
+            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(getPetsByStatusChooseMenu(PetStatus.AVAILABLE)), ParseMode.Markdown);
+            userService.updateActiveMenuByChatId(chat.id(), Menu.ADD_ADOPTER);
             log.info("handleAddAdopter CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error handleAddAdopter CallbackQueryHandler");
@@ -689,7 +786,7 @@ public class CallbackQueryHandler {
             text = "Все животные выданы усыновителям.";
         } else {
             StringBuilder builder = new StringBuilder();
-            petsToAdopt.forEach((pet) -> builder.append(pet.getId())
+            petsToAdopt.forEach(pet -> builder.append(pet.getId())
                     .append(". ")
                     .append(pet.getSpecies())
                     .append(", ")
@@ -737,12 +834,35 @@ public class CallbackQueryHandler {
 
     private void handleExtendTrial(User user, Chat chat) {
         try {
-            String text = "Продлить срок на произвольное количество дней";
-            telegramBotService.sendMessage(chat.id(), text, null, null);
+            String text = "Выберите животное для продления испытательного срока:";
+            userService.updateActiveMenuByChatId(chat.id(), Menu.EXTEND_TRIAL);
+            telegramBotService.sendMessage(chat.id(), text, markupHelper.buildMenu(getPetsByStatusChooseMenu(PetStatus.ADOPTED)), null);
             log.info("handleExtendTrial CallbackQueryHandler");
         } catch (Exception e) {
             log.error(e.getMessage() + "Error handleExtendTrial CallbackQueryHandler");
         }
+    }
+
+    private String getListOfPetsAvailableForExtendTrial() {
+        String text;
+        List<Pet> petsChosen = petService.getPetsWithStatus(PetStatus.CHOSEN);
+        if (petsChosen.isEmpty()) {
+            text = "Нет животных на испытательном сроке.";
+        } else {
+            StringBuilder builder = new StringBuilder();
+            petsChosen.forEach(pet -> builder.append(pet.getId())
+                    .append(". ")
+                    .append(pet.getSpecies())
+                    .append(", ")
+                    .append(pet.getNickname())
+                    .append(", ")
+                    .append(pet.getPetType())
+                    .append(" => /petExtend")
+                    .append(pet.getId())
+                    .append("\n"));
+            text = "Выберите животное, кликнув по нужной ссылке:\n" + builder;
+        }
+        return text;
     }
 
     private void handleKeepAnimal(User user, Chat chat) {

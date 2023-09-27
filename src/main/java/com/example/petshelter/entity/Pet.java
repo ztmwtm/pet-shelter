@@ -12,6 +12,8 @@ import java.util.Objects;
 @Table(name = "pets")
 public class Pet {
 
+    public static final int DEFAULT_ADAPTATION_DAYS = 30;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,7 +23,7 @@ public class Pet {
     private PetType petType;
     @JsonIgnore
     private LocalDate dayOfAdopt;
-    private int daysToAdaptation;
+    private int daysToAdaptation = DEFAULT_ADAPTATION_DAYS;
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "user_id")
@@ -125,7 +127,7 @@ public class Pet {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, species, nickname);
+        return Objects.hash(id, species, nickname, petType);
     }
 
     @Override

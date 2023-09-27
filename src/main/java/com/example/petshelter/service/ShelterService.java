@@ -58,7 +58,7 @@ public class ShelterService {
         return shelter;
     }
 
-    public List<Shelter> getShelterByType(PetType type) {
-        return shelterRepository.findShelterByPetType(type);
+    public List<Shelter> getSheltersByType(PetType type) {
+        return shelterRepository.findSheltersByPetType(type);
     }
 }

@@ -4,6 +4,7 @@ import com.example.petshelter.entity.User;
 import com.example.petshelter.exception.UserNotFoundException;
 import com.example.petshelter.repository.UserRepository;
 import com.example.petshelter.type.UserRole;
+import com.example.petshelter.util.Menu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -69,6 +70,12 @@ public class UserService {
         userRepository.save(oldUser);
     }
 
+    public void updateUserSelectedPetId(Long chatId, String data) {
+        User oldUser =  userRepository.findUserByChatId(chatId).orElseThrow(() -> new UserNotFoundException(chatId));
+        oldUser.setSelectedPetId(Long.parseLong(data));
+        userRepository.save(oldUser);
+    }
+
     public void resetSelectedShelterId(Long chatId) {
         User oldUser = userRepository.findUserByChatId(chatId).orElseThrow(() -> new UserNotFoundException(chatId));
         oldUser.setSelectedShelterId(0);
@@ -110,5 +117,24 @@ public class UserService {
         user.setRole(role);
         this.updateUser(userId, user);
         logger.info("Was called method to set role {} for UserId {}", role, userId);
+    }
+
+    public List<Long> getUsersWithFailedReport() {
+        return userRepository.getUsersWithFailedReport();
+    }
+
+    public List<Long> getUsersWithMissedReport(int daysReportMissedToVolunteerAlarm) {
+        return userRepository.getUsersWithMissedReport(daysReportMissedToVolunteerAlarm);
+    }
+
+    public List<User> getUsersByRole(UserRole role) {
+        logger.info("Was called method to get all users with role USER");
+        return userRepository.findUsersByRoleIs(role);
+    }
+
+    public void updateActiveMenuByChatId(Long chatId, Menu menu) {
+        User user = this.getUserByChatId(chatId);
+        user.setActiveMenu(menu);
+        this.updateUser(user.getId(), user);
     }
 }
