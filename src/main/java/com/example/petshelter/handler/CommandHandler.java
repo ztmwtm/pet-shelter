@@ -96,10 +96,6 @@ public class CommandHandler {
         try {
 
             Long chatId = chat.id();
-            Long userId = user.id();
-
-            com.example.petshelter.entity.User thisUser = userService.getUserByChatId(chatId);
-            UserReport thisReport = userReportService.getUserReportByUserIdAndStatusCreated(thisUser.getId());
 
             Command[] commands = Command.values();
             for (Command command : commands) {
@@ -108,6 +104,9 @@ public class CommandHandler {
                     break;
                 }
             }
+
+            com.example.petshelter.entity.User thisUser = userService.getUserByChatId(chatId);
+            UserReport thisReport = userReportService.getUserReportByUserIdAndStatusCreated(thisUser.getId());
 
             if (commandText.startsWith("/pet")) {
                 Long petId = Long.valueOf(commandText.replace("/pet", ""));
@@ -142,7 +141,7 @@ public class CommandHandler {
                 log.info("Handle CommandHandler - Select Adopted Pet");
 
                 String text = "Теперь пришлите, пожалуйста, фото питомца";
-                telegramBotService.sendMessage(chatId, text, null, ParseMode.Markdown);
+                telegramBotService.sendMessage(chatId, text);
 
                 return;
             }
@@ -204,7 +203,7 @@ public class CommandHandler {
                 if (thisReportPhoto == null) {
 
                     String text = "Теперь пришлите, пожалуйста, фото питомца";
-                    telegramBotService.sendMessage(chatId, text, null, ParseMode.Markdown);
+                    telegramBotService.sendMessage(chatId, text);
 
                     return;
                 }
@@ -216,7 +215,7 @@ public class CommandHandler {
                     log.info("Handle CommandHandler - Add Pet Diet");
 
                     String text = "Отлично! Информация добавлена в отчет. Теперь пришлите, пожалуйста, в текстовом сообщении описание общего самочувствия питомца и особенностей привыкания к новому месту";
-                    telegramBotService.sendMessage(chatId, text, null, ParseMode.Markdown);
+                    telegramBotService.sendMessage(chatId, text);
 
                     return;
                 }
@@ -228,7 +227,7 @@ public class CommandHandler {
                     log.info("Handle CommandHandler - Add Pet Health");
 
                     String text = "Отлично! Информация добавлена в отчет. Теперь пришлите, пожалуйста, в текстовом сообщении особенности поведения питомца: отказ от старых привычек, приобретение новых";
-                    telegramBotService.sendMessage(chatId, text, null, ParseMode.Markdown);
+                    telegramBotService.sendMessage(chatId, text);
 
                     return;
                 }
@@ -240,7 +239,7 @@ public class CommandHandler {
                     log.info("Handle CommandHandler- Add Pet Behavior");
 
                     String text = "Отлично! Вы предоставили всю необходимую информацию для отчета. Отчет отправляется на проверку волонтеру";
-                    telegramBotService.sendMessage(chatId, text, null, ParseMode.Markdown);
+                    telegramBotService.sendMessage(chatId, text);
 
                     thisReport.setStatus(UserReportStatus.ON_VERIFICATION);
                     userReportService.updateUserReport(thisReport.getId(), thisReport);

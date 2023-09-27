@@ -724,7 +724,7 @@ public class CallbackQueryHandler {
                         .append(" => /reportsForValidation")
                         .append(UserReport.getId())
                         .append("\n"));
-                text = "Выберите отчет, кликнув по нужной ссылке:\n" + builder;
+                text = "Выберите отчет, кликнув по нужной ссылке:\n \n" + builder;
 
             }
             telegramBotService.sendMessage(chat.id(), text, null, null);
@@ -772,7 +772,7 @@ public class CallbackQueryHandler {
                     + " за "
                     + thisUserReport.getDateOfCreation()
                     + " принят.";
-            telegramBotService.sendMessage(chat.id(), textToAdopter, null, ParseMode.Markdown);
+            telegramBotService.sendMessage(thisAdopter.getChatId(), textToAdopter);
 
             String text = "Отчет принят. Усыновителю отправлено соответствующее уведомление.";
             telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
@@ -807,7 +807,7 @@ public class CallbackQueryHandler {
                     В противном случае волонтеры приюта будут обязаны самолично проверять условия содержания животного.
                     
                     """;
-            telegramBotService.sendMessage(chat.id(), textToAdopter, null, ParseMode.Markdown);
+            telegramBotService.sendMessage(thisAdopter.getChatId(), textToAdopter);
 
             String text = "Отчет отклонен. Усыновителю отправлено соответствующее уведомление.";
             telegramBotService.sendMessage(chat.id(), text, null, ParseMode.Markdown);
