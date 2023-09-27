@@ -35,6 +35,7 @@ public class UserService {
         oldUser.setTgUsername(user.getTgUsername());
         oldUser.setPhoneNumber(user.getPhoneNumber());
         oldUser.setRole(user.getRole());
+        oldUser.setActiveMenu(user.getActiveMenu());
         return userRepository.save(oldUser);
     }
 

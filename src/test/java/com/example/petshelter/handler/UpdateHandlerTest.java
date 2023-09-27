@@ -1,6 +1,7 @@
 package com.example.petshelter.handler;
 
 import com.example.petshelter.listener.TelegramBotUpdatesListener;
+import com.example.petshelter.service.UserService;
 import com.pengrad.telegrambot.BotUtils;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.BotCommand;
@@ -36,13 +37,15 @@ class UpdateHandlerTest {
     private final ContactHandler contactHandler = Mockito.mock(ContactHandler.class);
     private final CallbackQueryHandler callbackQueryHandler = Mockito.mock(CallbackQueryHandler.class);
     private final PhotoUploadHandler photoUploadHandler = Mockito.mock(PhotoUploadHandler.class);
+    private final UserService userService = Mockito.mock(UserService.class);
 
     @InjectMocks
     private final UpdateHandler updateHandler = new UpdateHandler(
             commandHandler,
             contactHandler,
             callbackQueryHandler,
-            photoUploadHandler
+            photoUploadHandler,
+            userService
     );
 
     @InjectMocks

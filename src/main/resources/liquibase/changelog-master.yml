@@ -47,3 +47,5 @@ databaseChangeLog:
       file: liquibase/db/insert_pets.sql
   - include:
       file: liquibase/scripts/pets_update_26_9_23.sql
+  - include:
+      file: liquibase/scripts/users_update_26_9_23.sql
