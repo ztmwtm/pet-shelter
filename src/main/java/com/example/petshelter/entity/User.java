@@ -119,6 +119,7 @@ public class User {
 
     public void setSelectedPetId(long selectedPetId) {
         this.selectedPetId = selectedPetId;
+    }
 
     public Long getActiveReportForChecking() {
         return activeReportForChecking;
