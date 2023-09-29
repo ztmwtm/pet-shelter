@@ -23,8 +23,8 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
             SELECT pets.id
             FROM pets
                      LEFT JOIN user_reports on pets.id = user_reports.pet_id
-            WHERE pet_status = 'ADOPTED'
-              AND days_to_adaptation <= (SELECT COUNT(user_reports.id)
+            WHERE pets.pet_status = 'ADOPTED'
+              AND pets.days_to_adaptation <= (SELECT COUNT(user_reports.id)
                                         FROM user_reports
                                          WHERE status = 'VERIFIED'
                                            AND user_reports.user_id = pets.user_id

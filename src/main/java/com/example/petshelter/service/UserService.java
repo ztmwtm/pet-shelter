@@ -70,9 +70,9 @@ public class UserService {
         userRepository.save(oldUser);
     }
 
-    public void updateUserSelectedPetId(Long chatId, String data) {
+    public void updateUserSelectedPetId(Long chatId, Long data) {
         User oldUser =  userRepository.findUserByChatId(chatId).orElseThrow(() -> new UserNotFoundException(chatId));
-        oldUser.setSelectedPetId(Long.parseLong(data));
+        oldUser.setSelectedPetId(data);
         userRepository.save(oldUser);
     }
 

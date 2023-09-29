@@ -268,26 +268,25 @@ public class CallbackQueryHandler {
                     return;
                 }
             }
-            for (String petsId : petService.getAllPets().stream().map(pet -> String.valueOf(pet.getId())).toList()) {
-                if (Objects.equals("PET" + petsId, data)) {
-                    com.example.petshelter.entity.User userFromDb = userService.getUserByChatId(chat.id());
-                    userService.updateUserSelectedPetId(chat.id(), data.replaceFirst("PET", ""));
-                    Map<String, String> menu = switch (userFromDb.getActiveMenu()) {
-                        case ADD_ADOPTER -> getUsersByRoleChooseMenu(USER);
-                        case EXTEND_TRIAL -> extendTrialMenu;
-                        case FAIL_TRIAL -> {
-                            failTrial(userFromDb, petsId);
-                            yield volunteerMenu;
-                        }
-                        default -> null;
-                    };
-                    telegramBotService.sendMessage(chat.id(), CallbackData.USER_CHOOSE.getDescription(), markupHelper.buildMenu(menu), null);
-                    return;
-                }
-            }
+            if (data.startsWith("PET")) {
+                Long petId = Long.valueOf(data.replaceFirst("PET", ""));
+                        com.example.petshelter.entity.User userFromDb = userService.getUserByChatId(chat.id());
+                        userService.updateUserSelectedPetId(chat.id(), petId);
+                        Map<String, String> menu = switch (userFromDb.getActiveMenu()) {
+                            case ADD_ADOPTER -> getUsersByRoleChooseMenu(USER);
+                            case EXTEND_TRIAL -> extendTrialMenu;
+                            case FAIL_TRIAL -> {
+                                failTrial(userFromDb, petId);
+                                yield volunteerMenu;
+                            }
+                            default -> null;
+                        };
+                            telegramBotService.sendMessage(chat.id(), CallbackData.USER_CHOOSE.getDescription(), markupHelper.buildMenu(menu), null);
+                        return;
 
-            for (String usersId : userService.getUsersByRole(USER).stream().map(u -> String.valueOf(u.getId())).toList()) {
-                if (Objects.equals("USER" + usersId, data)) {
+                }
+
+            if(data.startsWith("USER")) {
                     Long adopterId = Long.valueOf(data.replace("USER", ""));
                     Long petId = userService.getUserByChatId(chat.id()).getSelectedPetId();
                     com.example.petshelter.entity.User adopter = userService.getUserById(adopterId);
@@ -296,7 +295,6 @@ public class CallbackQueryHandler {
                     telegramBotService.sendMessage(chat.id(),
                             String.format("Пользователю %s отдано животное.", adopter.getFirstName()));
                     return;
-                }
             }
 
             for (String daysToExtend : extendTrialMenu.keySet()) {
@@ -320,8 +318,8 @@ public class CallbackQueryHandler {
         }
     }
 
-    private void failTrial(com.example.petshelter.entity.User user, String petsId) {
-        Pet pet = petService.getPetById(Long.valueOf(petsId));
+    private void failTrial(com.example.petshelter.entity.User user, Long petsId) {
+        Pet pet = petService.getPetById(petsId);
         pet.setDaysToAdaptation(Pet.DEFAULT_ADAPTATION_DAYS);
         pet.setAdopter(null);
         pet.setDayOfAdopt(null);
@@ -810,7 +808,7 @@ public class CallbackQueryHandler {
                 text = "На текущий момент нет отчетов для проверки";
             } else {
                 StringBuilder builder = new StringBuilder();
-                userReports.forEach((UserReport) -> builder.append("Id отчета: ")
+                userReports.forEach(UserReport -> builder.append("Id отчета: ")
                         .append(UserReport.getId())
                         .append(". Питомец: ")
                         .append(UserReport.getPet().getNickname())
