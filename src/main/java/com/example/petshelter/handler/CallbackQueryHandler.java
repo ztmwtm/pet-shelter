@@ -270,31 +270,32 @@ public class CallbackQueryHandler {
             }
             if (data.startsWith("PET")) {
                 Long petId = Long.valueOf(data.replaceFirst("PET", ""));
-                        com.example.petshelter.entity.User userFromDb = userService.getUserByChatId(chat.id());
-                        userService.updateUserSelectedPetId(chat.id(), petId);
-                        Map<String, String> menu = switch (userFromDb.getActiveMenu()) {
-                            case ADD_ADOPTER -> getUsersByRoleChooseMenu(USER);
-                            case EXTEND_TRIAL -> extendTrialMenu;
-                            case FAIL_TRIAL -> {
-                                failTrial(userFromDb, petId);
-                                yield volunteerMenu;
-                            }
-                            default -> mainMenu;
-                        };
-                            telegramBotService.sendMessage(chat.id(), CallbackData.USER_CHOOSE.getDescription(), markupHelper.buildMenu(menu), null);
-                        return;
+                com.example.petshelter.entity.User userFromDb = userService.getUserByChatId(chat.id());
+                com.example.petshelter.entity.User petOwner = petService.getPetById(petId).getAdopter();
+                userService.updateUserSelectedPetId(chat.id(), petId);
+                Map<String, String> menu = switch (userFromDb.getActiveMenu()) {
+                    case ADD_ADOPTER -> getUsersByRoleChooseMenu(USER);
+                    case EXTEND_TRIAL -> extendTrialMenu;
+                    case FAIL_TRIAL -> {
+                        failTrial(petOwner, petId);
+                        yield volunteerMenu;
+                    }
+                    default -> mainMenu;
+                };
+                telegramBotService.sendMessage(chat.id(), CallbackData.USER_CHOOSE.getDescription(), markupHelper.buildMenu(menu), null);
+                return;
 
-                }
+            }
 
-            if(data.startsWith("USER")) {
-                    Long adopterId = Long.valueOf(data.replace("USER", ""));
-                    Long petId = userService.getUserByChatId(chat.id()).getSelectedPetId();
-                    com.example.petshelter.entity.User adopter = userService.getUserById(adopterId);
-                    petService.makePetAdopted(petId, adopter, PetStatus.ADOPTED);
-                    userService.updateUserRoleByUserId(adopterId, UserRole.ADOPTER);
-                    telegramBotService.sendMessage(chat.id(),
-                            String.format("Пользователю %s отдано животное.", adopter.getFirstName()));
-                    return;
+            if (data.startsWith("USER")) {
+                Long adopterId = Long.valueOf(data.replace("USER", ""));
+                Long petId = userService.getUserByChatId(chat.id()).getSelectedPetId();
+                com.example.petshelter.entity.User adopter = userService.getUserById(adopterId);
+                petService.makePetAdopted(petId, adopter, PetStatus.ADOPTED);
+                userService.updateUserRoleByUserId(adopterId, UserRole.ADOPTER);
+                telegramBotService.sendMessage(chat.id(),
+                        String.format("Пользователю %s отдано животное.", adopter.getFirstName()));
+                return;
             }
 
             for (String daysToExtend : extendTrialMenu.keySet()) {
@@ -919,11 +920,11 @@ public class CallbackQueryHandler {
                     + thisUserReport.getDateOfCreation()
                     + " отклонен."
                     + """
-                    
+                                        
                     Мы заметили, что Вы заполняете отчет не так подробно, как необходимо. 
                     Пожалуйста, подойдите ответственнее к этому занятию. 
                     В противном случае волонтеры приюта будут обязаны самолично проверять условия содержания животного.
-                    
+                                        
                     """;
             telegramBotService.sendMessage(thisAdopter.getChatId(), textToAdopter);
 
