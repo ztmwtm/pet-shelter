@@ -279,7 +279,7 @@ public class CallbackQueryHandler {
                                 failTrial(userFromDb, petId);
                                 yield volunteerMenu;
                             }
-                            default -> null;
+                            default -> mainMenu;
                         };
                             telegramBotService.sendMessage(chat.id(), CallbackData.USER_CHOOSE.getDescription(), markupHelper.buildMenu(menu), null);
                         return;
