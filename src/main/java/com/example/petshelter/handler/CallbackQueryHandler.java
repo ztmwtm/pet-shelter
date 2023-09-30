@@ -278,11 +278,15 @@ public class CallbackQueryHandler {
                     case EXTEND_TRIAL -> extendTrialMenu;
                     case FAIL_TRIAL -> {
                         failTrial(petOwner, petId);
+                        telegramBotService.sendMessage(chat.id(), String.format("Пользователю %s отправлено сообщение о необходимости возврата животного в питомник.", petOwner.getFirstName()));
                         yield volunteerMenu;
                     }
                     default -> mainMenu;
                 };
-                telegramBotService.sendMessage(chat.id(), CallbackData.USER_CHOOSE.getDescription(), markupHelper.buildMenu(menu), null);
+
+                telegramBotService.sendMessage(chat.id(),
+                        userFromDb.getActiveMenu() == Menu.FAIL_TRIAL ? "Меню волонтера:" :
+                        CallbackData.USER_CHOOSE.getDescription(), markupHelper.buildMenu(menu), null);
                 return;
 
             }
@@ -294,7 +298,7 @@ public class CallbackQueryHandler {
                 petService.makePetAdopted(petId, adopter, PetStatus.ADOPTED);
                 userService.updateUserRoleByUserId(adopterId, UserRole.ADOPTER);
                 telegramBotService.sendMessage(chat.id(),
-                        String.format("Пользователю %s отдано животное.", adopter.getFirstName()));
+                        String.format("Пользователю %s отдано животное.", adopter.getFirstName()), markupHelper.buildMenu(volunteerMenu), null);
                 return;
             }
 
