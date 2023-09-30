@@ -1,28 +1,28 @@
 package com.example.petshelter.util;
 
+import com.example.petshelter.entity.Pet;
+import com.example.petshelter.entity.User;
 import com.example.petshelter.entity.UserReport;
 import com.example.petshelter.service.*;
+import com.example.petshelter.type.PetStatus;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalTime;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class Scheduler {
-    private static final int APPROX_VALUE = 5;
+    private static final int DAYS_REPORT_MISSED_TO_VOLUNTEER_ALARM = 2;
     private final TelegramBotService telegramBotService;
     private final PetService petService;
     private final UserService userService;
     private final UserReportService userReportService;
     private final UserReportPhotoService userReportPhotoService;
-    private final Logger logger = LoggerFactory.getLogger(UserReportService.class);
-
-    private final static String CONGRATULATION_OF_ADOPTION = "Уважаемый %s поздравляем вас с окончательным усыновлением %s\n" +
-            "Теперь вы полноправный владелец, окружите вашего питомца заботой и любовью, а он ответит вам взаимностью.";
+    private final Logger logger = LoggerFactory.getLogger(Scheduler.class);
 
     public Scheduler(TelegramBotService telegramBotService, PetService petService, UserService userService, UserReportService userReportService, UserReportPhotoService userReportPhotoService) {
         this.telegramBotService = telegramBotService;
@@ -30,11 +30,6 @@ public class Scheduler {
         this.userService = userService;
         this.userReportService = userReportService;
         this.userReportPhotoService = userReportPhotoService;
-    }
-
-    @Scheduled(cron = "0 0 22 * * *")
-    public void reportNotification() {
-
     }
 
     @Scheduled(cron = "0 0 20 * * *")
@@ -84,20 +79,33 @@ public class Scheduler {
 
     }
 
-    @Scheduled(cron = "0 0 12 * * *")
+    @Scheduled(cron = "0 0 10-22 * * *")
     public void sendAdoptCongratulationNotification() {
-//        List<Pet> recipients = petService.getAllPets().stream() //TODO Не самое видимо эффективное решение перебирать всю базу. Можно реализовать в репе
-//                .filter(pet -> pet.getDayOfAdopt().isEqual(LocalDate.now().minusDays(pet.getDaysToAdaptation())))
-//                .toList();
-//
-//        recipients.forEach(pet -> telegramBotService.sendPicture(pet.getAdopter().getChatId(),
-//                "storage/congratulations.jpg",
-//                String.format(CONGRATULATION_OF_ADOPTION, pet.getAdopter().getFirstName(), pet.getNickname())));
+        List<Long> readyToFinalAdoptPetsId = petService.getPetsReadyToFinalAdopt();
+        for (Long petId : readyToFinalAdoptPetsId) {
+            Pet pet = petService.getPetById(petId);
+            telegramBotService.sendMessage(pet.getAdopter().getChatId(), Templates.getCongratulationText(pet.getAdopter()));
+            petService.changePetStatus(pet.getId(), PetStatus.KEPT);
+        }
     }
 
-    private boolean compareTimeWithCurrentTime(LocalTime time) {
-        return LocalTime.now().getHour() == time.getHour() &&
-                LocalTime.now().getMinute() == time.getMinute() &&
-                Math.abs(LocalTime.now().getSecond() - time.getSecond()) <= APPROX_VALUE;
+    @Scheduled(cron = "0 30 21 * * *")
+    public void sendNoReportNotification() {
+        List<Long> toNotificationsUsersId = userService.getUsersWithFailedReport();
+        for (Long userId : toNotificationsUsersId) {
+            User user = userService.getUserById(userId);
+            telegramBotService.sendMessage(user.getChatId(), Templates.getForgottenReport(user));
+        }
+    }
+
+    @Scheduled(cron = "0 0 22 * * *")
+    public void sendVolunteerReportMissedNotification() {
+        List<Long> toNotificationsUsersId = userService.getUsersWithMissedReport(DAYS_REPORT_MISSED_TO_VOLUNTEER_ALARM);
+        List<User> volunteers = userService.getVolunteers();
+        User volunteer = volunteers.get(ThreadLocalRandom.current().nextInt(volunteers.size()));
+        for (Long userId : toNotificationsUsersId) {
+            User currentUser = userService.getUserById(userId);
+            telegramBotService.sendMessage(volunteer.getChatId(), Templates.getMissedReports(currentUser, DAYS_REPORT_MISSED_TO_VOLUNTEER_ALARM));
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.petshelter.entity;
 
+import com.example.petshelter.type.PetStatus;
 import com.example.petshelter.type.PetType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -11,6 +12,8 @@ import java.util.Objects;
 @Table(name = "pets")
 public class Pet {
 
+    public static final int DEFAULT_ADAPTATION_DAYS = 30;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,11 +23,13 @@ public class Pet {
     private PetType petType;
     @JsonIgnore
     private LocalDate dayOfAdopt;
-    private int daysToAdaptation;
+    private int daysToAdaptation = DEFAULT_ADAPTATION_DAYS;
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "user_id")
     private User adopter;
+    @Enumerated(EnumType.STRING)
+    private PetStatus petStatus;
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "shelter_id")
@@ -104,6 +109,14 @@ public class Pet {
         this.daysToAdaptation = daysToAdaptation;
     }
 
+    public PetStatus getPetStatus() {
+        return petStatus;
+    }
+
+    public void setPetStatus(final PetStatus petStatus) {
+        this.petStatus = petStatus;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -114,7 +127,7 @@ public class Pet {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, species, nickname);
+        return Objects.hash(id, species, nickname, petType);
     }
 
     @Override
@@ -127,8 +140,8 @@ public class Pet {
                ", dayOfAdopt=" + dayOfAdopt +
                ", daysToAdaptation=" + daysToAdaptation +
                ", adopter=" + adopter +
+               ", petStatus=" + petStatus +
                ", shelter=" + shelter +
                '}';
     }
-
 }

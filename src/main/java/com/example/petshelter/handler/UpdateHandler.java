@@ -1,5 +1,7 @@
 package com.example.petshelter.handler;
 
+import com.example.petshelter.service.UserService;
+import com.example.petshelter.util.Menu;
 import com.pengrad.telegrambot.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -12,17 +14,20 @@ public class UpdateHandler {
     private final ContactHandler contactHandler;
     private final CallbackQueryHandler callbackQueryHandler;
     private final PhotoUploadHandler photoUploadHandler;
+    private final UserService userService;
 
     public UpdateHandler(final CommandHandler commandHandler,
                          final ContactHandler contactHandler,
-                         final CallbackQueryHandler callbackQueryHandler, PhotoUploadHandler photoUploadHandler) {
+                         final CallbackQueryHandler callbackQueryHandler,
+                         PhotoUploadHandler photoUploadHandler,
+                         UserService userService) {
         this.commandHandler = commandHandler;
         this.contactHandler = contactHandler;
         this.callbackQueryHandler = callbackQueryHandler;
         this.photoUploadHandler = photoUploadHandler;
+        this.userService = userService;
         log.info("Constructor UpdateHandler");
     }
-    public static String activeMenu = "";
 
     public void handle(Update update) {
         try {
@@ -31,15 +36,16 @@ public class UpdateHandler {
                 Message message = update.message();
                 User user = message.from();
                 Chat chat = message.chat();
+                com.example.petshelter.entity.User thisUser = userService.getUserByChatId(user.id());
 
                 if (message.contact() != null) {
                     log.info("Contact is not NULL");
                     Contact contact = message.contact();
                     contactHandler.handle(user, chat, contact);
-                } else if ((update.message().photo() != null)&&("handleReport".equals(UpdateHandler.activeMenu))){
+                } else if ((update.message().photo() != null) && (thisUser.getActiveMenu().equals(Menu.REPORT))) {
                     log.info("Photo is not NULL");
                     photoUploadHandler.handleFromImage(user, chat, message);
-                } else if ((update.message().document() != null)&&("handleReport".equals(UpdateHandler.activeMenu))){
+                } else if ((update.message().document() != null) && (thisUser.getActiveMenu().equals(Menu.REPORT))) {
                     log.info("Document is not NULL");
                     photoUploadHandler.handleFromDocument(user, chat, message);
                 } else {

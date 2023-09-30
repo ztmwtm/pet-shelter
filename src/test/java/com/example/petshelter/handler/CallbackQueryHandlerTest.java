@@ -329,9 +329,9 @@ class CallbackQueryHandlerTest {
         Shelter shelterCatTwo = new Shelter();
         shelterCatTwo.setName("cat two");
         shelterCatTwo.setId(2L);
-        Mockito.when(shelterServiceMock.getShelterByType(PetType.CAT))
+        Mockito.when(shelterServiceMock.getSheltersByType(PetType.CAT))
                 .thenReturn(List.of(shelterCatOne, shelterCatTwo));
-        Mockito.when(shelterServiceMock.getShelterByType(PetType.DOG))
+        Mockito.when(shelterServiceMock.getSheltersByType(PetType.DOG))
                 .thenReturn(Collections.emptyList());
         catsChoseMenu.clear();
         catsChoseMenu.put(String.valueOf(shelterCatOne.getId()), shelterCatOne.getName());
@@ -355,9 +355,9 @@ class CallbackQueryHandlerTest {
         Shelter shelterDogTwo = new Shelter();
         shelterDogTwo.setName("dog two");
         shelterDogTwo.setId(2323232L);
-        Mockito.when(shelterServiceMock.getShelterByType(PetType.CAT))
+        Mockito.when(shelterServiceMock.getSheltersByType(PetType.CAT))
                 .thenReturn(Collections.emptyList());
-        Mockito.when(shelterServiceMock.getShelterByType(PetType.DOG))
+        Mockito.when(shelterServiceMock.getSheltersByType(PetType.DOG))
                 .thenReturn(List.of(shelterDogOne, shelterDogTwo));
 
         dogsChoseMenu.put(String.valueOf(shelterDogOne.getId()), shelterDogOne.getName());
@@ -381,9 +381,9 @@ class CallbackQueryHandlerTest {
         Shelter shelterCatTwo = new Shelter();
         shelterCatTwo.setName("cat two");
         shelterCatTwo.setId(22L);
-        Mockito.when(shelterServiceMock.getShelterByType(PetType.CAT))
+        Mockito.when(shelterServiceMock.getSheltersByType(PetType.CAT))
                 .thenReturn(List.of(shelterCatOne, shelterCatTwo));
-        Mockito.when(shelterServiceMock.getShelterByType(PetType.DOG))
+        Mockito.when(shelterServiceMock.getSheltersByType(PetType.DOG))
                 .thenReturn(Collections.emptyList());
 
         Method fillSheltersChooseMenuMethod = callbackQueryHandler.getClass().getDeclaredMethod("fillSheltersChooseMenu");
@@ -407,9 +407,9 @@ class CallbackQueryHandlerTest {
         Shelter shelterDogTwo = new Shelter();
         shelterDogTwo.setName("dog two");
         shelterDogTwo.setId(202L);
-        Mockito.when(shelterServiceMock.getShelterByType(PetType.CAT))
+        Mockito.when(shelterServiceMock.getSheltersByType(PetType.CAT))
                 .thenReturn(Collections.emptyList());
-        Mockito.when(shelterServiceMock.getShelterByType(PetType.DOG))
+        Mockito.when(shelterServiceMock.getSheltersByType(PetType.DOG))
                 .thenReturn(List.of(shelterDogOne, shelterDogTwo));
 
         Method fillSheltersChooseMenuMethod = callbackQueryHandler.getClass().getDeclaredMethod("fillSheltersChooseMenu");

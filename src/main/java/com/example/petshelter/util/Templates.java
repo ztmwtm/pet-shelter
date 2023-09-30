@@ -27,6 +27,16 @@ public class Templates {
             Ниже приведена инструкция о возврате животного.
             """;
 
+    private static final String FORGOTTEN_REPORT = """
+            Уважаемый %s, напоминаем о необходимости отправки отчета.
+            Вы не отправили отчет за сегодняшний день, пожалуйста внимательнее отниситесь к этому вопросу.
+            """;
+
+    private static final String MISSED_REPORTS = """
+            Дорогой Волонтер, пользователь %s не предоставляет отчеты уже в течении %d дней.
+            Пожалуйста свяжитесь с ним для выяснения обстоятельств @%s.
+            """;
+
     public static String getCongratulationText(User user) {
         return String.format(CONGRATULATION_OF_ADOPTION, user.getFirstName());
     }
@@ -41,5 +51,11 @@ public class Templates {
 
     public static String getAdoptionFailText(User user) {
         return String.format(ADOPTION_FAIL, user.getFirstName());
+    }
+    public static String getForgottenReport(User user) {
+        return String.format(FORGOTTEN_REPORT, user.getFirstName());
+    }
+    public static String getMissedReports(User user, int days) {
+        return String.format(MISSED_REPORTS, user.getFirstName(), days, user.getTgUsername());
     }
 }

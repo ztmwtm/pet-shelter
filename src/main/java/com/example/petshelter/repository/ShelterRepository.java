@@ -11,6 +11,6 @@ import java.util.List;
 public interface ShelterRepository extends JpaRepository<Shelter, Long> {
     Shelter findShelterByName(String name);
 
-    List<Shelter> findShelterByPetType(PetType type);
+    List<Shelter> findSheltersByPetType(PetType type);
 
 }
