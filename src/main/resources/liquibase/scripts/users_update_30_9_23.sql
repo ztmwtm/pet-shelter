@@ -1,11 +1,11 @@
 -- liquibase formatted sql
 
--- changeset zrazhevskiy:19
+-- changeset zrazhevskiy:21
 
 alter table users
     add column selected_pet_id BIGINT;
 
--- changeset zrazhevskiy:20
+-- changeset zrazhevskiy:22
 
 alter table users
     modify column active_menu ENUM (
