@@ -24,8 +24,7 @@ public class User {
     private long selectedShelterId;
     @Enumerated(EnumType.STRING)
     private Menu activeMenu;
-    private long selectedPetId;
-
+    private Long selectedPetId;
     private Long activeReportForChecking;
 
     public User(Long chatId, String firstName, String lastName, String tgUsername, String phoneNumber, UserRole role) {
