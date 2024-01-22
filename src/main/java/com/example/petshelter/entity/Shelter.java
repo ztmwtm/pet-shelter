@@ -17,7 +17,7 @@ public class Shelter {
     private String address;
     private String phoneNumber;
     private String workSchedule;
-    @OneToMany(mappedBy = "shelter")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "shelter")
     private List<ShelterDocument> shelterDocuments;
     @Column(name = "type")
     @Enumerated(EnumType.STRING)

@@ -1,6 +1,7 @@
 package com.example.petshelter.entity;
 
 import com.example.petshelter.type.UserRole;
+import com.example.petshelter.util.Menu;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -21,6 +22,10 @@ public class User {
     private UserRole role;
     @Column(name = "selected_shelter_id")
     private long selectedShelterId;
+    @Enumerated(EnumType.STRING)
+    private Menu activeMenu;
+    private Long selectedPetId;
+    private Long activeReportForChecking;
 
     public User(Long chatId, String firstName, String lastName, String tgUsername, String phoneNumber, UserRole role) {
         this.chatId = chatId;
@@ -98,6 +103,31 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
+    public Menu getActiveMenu() {
+        return activeMenu;
+    }
+
+    public void setActiveMenu(Menu activeMenu) {
+        this.activeMenu = activeMenu;
+    }
+
+
+    public long getSelectedPetId() {
+        return selectedPetId;
+    }
+
+    public void setSelectedPetId(long selectedPetId) {
+        this.selectedPetId = selectedPetId;
+    }
+
+    public Long getActiveReportForChecking() {
+        return activeReportForChecking;
+    }
+
+    public void setActiveReportForChecking(Long activeReportForChecking) {
+        this.activeReportForChecking = activeReportForChecking;
+
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -11,5 +11,5 @@ CREATE TABLE user_reports (
                        health TEXT,
                        behavior TEXT,
                        FOREIGN KEY (user_id) REFERENCES users (id),
-                       FOREIGN KEY (pet_id) REFERENCES pets (id),
+                       FOREIGN KEY (pet_id) REFERENCES pets (id)
 )
